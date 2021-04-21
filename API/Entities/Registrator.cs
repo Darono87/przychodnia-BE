@@ -9,7 +9,7 @@ namespace API.Entities
     public class Registrator
     {
         public User User { get; set; }
-        
+
         [Key]
         public int Id { get; set; }
     }

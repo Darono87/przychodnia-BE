@@ -9,10 +9,10 @@ namespace API.Entities
     public class Doctor
     {
         public User User { get; set; }
-        
+
         [Key]
         public int Id { get; set; }
-        
+
         [Required]
         public string PermitNumber { get; set; }
     }

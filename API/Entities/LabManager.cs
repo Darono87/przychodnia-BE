@@ -9,7 +9,7 @@ namespace API.Entities
     public class LabManager
     {
         public User User { get; set; }
-        
+
         [Key]
         public int Id { get; set; }
     }
