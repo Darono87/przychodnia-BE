@@ -11,6 +11,11 @@ namespace API.Data
         {
         }
 
+        public DbSet<User> Users { get; set; }
+        public DbSet<Doctor> Doctors { get; set; }
+        public DbSet<Registrator> Registrators { get; set; }
+        public DbSet<LabTechnician> LabTechnicians { get; set; }
+        public DbSet<LabManager> LabManagers { get; set; }
         public DbSet<Address> Addresses { get; set; }
     }
 }
