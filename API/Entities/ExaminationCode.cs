@@ -8,16 +8,23 @@ using System.ComponentModel.DataAnnotations;
 
 namespace API.Entities
 {
-    public class Doctor
+    public class ExaminationCode
     {
-        public User User { get; set; }
-
         [Key]
         public int Id { get; set; }
 
         [Required]
-        public string PermitNumber { get; set; }
-        
-        public ICollection<Schedule> Schedules { get; set; }
+        public ExaminationType Type { get; set; }
+
+        [Required]
+        [MaxLength(300)]
+        public string Name { get; set; }
+
+        [Required]
+        [MaxLength(30)]
+        public string Abbreviation { get; set; }
+
+        public ICollection<PhysicalExamination> PhysicalExaminations { get; set; }
+        public ICollection<LabExamination> LabExaminations { get; set; }
     }
 }
