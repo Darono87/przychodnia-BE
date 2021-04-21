@@ -1,8 +1,9 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using API.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Data{
+namespace API.Data
+{
 
     public class DataContext : DbContext
     {
@@ -10,6 +11,6 @@ namespace API.Data{
         {
         }
 
-        public DbSet<Address> Addresses {get; set;} 
+        public DbSet<Address> Addresses { get; set; }
     }
 }
