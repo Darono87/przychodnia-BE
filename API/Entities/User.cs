@@ -12,7 +12,7 @@ namespace API.Entities
     {
         [Key]
         public int Id { get; set; }
-        
+
         [Required]
         [MaxLength(100)]
         public string Login { get; set; }
@@ -24,7 +24,7 @@ namespace API.Entities
         [Required]
         [MaxLength(160)]
         public string LastName { get; set; }
-        
+
         [Required]
         [MaxLength(400)]
         public string PasswordHash { get; set; }

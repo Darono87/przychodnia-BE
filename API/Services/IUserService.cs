@@ -9,9 +9,9 @@ using API.Repositories;
 namespace API.Services
 {
     public interface IUserService
-    { 
-        void Create(string login, string firstName, string lastName, string password, string? permitNumber);
-        
+    {
+        void Create(string role, string login, string firstName, string lastName, string password, string? permitNumber);
+
         void Authenticate(string login, string password);
     }
 }

@@ -17,7 +17,7 @@ namespace API.Entities
 
         [Required]
         public string PermitNumber { get; set; }
-        
+
         public ICollection<Schedule> Schedules { get; set; }
     }
 }

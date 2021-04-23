@@ -4,6 +4,7 @@
 
 using System;
 using API.Entities;
+using API.Exceptions;
 using API.Repositories;
 using API.Services;
 using Moq;
@@ -11,47 +12,55 @@ using Xunit;
 
 namespace API.Tests.Services
 {
-    public class UserServiceTests
+    public class UserServiceTests : BaseTest
     {
-        private Mock<IUserRepository> mockUserRepository;
-        private IUserRepository userRepository;
-        private IUserService userService;
-
-        private void Setup()
-        {
-            mockUserRepository = new Mock<IUserRepository>();
-            
-            mockUserRepository.Setup(o => o.Get(It.IsIn(1)))
-                .Returns(new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe"});
-            mockUserRepository.Setup(o => o.Get(It.IsIn(2)))
-                .Returns(new User() {Id = 2, Login = "user2", FirstName = "Jane", LastName = "Smith"});
-            mockUserRepository.Setup(o => o.Get(It.IsIn("user1")))
-                .Returns(new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe"});
-            mockUserRepository.Setup(o => o.Get(It.IsIn("user2")))
-                .Returns(new User() {Id = 2, Login = "user2", FirstName = "Jane", LastName = "Smith"});
-
-            mockUserRepository.Setup(o => o.Add(It.IsIn<User>(null)))
-                .Throws(new ArgumentException());
-            mockUserRepository.Setup(o => o.Add(It.IsNotNull<User>()));
-
-            mockUserRepository.Setup(o => o.Update(It.IsAny<User>()));
-
-            userRepository = mockUserRepository.Object;
-        }
-
-        public UserServiceTests()
-        {
-            Setup();
-            userService = new UserService(userRepository);
-        }
-
         [Fact]
-        public void TestCreateWithNulls()
+        public void TestCreateWithEmptyStrings()
         {
-            Assert.Throws<ArgumentException>(() => userService.Create("", "", "", "", null));
+            Assert.Throws<ArgumentException>(() => 
+                userService.Create("", "", "", "", "", null));
             
             mockUserRepository.Verify(o => o.Get(It.IsAny<string>()), Times.Never);
             mockUserRepository.Verify(o => o.Add(It.IsAny<User>()), Times.Never);
+        }
+
+        [Fact]
+        public void TestCreateWithTakenLogin()
+        {
+            Assert.Throws<LoginTakenException>(() => 
+                userService.Create("User", "user1", "abc", "abc", "abc", null));
+            
+            mockUserRepository.Verify(o => o.Get(It.IsAny<string>()), Times.Once);
+            mockUserRepository.Verify(o => o.Add(It.IsAny<User>()), Times.Never);
+        }
+
+        [Fact]
+        public void TestCreateWithInvalidPassword()
+        {
+            Assert.Throws<InvalidPasswordException>(() => 
+                userService.Create("User", "user3", "abc", "abc", "abc", null));
+            
+            mockUserRepository.Verify(o => o.Get(It.IsAny<string>()), Times.Once);
+            mockUserRepository.Verify(o => o.Add(It.IsAny<User>()), Times.Never);
+        }
+
+        [Fact]
+        public void TestCreateWithNotExistingRole()
+        {
+            Assert.Throws<RoleNotFoundException>(() => 
+                userService.Create("Student", "user3", "abc", "abc", "Qwerty1234", null));
+            
+            mockUserRepository.Verify(o => o.Get(It.IsAny<string>()), Times.Once);
+            mockUserRepository.Verify(o => o.Add(It.IsAny<User>()), Times.Never);
+        }
+
+        [Fact]
+        public void TestCreateWithCorrectData()
+        {
+            userService.Create("User", "user3", "Andrew", "Smith", "Qwerty1234", null);
+
+            mockUserRepository.Verify(o => o.Get(It.IsAny<string>()), Times.Once);
+            mockUserRepository.Verify(o => o.Add(It.IsAny<User>()), Times.Once);
         }
     }
 }

@@ -36,7 +36,7 @@ namespace API.Entities
 
         [Required]
         public Patient Patient { get; set; }
-        
+
         [Required]
         public Registrator Registrator { get; set; }
 

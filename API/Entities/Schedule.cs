@@ -11,13 +11,13 @@ namespace API.Entities
     {
         [Key]
         public int Id { get; set; }
-        
+
         [Required]
         public DateTime StartDate { get; set; }
-        
+
         [Required]
         public DateTime FinishDate { get; set; }
-        
+
         [Required]
         public Doctor Doctor { get; set; }
     }
