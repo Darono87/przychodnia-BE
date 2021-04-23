@@ -24,6 +24,7 @@ namespace API.Data
         public DbSet<ExaminationType> ExaminationTypes { get; set; }
         public DbSet<Schedule> Schedules { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<Admin> Admins { get; set; }
         public DbSet<Address> Addresses { get; set; }
     }
 }
