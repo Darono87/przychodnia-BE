@@ -12,6 +12,10 @@ namespace API.Entities
     {
         [Key]
         public int Id { get; set; }
+        
+        [Required]
+        [MaxLength(100)]
+        public string Login { get; set; }
 
         [Required]
         [MaxLength(80)]
