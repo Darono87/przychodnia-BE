@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using API.DTO;
 using API.Entities;
 using API.Exceptions;
 using API.Repositories;
@@ -94,6 +95,39 @@ namespace API.Tests.Services
                     mockLabManagerRepository.Verify(o => o.Add(It.IsAny<LabManager>()), Times.Once);
                     break;
             }
+        }
+
+        [Fact]
+        public void TestAuthenticateWithValidCredentials()
+        {
+            var expectedResult = new AuthenticationDTO()
+            {
+                AccessToken = "access_token1", RefreshToken = "refresh_token1", Role = "User"
+            };
+            
+            Assert.Equal(expectedResult, userService.Authenticate("user1", "Qwerty1234"));
+            mockJwtManager.Verify(o => o.GenerateTokens(It.IsIn("user1"), It.IsAny<string>(), It.IsAny<DateTime>()), Times.Once);
+        }
+
+        [Theory]
+        [InlineData("user1234", "Qwerty1234")]
+        [InlineData("", "")]
+        public void TestAuthenticateWithInvalidCredentials(string username, string password)
+        {
+            Assert.Throws<ArgumentException>(() => userService.Authenticate(username, password));
+        }
+
+        [Fact]
+        public void TestGetRoleWithCorrectLogin()
+        {
+            Assert.Contains("AdminRegistratorDoctorLabTechnicianLabManager", userService.GetRole("user1"));
+            mockUserRepository.Verify(o => o.Get(It.IsAny<string>()), Times.Once);
+        }
+
+        [Fact]
+        public void TestGetRoleWithIncorrectLogin()
+        {
+            Assert.Throws<ArgumentException>(() => userService.GetRole(""));
         }
     }
 }

@@ -12,7 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace API.Utils
 {
-    public class JwtManager
+    public class JwtManager : IJwtManager
     {
         private readonly ConcurrentDictionary<string, string> refreshTokens;
         private readonly JwtConfig jwtConfig;

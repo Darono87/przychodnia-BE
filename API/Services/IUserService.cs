@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 #nullable enable
+using API.DTO;
 using API.Entities;
 using API.Repositories;
 
@@ -12,6 +13,8 @@ namespace API.Services
     {
         void Create(string role, string login, string firstName, string lastName, string password, string? permitNumber);
 
-        void Authenticate(string login, string password);
+        AuthenticationDTO Authenticate(string login, string password);
+
+        string GetRole(string login);
     }
 }

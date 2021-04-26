@@ -70,6 +70,7 @@ namespace API
             services.AddTransient<IGenericUserRepository<LabTechnician>, LabTechnicianRepository>(); 
             services.AddTransient<IGenericUserRepository<LabManager>, LabManagerRepository>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IJwtManager, JwtManager>();
             
             services.AddControllers()
                 .AddNewtonsoftJson(options => 

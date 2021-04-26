@@ -6,6 +6,7 @@
 using System;
 using System.Linq;
 using API.Data;
+using API.DTO;
 using API.Entities;
 using API.Exceptions;
 using API.Repositories;
@@ -22,6 +23,7 @@ namespace API.Services
         private readonly IGenericUserRepository<Doctor> doctorRepository;
         private readonly IGenericUserRepository<LabTechnician> labTechnicianRepository;
         private readonly IGenericUserRepository<LabManager> labManagerRepository;
+        private readonly IJwtManager jwtManager;
         
         private readonly string[] roles = 
         {
@@ -36,7 +38,8 @@ namespace API.Services
             IGenericUserRepository<Doctor> doctorRepository,
             IGenericUserRepository<LabTechnician> labTechnicianRepository,
             IGenericUserRepository<LabManager> labManagerRepository,
-            DataContext context)
+            DataContext context,
+            IJwtManager jwtManager)
         {
             this.userRepository = userRepository;
             this.adminRepository = adminRepository;
@@ -45,6 +48,7 @@ namespace API.Services
             this.labTechnicianRepository = labTechnicianRepository;
             this.labManagerRepository = labManagerRepository;
             this.context = context;
+            this.jwtManager = jwtManager;
         }
 
         public void Create(string role, string login, string firstName, string lastName, string password, string? permitNumber)
@@ -121,9 +125,46 @@ namespace API.Services
             context.Database?.CommitTransaction();
         }
 
-        public void Authenticate(string login, string password)
+        public AuthenticationDTO Authenticate(string login, string password)
         {
-            throw new System.NotImplementedException();
+            if (login.Trim() == "" || password.Trim() == "")
+            {
+                throw new ArgumentException("Login / password cannot be empty");
+            }
+
+            var user = userRepository.Get(login);
+
+            if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
+            {
+                throw new ArgumentException("Invalid credentials");
+            }
+
+            return jwtManager.GenerateTokens(login, GetRole(login), DateTime.Now);
+        }
+
+        public string GetRole(string login)
+        {
+            if (login == "")
+            {
+                throw new ArgumentException("Login cannot be empty");
+            }
+
+            var user = userRepository.Get(login);
+
+            if (user == null)
+            {
+                throw new ArgumentException("User with given login does not exist");
+            }
+
+            string role = "";
+
+            role += adminRepository.Get(login) != null ? "Admin" : "";
+            role += registratorRepository.Get(login) != null ? "Registrator" : "";
+            role += doctorRepository.Get(login) != null ? "Doctor" : "";
+            role += labTechnicianRepository.Get(login) != null ? "LabTechnician" : "";
+            role += labManagerRepository.Get(login) != null ? "LabManager" : "";
+
+            return role;
         }
     }
 }
