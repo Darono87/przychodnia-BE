@@ -100,7 +100,8 @@ namespace API.Services
                 case "Doctor":
                     doctorRepository.Add(new Doctor()
                     {
-                        User = createdUser
+                        User = createdUser,
+                        PermitNumber = permitNumber
                     });
                     break;
                 case "LabTechnician":

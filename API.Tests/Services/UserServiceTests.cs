@@ -59,7 +59,7 @@ namespace API.Tests.Services
         {
             userService.Create("User", "user3", "Andrew", "Smith", "Qwerty1234", null);
 
-            mockUserRepository.Verify(o => o.Get(It.IsAny<string>()), Times.Once);
+            mockUserRepository.Verify(o => o.Get(It.IsAny<string>()), Times.Exactly(2));
             mockUserRepository.Verify(o => o.Add(It.IsAny<User>()), Times.Once);
         }
 

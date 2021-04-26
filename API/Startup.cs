@@ -37,6 +37,11 @@ namespace API
             });
 
             services.AddTransient<IGenericUserRepository<User>, UserRepository>();
+            services.AddTransient<IGenericUserRepository<Admin>, AdminRepository>();
+            services.AddTransient<IGenericUserRepository<Registrator>, RegistratorRepository>();
+            services.AddTransient<IGenericUserRepository<Doctor>, DoctorRepository>();            
+            services.AddTransient<IGenericUserRepository<LabTechnician>, LabTechnicianRepository>(); 
+            services.AddTransient<IGenericUserRepository<LabManager>, LabManagerRepository>();
             services.AddTransient<IUserService, UserService>();
             
             services.AddControllers()
