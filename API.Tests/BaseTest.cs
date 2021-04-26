@@ -3,9 +3,11 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using API.Data;
 using API.Entities;
 using API.Repositories;
 using API.Services;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 
 namespace API.Tests
@@ -14,12 +16,29 @@ namespace API.Tests
     {
         protected Mock<IGenericUserRepository<User>> mockUserRepository;
         protected IGenericUserRepository<User> userRepository;
+        protected Mock<IGenericUserRepository<Admin>> mockAdminRepository;
+        protected IGenericUserRepository<Admin> adminRepository;
+        protected Mock<IGenericUserRepository<Registrator>> mockRegistratorRepository;
+        protected IGenericUserRepository<Registrator> registratorRepository;
+        protected Mock<IGenericUserRepository<Doctor>> mockDoctorRepository;
+        protected IGenericUserRepository<Doctor> doctorRepository;
+        protected Mock<IGenericUserRepository<LabTechnician>> mockLabTechnicianRepository;
+        protected IGenericUserRepository<LabTechnician> labTechnicianRepository;
+        protected Mock<IGenericUserRepository<LabManager>> mockLabManagerRepository;
+        protected IGenericUserRepository<LabManager> labManagerRepository;
+        
         protected IUserService userService;
 
         private void Setup()
         {
             mockUserRepository = new Mock<IGenericUserRepository<User>>();
+            mockAdminRepository = new Mock<IGenericUserRepository<Admin>>();
+            mockRegistratorRepository = new Mock<IGenericUserRepository<Registrator>>();
+            mockDoctorRepository = new Mock<IGenericUserRepository<Doctor>>();
+            mockLabTechnicianRepository = new Mock<IGenericUserRepository<LabTechnician>>();
+            mockLabManagerRepository = new Mock<IGenericUserRepository<LabManager>>();
             
+            // mock user repository setup
             mockUserRepository.Setup(o => o.Get(It.IsIn(1)))
                 .Returns(new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe"});
             mockUserRepository.Setup(o => o.Get(It.IsIn(2)))
@@ -28,21 +47,163 @@ namespace API.Tests
                 .Returns(new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe"});
             mockUserRepository.Setup(o => o.Get(It.IsIn("user2")))
                 .Returns(new User() {Id = 2, Login = "user2", FirstName = "Jane", LastName = "Smith"});
-
             mockUserRepository.Setup(o => o.Add(It.IsIn<User>(null)))
                 .Throws(new ArgumentException());
             mockUserRepository.Setup(o => o.Add(It.IsNotNull<User>()));
-
             mockUserRepository.Setup(o => o.Update(It.IsAny<User>()));
 
+            // mock admin repository setup
+            mockAdminRepository.Setup(o => o.Get(It.IsIn(1)))
+                .Returns(new Admin()
+                {
+                    Id = 1, User = new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe"}
+                });
+            mockAdminRepository.Setup(o => o.Get(It.IsIn(2)))
+                .Returns(new Admin()
+                {
+                    Id = 2, User = new User() { Id = 2, Login = "user2", FirstName = "Jane", LastName = "Smith" }
+                });
+            mockAdminRepository.Setup(o => o.Get(It.IsIn("user1")))
+                .Returns(new Admin()
+                {
+                    Id = 1, User = new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe"}
+                });
+            mockAdminRepository.Setup(o => o.Get(It.IsIn("user2")))
+                .Returns(new Admin()
+                {
+                    Id = 2, User = new User() { Id = 2, Login = "user2", FirstName = "Jane", LastName = "Smith" }
+                });
+            mockAdminRepository.Setup(o => o.Add(It.IsIn<Admin>(null)))
+                .Throws(new ArgumentException());
+            mockAdminRepository.Setup(o => o.Add(It.IsNotNull<Admin>()));
+            mockAdminRepository.Setup(o => o.Update(It.IsAny<Admin>()));
+            
+            // mock registrator repository setup
+            mockRegistratorRepository.Setup(o => o.Get(It.IsIn(1)))
+                .Returns(new Registrator()
+                {
+                    Id = 1, User = new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe"}
+                });
+            mockRegistratorRepository.Setup(o => o.Get(It.IsIn(2)))
+                .Returns(new Registrator()
+                {
+                    Id = 2, User = new User() { Id = 2, Login = "user2", FirstName = "Jane", LastName = "Smith" }
+                });
+            mockRegistratorRepository.Setup(o => o.Get(It.IsIn("user1")))
+                .Returns(new Registrator()
+                {
+                    Id = 1, User = new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe"}
+                });
+            mockRegistratorRepository.Setup(o => o.Get(It.IsIn("user2")))
+                .Returns(new Registrator()
+                {
+                    Id = 2, User = new User() { Id = 2, Login = "user2", FirstName = "Jane", LastName = "Smith" }
+                });
+            mockRegistratorRepository.Setup(o => o.Add(It.IsIn<Registrator>(null)))
+                .Throws(new ArgumentException());
+            mockRegistratorRepository.Setup(o => o.Add(It.IsNotNull<Registrator>()));
+            mockRegistratorRepository.Setup(o => o.Update(It.IsAny<Registrator>()));
+            
+            // mock doctor repository setup
+            mockDoctorRepository.Setup(o => o.Get(It.IsIn(1)))
+                .Returns(new Doctor()
+                {
+                    Id = 1, User = new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe"}
+                });
+            mockDoctorRepository.Setup(o => o.Get(It.IsIn(2)))
+                .Returns(new Doctor()
+                {
+                    Id = 2, User = new User() { Id = 2, Login = "user2", FirstName = "Jane", LastName = "Smith" }
+                });
+            mockDoctorRepository.Setup(o => o.Get(It.IsIn("user1")))
+                .Returns(new Doctor()
+                {
+                    Id = 1, User = new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe"}
+                });
+            mockDoctorRepository.Setup(o => o.Get(It.IsIn("user2")))
+                .Returns(new Doctor()
+                {
+                    Id = 2, User = new User() { Id = 2, Login = "user2", FirstName = "Jane", LastName = "Smith" }
+                });
+            mockDoctorRepository.Setup(o => o.Add(It.IsIn<Doctor>(null)))
+                .Throws(new ArgumentException());
+            mockDoctorRepository.Setup(o => o.Add(It.IsNotNull<Doctor>()));
+            mockDoctorRepository.Setup(o => o.Update(It.IsAny<Doctor>()));
+            
+            // mock lab technician repository setup
+            mockLabTechnicianRepository.Setup(o => o.Get(It.IsIn(1)))
+                .Returns(new LabTechnician()
+                {
+                    Id = 1, User = new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe"}
+                });
+            mockLabTechnicianRepository.Setup(o => o.Get(It.IsIn(2)))
+                .Returns(new LabTechnician()
+                {
+                    Id = 2, User = new User() { Id = 2, Login = "user2", FirstName = "Jane", LastName = "Smith" }
+                });
+            mockLabTechnicianRepository.Setup(o => o.Get(It.IsIn("user1")))
+                .Returns(new LabTechnician()
+                {
+                    Id = 1, User = new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe"}
+                });
+            mockLabTechnicianRepository.Setup(o => o.Get(It.IsIn("user2")))
+                .Returns(new LabTechnician()
+                {
+                    Id = 2, User = new User() { Id = 2, Login = "user2", FirstName = "Jane", LastName = "Smith" }
+                });
+            mockLabTechnicianRepository.Setup(o => o.Add(It.IsIn<LabTechnician>(null)))
+                .Throws(new ArgumentException());
+            mockLabTechnicianRepository.Setup(o => o.Add(It.IsNotNull<LabTechnician>()));
+            mockLabTechnicianRepository.Setup(o => o.Update(It.IsAny<LabTechnician>()));
+
+            // mock lab manager repository setup
+            mockLabManagerRepository.Setup(o => o.Get(It.IsIn(1)))
+                .Returns(new LabManager()
+                {
+                    Id = 1, User = new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe"}
+                });
+            mockLabManagerRepository.Setup(o => o.Get(It.IsIn(2)))
+                .Returns(new LabManager()
+                {
+                    Id = 2, User = new User() { Id = 2, Login = "user2", FirstName = "Jane", LastName = "Smith" }
+                });
+            mockLabManagerRepository.Setup(o => o.Get(It.IsIn("user1")))
+                .Returns(new LabManager()
+                {
+                    Id = 1, User = new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe"}
+                });
+            mockLabManagerRepository.Setup(o => o.Get(It.IsIn("user2")))
+                .Returns(new LabManager()
+                {
+                    Id = 2, User = new User() { Id = 2, Login = "user2", FirstName = "Jane", LastName = "Smith" }
+                });
+            mockLabManagerRepository.Setup(o => o.Add(It.IsIn<LabManager>(null)))
+                .Throws(new ArgumentException());
+            mockLabManagerRepository.Setup(o => o.Add(It.IsNotNull<LabManager>()));
+            mockLabManagerRepository.Setup(o => o.Update(It.IsAny<LabManager>()));
+
             userRepository = mockUserRepository.Object;
+            adminRepository = mockAdminRepository.Object;
+            registratorRepository = mockRegistratorRepository.Object;
+            doctorRepository = mockDoctorRepository.Object;
+            labTechnicianRepository = mockLabTechnicianRepository.Object;
+            labManagerRepository = mockLabManagerRepository.Object;
         }
 
         public BaseTest()
         {
             Setup();
 
-            userService = new UserService(userRepository);
+            var dataContext = new Mock<DataContext>(new DbContextOptionsBuilder().Options);
+            userService = new UserService(
+                userRepository, 
+                adminRepository, 
+                registratorRepository,
+                doctorRepository, 
+                labTechnicianRepository, 
+                labManagerRepository,
+                dataContext.Object
+            );
         }
     }
 }

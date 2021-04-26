@@ -62,5 +62,38 @@ namespace API.Tests.Services
             mockUserRepository.Verify(o => o.Get(It.IsAny<string>()), Times.Once);
             mockUserRepository.Verify(o => o.Add(It.IsAny<User>()), Times.Once);
         }
+
+        [Theory]
+        [InlineData("Admin")]
+        [InlineData("Registrator")]
+        [InlineData("Doctor")]
+        [InlineData("LabTechnician")]
+        [InlineData("LabManager")]
+        public void TestCreateWithDifferentRoles(string role)
+        {
+            userService.Create(role, "user3", "Andrew", "Smith", "Qwerty1234", role == "Doctor" ? "1234" : null);
+            
+            mockUserRepository.Verify(o => o.Get(It.IsAny<string>()), Times.Exactly(2));
+            mockUserRepository.Verify(o => o.Add(It.IsAny<User>()), Times.Once);
+
+            switch (role)
+            {
+                case "Admin":
+                    mockAdminRepository.Verify(o => o.Add(It.IsAny<Admin>()), Times.Once);
+                    break;
+                case "Registrator":
+                    mockRegistratorRepository.Verify(o => o.Add(It.IsAny<Registrator>()), Times.Once);
+                    break;
+                case "Doctor":
+                    mockDoctorRepository.Verify(o => o.Add(It.IsAny<Doctor>()), Times.Once);
+                    break;
+                case "LabTechnician":
+                    mockLabTechnicianRepository.Verify(o => o.Add(It.IsAny<LabTechnician>()), Times.Once);
+                    break;
+                case "LabManager":
+                    mockLabManagerRepository.Verify(o => o.Add(It.IsAny<LabManager>()), Times.Once);
+                    break;
+            }
+        }
     }
 }
