@@ -14,7 +14,7 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class UserController : Controller
     {
-        private IUserService userService;
+        private readonly IUserService userService;
 
         public UserController(IUserService userService)
         {

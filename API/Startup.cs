@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Data;
+using API.Entities;
 using API.Repositories;
 using API.Services;
 using Microsoft.AspNetCore.Builder;
@@ -35,7 +36,7 @@ namespace API
                 options.UseNpgsql(Config.GetConnectionString("DefaultConnection"));
             });
 
-            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IGenericUserRepository<User>, UserRepository>();
             services.AddTransient<IUserService, UserService>();
             
             services.AddControllers()

@@ -14,14 +14,14 @@ namespace API.Services
 {
     public class UserService : IUserService
     {
-        private IUserRepository userRepository;
-        private string[] roles = 
+        private readonly IGenericUserRepository<User> userRepository;
+        private readonly string[] roles = 
         {
             typeof(User).ToString(), typeof(Registrator).ToString(), typeof(Doctor).ToString(),
             typeof(LabTechnician).ToString(), typeof(LabManager).ToString()
         };
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IGenericUserRepository<User> userRepository)
         {
             this.userRepository = userRepository;
         }

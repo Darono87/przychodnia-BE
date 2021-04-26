@@ -12,13 +12,13 @@ namespace API.Tests
 {
     public class BaseTest
     {
-        protected Mock<IUserRepository> mockUserRepository;
-        protected IUserRepository userRepository;
+        protected Mock<IGenericUserRepository<User>> mockUserRepository;
+        protected IGenericUserRepository<User> userRepository;
         protected IUserService userService;
-        
-        protected void Setup()
+
+        private void Setup()
         {
-            mockUserRepository = new Mock<IUserRepository>();
+            mockUserRepository = new Mock<IGenericUserRepository<User>>();
             
             mockUserRepository.Setup(o => o.Get(It.IsIn(1)))
                 .Returns(new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe"});

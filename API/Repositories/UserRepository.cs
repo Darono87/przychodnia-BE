@@ -8,9 +8,9 @@ using API.Entities;
 
 namespace API.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : IGenericUserRepository<User>
     {
-        private DataContext context;
+        private readonly DataContext context;
 
         public UserRepository(DataContext context)
         {
