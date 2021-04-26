@@ -6,6 +6,7 @@ using System;
 using API.DTO;
 using API.Exceptions;
 using API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -22,18 +23,34 @@ namespace API.Controllers
         }
         
         [HttpPost("create")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create([FromBody] UserCreationDTO userDto)
         {
             try
             {
                 userService.Create(userDto.Role, userDto.Login, userDto.FirstName, userDto.LastName, userDto.Password, userDto.PermitNumber);
             }
-            catch (Exception ae)
+            catch (Exception e)
             {
-                return new JsonResult(new { message = ae.Message }){ StatusCode = 422 };
+                return new JsonResult(new { message = e.Message }){ StatusCode = 422 };
             }
 
             return new OkResult();
+        }
+
+        [HttpPost("authenticate")]
+        [AllowAnonymous]
+        public IActionResult Authenticate([FromBody] LoginDTO loginDto)
+        {
+            try
+            {
+                var response = userService.Authenticate(loginDto.Login, loginDto.Password);
+                return new JsonResult(response);
+            }
+            catch (Exception e)
+            {
+                return new JsonResult(new { message = e.Message }){ StatusCode = 422 };
+            }
         }
     }
 }

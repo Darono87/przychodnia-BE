@@ -31,14 +31,14 @@ namespace API.Utils
             var accessToken = new JwtSecurityToken(
                 jwtConfig.Issuer,
                 jwtConfig.Audience,
-                new Claim[] { new("Role", role) },
+                new Claim[] { new(ClaimTypes.Role, role) },
                 expires: startDate.AddMinutes(jwtConfig.AccessTokenExpiration),
                 signingCredentials: new SigningCredentials(new SymmetricSecurityKey(secret), SecurityAlgorithms.HmacSha256Signature)
                 );
             var refreshToken = new JwtSecurityToken(
                 jwtConfig.Issuer,
                 jwtConfig.Audience,
-                new Claim[] { new Claim("Role", role) },
+                new Claim[] { new(ClaimTypes.Role, role) },
                 expires: startDate.AddMinutes(jwtConfig.RefreshTokenExpiration),
                 signingCredentials: new SigningCredentials(new SymmetricSecurityKey(secret), SecurityAlgorithms.HmacSha256Signature)
             );
