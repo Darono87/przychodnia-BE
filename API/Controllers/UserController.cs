@@ -21,18 +21,19 @@ namespace API.Controllers
         {
             this.userService = userService;
         }
-        
+
         [HttpPost("create")]
         [Authorize(Roles = "Admin")]
         public IActionResult Create([FromBody] UserCreationDTO userDto)
         {
             try
             {
-                userService.Create(userDto.Role, userDto.Login, userDto.FirstName, userDto.LastName, userDto.Password, userDto.PermitNumber);
+                userService.Create(userDto.Role, userDto.Login, userDto.FirstName, userDto.LastName, userDto.Password,
+                    userDto.PermitNumber);
             }
             catch (Exception e)
             {
-                return new JsonResult(new { message = e.Message }){ StatusCode = 422 };
+                return new JsonResult(new {message = e.Message}) {StatusCode = 422};
             }
 
             return new OkResult();
@@ -49,8 +50,24 @@ namespace API.Controllers
             }
             catch (Exception e)
             {
-                return new JsonResult(new { message = e.Message }){ StatusCode = 422 };
+                return new JsonResult(new {message = e.Message}) {StatusCode = 422};
+            }
+        }
+
+        [HttpPost("refresh")]
+        [AllowAnonymous]
+        public IActionResult Refresh([FromBody] RefreshDTO refreshDto)
+        {
+            try
+            {
+                var response = userService.Refresh(refreshDto.AccessToken, refreshDto.RefreshToken);
+                return new JsonResult(response);
+            }
+            catch (Exception e)
+            {
+                return new JsonResult(new {message = e.Message}) {StatusCode = 422};
             }
         }
     }
 }
+

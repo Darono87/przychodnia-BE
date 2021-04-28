@@ -129,5 +129,25 @@ namespace API.Tests.Services
         {
             Assert.Throws<ArgumentException>(() => userService.GetRole(""));
         }
+        
+        [Fact]
+        public void TestRefreshWithValidCredentials()
+        {
+            var expectedResult = new AuthenticationDTO()
+            {
+                AccessToken = "access_token1", RefreshToken = "refresh_token1", Role = "User"
+            };
+            
+            Assert.Equal(expectedResult, userService.Refresh("user1", "refresh_token1"));
+            mockJwtManager.Verify(o => o.GenerateTokens(It.IsIn("user1"), It.IsAny<string>(), It.IsAny<DateTime>()), Times.Once);
+        }
+
+        [Theory]
+        [InlineData("user1234", "Qwerty1234")]
+        [InlineData("", "")]
+        public void TestRefreshWithInvalidCredentials(string login, string refreshToken)
+        {
+            Assert.Throws<ArgumentException>(() => userService.Refresh(login, refreshToken));
+        }
     }
 }

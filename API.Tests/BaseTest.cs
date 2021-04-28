@@ -200,6 +200,8 @@ namespace API.Tests
                 });
             mockJwtManager.Setup(o => o.GenerateTokens(It.IsIn(""), It.IsIn(""), It.IsAny<DateTime>()))
                 .Throws<ArgumentException>();
+            mockJwtManager.Setup(o => o.ContainsRefreshToken("refresh_token1"))
+                .Returns(true);
 
             userRepository = mockUserRepository.Object;
             adminRepository = mockAdminRepository.Object;
