@@ -69,6 +69,7 @@ namespace API
             services.AddTransient<IGenericUserRepository<Doctor>, DoctorRepository>();            
             services.AddTransient<IGenericUserRepository<LabTechnician>, LabTechnicianRepository>(); 
             services.AddTransient<IGenericUserRepository<LabManager>, LabManagerRepository>();
+            services.AddTransient<IPatientRepository,PatientRepository>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IJwtManager, JwtManager>();
             
