@@ -4,13 +4,17 @@
 
 #nullable enable
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using API.Data;
 using API.DTO;
 using API.Entities;
 using API.Exceptions;
 using API.Repositories;
 using API.Utils;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Net.Http.Headers;
 
 namespace API.Services
 {
@@ -142,6 +146,34 @@ namespace API.Services
             return jwtManager.GenerateTokens(login, GetRole(login), DateTime.Now);
         }
 
+        public AuthenticationDTO Refresh(string accessToken, string refreshToken)
+        {
+            if (accessToken.Trim() == "" || refreshToken.Trim() == "")
+            {
+                throw new ArgumentException("Tokens cannot be empty");
+            }
+
+            var handler = new JwtSecurityTokenHandler();
+            var data = handler.ReadJwtToken(accessToken);
+            var refreshData = handler.ReadJwtToken(refreshToken);
+            var date = refreshData.ValidTo;
+
+            if (DateTime.Now > date)
+            {
+                throw new ArgumentException("Refresh token is expired");
+            }
+
+            var login = data.Claims.Where(c => c.Type == ClaimTypes.Name).ToArray()[0].Value;
+            var user = userRepository.Get(login);
+
+            if (user == null || !jwtManager.ContainsRefreshToken(refreshToken))
+            {
+                throw new ArgumentException("User does not exist or refresh token is invalid");
+            }
+
+            return jwtManager.GenerateTokens(user.Login, GetRole(user.Login), DateTime.Now);
+        }
+
         public string GetRole(string login)
         {
             if (login == "")
@@ -165,6 +197,26 @@ namespace API.Services
             role += labManagerRepository.Get(login) != null ? "LabManager" : "";
 
             return role;
+        }
+        
+        public object GetCurrentUser(HttpRequest request)
+        {
+            var accessToken = request.Headers[HeaderNames.Authorization][0].Split(" ")[1];
+            var handler = new JwtSecurityTokenHandler();
+            var data = handler.ReadJwtToken(accessToken);
+            
+            var login = data.Claims.Where(c => c.Type == ClaimTypes.Name).ToArray()[0].Value;
+            var role = data.Claims.Where(c => c.Type == ClaimTypes.Role).ToArray()[0].Value;
+
+            return role switch
+            {
+                "Admin" => adminRepository.Get(login),
+                "Registrator" => registratorRepository.Get(login),
+                "Doctor" => doctorRepository.Get(login),
+                "LabTechnician" => labTechnicianRepository.Get(login),
+                "LabManager" => labManagerRepository.Get(login),
+                _ => throw new ArgumentOutOfRangeException()
+            };
         }
     }
 }

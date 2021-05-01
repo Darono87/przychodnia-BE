@@ -31,14 +31,14 @@ namespace API.Utils
             var accessToken = new JwtSecurityToken(
                 jwtConfig.Issuer,
                 jwtConfig.Audience,
-                new Claim[] { new(ClaimTypes.Role, role) },
+                new Claim[] { new(ClaimTypes.Role, role), new(ClaimTypes.Name, username) },
                 expires: startDate.AddMinutes(jwtConfig.AccessTokenExpiration),
                 signingCredentials: new SigningCredentials(new SymmetricSecurityKey(secret), SecurityAlgorithms.HmacSha256Signature)
                 );
             var refreshToken = new JwtSecurityToken(
                 jwtConfig.Issuer,
                 jwtConfig.Audience,
-                new Claim[] { new(ClaimTypes.Role, role) },
+                new Claim[] { new(ClaimTypes.Role, role), new(ClaimTypes.Name, username) },
                 expires: startDate.AddMinutes(jwtConfig.RefreshTokenExpiration),
                 signingCredentials: new SigningCredentials(new SymmetricSecurityKey(secret), SecurityAlgorithms.HmacSha256Signature)
             );
@@ -50,9 +50,14 @@ namespace API.Utils
                 Role = role
             };
 
-            refreshTokens.AddOrUpdate(result.RefreshToken, result.RefreshToken, (key, value) => result.RefreshToken);
+            refreshTokens.TryAdd(result.RefreshToken, result.RefreshToken);
 
             return result;
+        }
+
+        public bool ContainsRefreshToken(string refreshToken)
+        {
+            return refreshTokens.ContainsKey(refreshToken);
         }
     }
 }
