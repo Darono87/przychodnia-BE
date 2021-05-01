@@ -146,6 +146,34 @@ namespace API.Services
             return jwtManager.GenerateTokens(login, GetRole(login), DateTime.Now);
         }
 
+        public AuthenticationDTO Refresh(string accessToken, string refreshToken)
+        {
+            if (accessToken.Trim() == "" || refreshToken.Trim() == "")
+            {
+                throw new ArgumentException("Tokens cannot be empty");
+            }
+
+            var handler = new JwtSecurityTokenHandler();
+            var data = handler.ReadJwtToken(accessToken);
+            var refreshData = handler.ReadJwtToken(refreshToken);
+            var date = refreshData.ValidTo;
+
+            if (DateTime.Now > date)
+            {
+                throw new ArgumentException("Refresh token is expired");
+            }
+
+            var login = data.Claims.Where(c => c.Type == ClaimTypes.Name).ToArray()[0].Value;
+            var user = userRepository.Get(login);
+
+            if (user == null || !jwtManager.ContainsRefreshToken(refreshToken))
+            {
+                throw new ArgumentException("User does not exist or refresh token is invalid");
+            }
+
+            return jwtManager.GenerateTokens(user.Login, GetRole(user.Login), DateTime.Now);
+        }
+
         public string GetRole(string login)
         {
             if (login == "")

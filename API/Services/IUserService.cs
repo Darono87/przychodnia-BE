@@ -17,6 +17,8 @@ namespace API.Services
 
         AuthenticationDTO Authenticate(string login, string password);
 
+        AuthenticationDTO Refresh(string accessToken, string refreshToken);
+
         string GetRole(string login);
 
         object GetCurrentUser(HttpRequest request);

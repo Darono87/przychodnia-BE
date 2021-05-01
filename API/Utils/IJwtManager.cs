@@ -10,5 +10,6 @@ namespace API.Utils
     public interface IJwtManager
     {
         AuthenticationDTO GenerateTokens(string username, string role, DateTime startDate);
+        bool ContainsRefreshToken(string refreshToken);
     }
 }
