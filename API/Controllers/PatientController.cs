@@ -23,7 +23,7 @@ namespace API.Controllers
         {
             if (patientRepository.Get(patientDTO.PeselNumber) != null)
             {
-                return new JsonResult(new {message = "W bazie istnieje pacjent o podanym numerze PESEL"}){StatusCode = 422};
+                return new JsonResult(new {message = "Patient with given identity number already exists"}){StatusCode = 422};
             }
 
             var patient = new Patient()
