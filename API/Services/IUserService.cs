@@ -3,9 +3,11 @@
 // See the LICENSE file in the project root for more information.
 
 #nullable enable
+using System;
 using API.DTO;
 using API.Entities;
 using API.Repositories;
+using Microsoft.AspNetCore.Http;
 
 namespace API.Services
 {
@@ -16,5 +18,7 @@ namespace API.Services
         AuthenticationDTO Authenticate(string login, string password);
 
         string GetRole(string login);
+
+        object GetCurrentUser(HttpRequest request);
     }
 }

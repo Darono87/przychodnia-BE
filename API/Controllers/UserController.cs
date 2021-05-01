@@ -4,6 +4,7 @@
 
 using System;
 using API.DTO;
+using API.Entities;
 using API.Exceptions;
 using API.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -20,6 +21,13 @@ namespace API.Controllers
         public UserController(IUserService userService)
         {
             this.userService = userService;
+        }
+
+        [HttpGet("test")]
+        public IActionResult GetInfo()
+        {
+            var res = userService.GetCurrentUser(Request);
+            return new JsonResult(new {message = res.GetType() });
         }
         
         [HttpPost("create")]
