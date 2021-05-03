@@ -26,6 +26,7 @@ namespace API
     public class Startup
     {
         private readonly IConfiguration Config;
+        private readonly String CorsPolicyName = "FreeRealEstate";
 
         public Startup(IConfiguration Config)
         {
@@ -61,6 +62,13 @@ namespace API
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.FromMinutes(1)
                 };
+            });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(CorsPolicyName, builder=>{
+                    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                    });
             });
 
             services.AddTransient<IGenericUserRepository<User>, UserRepository>();
@@ -99,6 +107,8 @@ namespace API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(CorsPolicyName);
 
             app.UseAuthentication();
 
