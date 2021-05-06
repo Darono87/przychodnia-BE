@@ -19,7 +19,7 @@ namespace API.Controllers
             this.appointmentService = appointmentService;
         }
 
-        [HttpPost("appointment/add")]
+        [HttpPost("add")]
         [Authorize(Roles = "Registrator")]
         public IActionResult AddAppointment([FromBody] AppointmentDTO appointmentDto)
         {
