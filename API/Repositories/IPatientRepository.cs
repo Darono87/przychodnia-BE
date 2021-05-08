@@ -1,12 +1,13 @@
-﻿using API.Entities;
+﻿using System.Threading.Tasks;
+using API.Entities;
 
 namespace API.Repositories
 {
     public interface IPatientRepository
     {
-        void Add(Patient patient);
-        void Update(Patient patient);
-        Patient Get(int id);
-        Patient Get(string PeselNumber);
+        Task<Patient> AddAsync(Patient patient);
+        Task<Patient> UpdateAsync(Patient patient);
+        Task<Patient> GetAsync(int id);
+        Task<Patient> GetAsync(string PeselNumber);
     }
 }

@@ -1,6 +1,8 @@
-﻿using API.DTO;
+﻿using System.Threading.Tasks;
+using API.DTO;
 using API.Entities;
 using API.Repositories;
+using API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +13,11 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class PatientsController : ControllerBase
     {
-        private readonly IPatientRepository patientRepository;
+        private readonly IPatientService patientService;
 
-        public PatientsController(IPatientRepository patientRepository)
+        public PatientsController(IPatientService patientService)
         {
-            this.patientRepository = patientRepository;
+            this.patientService = patientService;
         }
 
         [HttpPost]
@@ -24,33 +26,9 @@ namespace API.Controllers
         [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
         // below only when credentials are invalid
         [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status422UnprocessableEntity)]
-        public IActionResult RegisterPatientAsync([FromBody] PatientDto patientDto)
+        public async Task<IActionResult> RegisterPatientAsync([FromBody] PatientDto patientDto)
         {
-            if (patientRepository.Get(patientDto.PeselNumber) != null)
-            {
-                return new JsonResult(new {message = "Patient with given identity number already exists"})
-                {
-                    StatusCode = 422
-                };  
-            }
-
-            var patient = new Patient
-            {
-                FirstName = patientDto.FirstName,
-                LastName = patientDto.LastName,
-                PeselNumber = patientDto.PeselNumber,
-                Address = new Address
-                {
-                    Country = patientDto.Country,
-                    City = patientDto.City,
-                    BuildingNumber = patientDto.BuildingNumber,
-                    PostalCode = patientDto.PostalCode,
-                    Street = patientDto.Street
-                }
-            };
-
-            patientRepository.Add(patient);
-            return new OkResult();
+            return await patientService.RegisterAsync(patientDto);
         }
     }
 }

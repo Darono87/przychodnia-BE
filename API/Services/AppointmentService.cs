@@ -38,7 +38,7 @@ namespace API.Services
                 };
             }
 
-            var patient = patientRepository.Get(appointmentDto.PeselNumber);
+            var patient = await patientRepository.GetAsync(appointmentDto.PeselNumber);
 
             if (patient == null)
             {

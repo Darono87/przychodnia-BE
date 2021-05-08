@@ -1,6 +1,8 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories
 {
@@ -13,27 +15,31 @@ namespace API.Repositories
             this.context = context;
         }
 
-        public void Add(Patient patient)
+        public async Task<Patient> AddAsync(Patient patient)
         {
-            context.Patients.Add(patient);
-            context.SaveChanges();
+            var result = context.Patients.Add(patient);
+            await context.SaveChangesAsync();
+
+            return result.Entity;
         }
 
-        public void Update(Patient patient)
+        public async Task<Patient> UpdateAsync(Patient patient)
         {
-            context.Patients.Update(patient);
-            context.SaveChanges();
+            var result = context.Patients.Update(patient);
+            await context.SaveChangesAsync();
+
+            return result.Entity;
         }
 
-        public Patient Get(int id)
+        public async Task<Patient> GetAsync(int id)
         {
-            return context.Patients.Find(id);
+            return await context.Patients.FindAsync(id);
         }
 
-        public Patient Get(string PeselNumber)
+        public async Task<Patient> GetAsync(string PeselNumber)
         {
-            return context.Patients
-                .FirstOrDefault(a =>
+            return await context.Patients
+                .FirstOrDefaultAsync(a =>
                     a.PeselNumber == PeselNumber);
         }
     }

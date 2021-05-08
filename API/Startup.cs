@@ -78,6 +78,7 @@ namespace API
             services.AddTransient<IAppointmentRepository, AppointmentRepository>();
             services.AddTransient<IAppointmentService, AppointmentService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IPatientService, PatientService>();
             services.AddTransient<IJwtManager, JwtManager>();
 
             services.AddControllers()
