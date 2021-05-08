@@ -6,6 +6,7 @@ using System;
 using API.DTO;
 using API.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -47,6 +48,7 @@ namespace API.Controllers
 
         [HttpPost("authenticate")]
         [AllowAnonymous]
+        [ProducesResponseType(typeof(AuthenticationDTO), StatusCodes.Status200OK)]
         public IActionResult Authenticate([FromBody] LoginDTO loginDto)
         {
             try

@@ -3,28 +3,19 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.ComponentModel.DataAnnotations;
 
-#nullable enable
 namespace API.DTO
 {
     public class AuthenticationDTO
     {
-        public AuthenticationDTO()
-        {
-            AccessToken = "";
-            RefreshToken = "";
-            Role = "";
-        }
-
-        public AuthenticationDTO(string accessToken, string refreshToken, string role)
-        {
-            AccessToken = accessToken;
-            RefreshToken = refreshToken;
-            Role = role;
-        }
-
+        [Required]
         public string AccessToken { get; set; }
+        
+        [Required]
         public string RefreshToken { get; set; }
+        
+        [Required]
         public string Role { get; set; }
 
         public override bool Equals(object? obj)
