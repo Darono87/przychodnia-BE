@@ -3,8 +3,10 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Linq;
+using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories
 {
@@ -17,34 +19,38 @@ namespace API.Repositories
             this.context = context;
         }
 
-        public Doctor GetByPermitNumber(string permitNumber)
+        public async Task<Doctor> GetByPermitNumberAsync(string permitNumber)
         {
-            return context.Doctors
-                .FirstOrDefault(a =>
+            return await context.Doctors
+                .FirstOrDefaultAsync(a =>
                     a.PermitNumber == permitNumber);
         }
 
-        public void Add(Doctor obj)
+        public async Task<Doctor> AddAsync(Doctor obj)
         {
-            context.Doctors.Add(obj);
-            context.SaveChanges();
+            var result = context.Doctors.Add(obj);
+            await context.SaveChangesAsync();
+
+            return result.Entity;
         }
 
-        public void Update(Doctor obj)
+        public async Task<Doctor> UpdateAsync(Doctor obj)
         {
-            context.Doctors.Update(obj);
-            context.SaveChanges();
+            var result = context.Doctors.Update(obj);
+            await context.SaveChangesAsync();
+
+            return result.Entity;
         }
 
-        public Doctor Get(int id)
+        public async Task<Doctor> GetAsync(int id)
         {
-            return context.Doctors.Find(id);
+            return await context.Doctors.FindAsync(id);
         }
 
-        public Doctor Get(string login)
+        public async Task<Doctor> GetAsync(string login)
         {
-            return context.Doctors
-                .FirstOrDefault(a =>
+            return await context.Doctors
+                .FirstOrDefaultAsync(a =>
                     a.User.Id == context.Users
                         .FirstOrDefault(u => u.Login == login).Id);
         }

@@ -3,8 +3,10 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Linq;
+using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories
 {
@@ -17,27 +19,31 @@ namespace API.Repositories
             this.context = context;
         }
 
-        public void Add(Registrar obj)
+        public async Task<Registrar> AddAsync(Registrar obj)
         {
-            context.Registrars.Add(obj);
-            context.SaveChanges();
+            var result = context.Registrars.Add(obj);
+            await context.SaveChangesAsync();
+
+            return result.Entity;
         }
 
-        public void Update(Registrar obj)
+        public async Task<Registrar> UpdateAsync(Registrar obj)
         {
-            context.Registrars.Update(obj);
-            context.SaveChanges();
+            var result = context.Registrars.Update(obj);
+            await context.SaveChangesAsync();
+
+            return result.Entity;
         }
 
-        public Registrar Get(int id)
+        public async Task<Registrar> GetAsync(int id)
         {
-            return context.Registrars.Find(id);
+            return await context.Registrars.FindAsync(id);
         }
 
-        public Registrar Get(string login)
+        public async Task<Registrar> GetAsync(string login)
         {
-            return context.Registrars
-                .FirstOrDefault(a =>
+            return await context.Registrars
+                .FirstOrDefaultAsync(a =>
                     a.User.Id == context.Users
                         .FirstOrDefault(u => u.Login == login).Id);
         }

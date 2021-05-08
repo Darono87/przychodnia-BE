@@ -4,8 +4,10 @@
 
 
 using System.Linq;
+using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories
 {
@@ -18,27 +20,31 @@ namespace API.Repositories
             this.context = context;
         }
 
-        public void Add(LabManager obj)
+        public async Task<LabManager> AddAsync(LabManager obj)
         {
-            context.LabManagers.Add(obj);
-            context.SaveChanges();
+            var result = context.LabManagers.Add(obj);
+            await context.SaveChangesAsync();
+
+            return result.Entity;
         }
 
-        public void Update(LabManager obj)
+        public async Task<LabManager> UpdateAsync(LabManager obj)
         {
-            context.LabManagers.Update(obj);
-            context.SaveChanges();
+            var result  = context.LabManagers.Update(obj);
+            await context.SaveChangesAsync();
+            
+            return result.Entity;
         }
 
-        public LabManager Get(int id)
+        public async Task<LabManager> GetAsync(int id)
         {
-            return context.LabManagers.Find(id);
+            return await context.LabManagers.FindAsync(id);
         }
 
-        public LabManager Get(string login)
+        public async Task<LabManager> GetAsync(string login)
         {
-            return context.LabManagers
-                .FirstOrDefault(a =>
+            return await context.LabManagers
+                .FirstOrDefaultAsync(a =>
                     a.User.Id == context.Users
                         .FirstOrDefault(u => u.Login == login).Id);
         }

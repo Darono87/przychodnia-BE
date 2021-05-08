@@ -1,9 +1,10 @@
-﻿using API.Entities;
+﻿using System.Threading.Tasks;
+using API.Entities;
 
 namespace API.Repositories
 {
     public interface IDoctorRepository
     {
-        public Doctor GetByPermitNumber(string permitNumber);
+        public Task<Doctor> GetByPermitNumberAsync(string permitNumber);
     }
 }

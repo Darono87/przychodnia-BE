@@ -27,7 +27,7 @@ namespace API.Services
 
         public IActionResult CreateAppointment(AppointmentDTO appointmentDto, HttpRequest request)
         {
-            var doctor = doctorRepository.GetByPermitNumber(appointmentDto.PermitNumber);
+            var doctor = doctorRepository.GetByPermitNumberAsync(appointmentDto.PermitNumber);
             if (doctor == null)
             {
                 return new JsonResult(new

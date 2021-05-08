@@ -7,6 +7,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using API.Data;
 using API.DTO;
 using API.Entities;
@@ -56,7 +57,7 @@ namespace API.Services
             this.jwtManager = jwtManager;
         }
 
-        public void Create(string role, string login, string firstName, string lastName, string password,
+        public async Task<User> Create(string role, string login, string firstName, string lastName, string password,
             string? permitNumber)
         {
             if (login == "" || firstName == "" || lastName == "" || password == "")
@@ -64,7 +65,7 @@ namespace API.Services
                 throw new ArgumentException("User properties cannot be empty");
             }
 
-            var existingUser = userRepository.Get(login);
+            var existingUser = userRepository.GetAsync(login);
 
             if (existingUser != null)
             {
@@ -81,9 +82,9 @@ namespace API.Services
                 throw new InvalidPasswordException();
             }
 
-            context.Database?.BeginTransaction();
+            context.Database?.BeginTransactionAsync();
 
-            userRepository.Add(new User
+            var createdUser = await userRepository.AddAsync(new User
             {
                 FirstName = firstName,
                 LastName = lastName,
@@ -91,48 +92,48 @@ namespace API.Services
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(password)
             });
 
-            var createdUser = userRepository.Get(login);
-
             switch (role)
             {
                 case "Admin":
-                    adminRepository.Add(new Admin {User = createdUser});
+                    await adminRepository.AddAsync(new Admin {User = createdUser});
                     break;
                 case "Registrar":
-                    registrarRepository.Add(new Registrar {User = createdUser});
+                    await registrarRepository.AddAsync(new Registrar {User = createdUser});
                     break;
                 case "Doctor":
-                    doctorRepository.Add(new Doctor {User = createdUser, PermitNumber = permitNumber});
+                    await doctorRepository.AddAsync(new Doctor {User = createdUser, PermitNumber = permitNumber});
                     break;
                 case "LabTechnician":
-                    labTechnicianRepository.Add(new LabTechnician {User = createdUser});
+                    await labTechnicianRepository.AddAsync(new LabTechnician {User = createdUser});
                     break;
                 case "LabManager":
-                    labManagerRepository.Add(new LabManager {User = createdUser});
+                    await labManagerRepository.AddAsync(new LabManager {User = createdUser});
                     break;
             }
 
-            context.Database?.CommitTransaction();
+            context.Database?.CommitTransactionAsync();
+
+            return createdUser;
         }
 
-        public AuthenticationDTO Authenticate(string login, string password)
+        public async Task<AuthenticationDTO> Authenticate(string login, string password)
         {
             if (login.Trim() == "" || password.Trim() == "")
             {
                 throw new ArgumentException("Login / password cannot be empty");
             }
 
-            var user = userRepository.Get(login);
+            var user = await userRepository.GetAsync(login);
 
             if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
             {
                 throw new ArgumentException("Invalid credentials");
             }
 
-            return jwtManager.GenerateTokens(login, GetRole(login), DateTime.Now);
+            return jwtManager.GenerateTokens(login, await GetRole(login), DateTime.Now);
         }
 
-        public AuthenticationDTO Refresh(string accessToken, string refreshToken)
+        public async Task<AuthenticationDTO> Refresh(string accessToken, string refreshToken)
         {
             if (accessToken.Trim() == "" || refreshToken.Trim() == "")
             {
@@ -150,24 +151,24 @@ namespace API.Services
             }
 
             var login = data.Claims.Where(c => c.Type == ClaimTypes.Name).ToArray()[0].Value;
-            var user = userRepository.Get(login);
+            var user = await userRepository.GetAsync(login);
 
             if (user == null || !jwtManager.ContainsRefreshToken(refreshToken))
             {
                 throw new ArgumentException("User does not exist or refresh token is invalid");
             }
 
-            return jwtManager.GenerateTokens(user.Login, GetRole(user.Login), DateTime.Now);
+            return jwtManager.GenerateTokens(user.Login, await GetRole(user.Login), DateTime.Now);
         }
 
-        public string GetRole(string login)
+        public async Task<string> GetRole(string login)
         {
             if (login == "")
             {
                 throw new ArgumentException("Login cannot be empty");
             }
 
-            var user = userRepository.Get(login);
+            var user = userRepository.GetAsync(login);
 
             if (user == null)
             {
@@ -176,16 +177,16 @@ namespace API.Services
 
             string role = "";
 
-            role += adminRepository.Get(login) != null ? "Admin" : "";
-            role += registrarRepository.Get(login) != null ? "Registrar" : "";
-            role += doctorRepository.Get(login) != null ? "Doctor" : "";
-            role += labTechnicianRepository.Get(login) != null ? "LabTechnician" : "";
-            role += labManagerRepository.Get(login) != null ? "LabManager" : "";
+            role += (await adminRepository.GetAsync(login)) != null ? "Admin" : "";
+            role += (await registrarRepository.GetAsync(login)) != null ? "Registrar" : "";
+            role += (await doctorRepository.GetAsync(login)) != null ? "Doctor" : "";
+            role += (await labTechnicianRepository.GetAsync(login)) != null ? "LabTechnician" : "";
+            role += (await labManagerRepository.GetAsync(login)) != null ? "LabManager" : "";
 
             return role;
         }
 
-        public object GetCurrentUser(HttpRequest request)
+        public async Task<object> GetCurrentUser(HttpRequest request)
         {
             var accessToken = request.Headers[HeaderNames.Authorization][0].Split(" ")[1];
             var handler = new JwtSecurityTokenHandler();
@@ -196,12 +197,12 @@ namespace API.Services
 
             return role switch
             {
-                "Admin" => adminRepository.Get(login),
-                "Registrar" => registrarRepository.Get(login),
-                "Doctor" => doctorRepository.Get(login),
-                "LabTechnician" => labTechnicianRepository.Get(login),
-                "LabManager" => labManagerRepository.Get(login),
-                _ => throw new ArgumentOutOfRangeException()
+                "Admin" => await adminRepository.GetAsync(login),
+                "Registrar" => await registrarRepository.GetAsync(login),
+                "Doctor" => await doctorRepository.GetAsync(login),
+                "LabTechnician" => await labTechnicianRepository.GetAsync(login),
+                "LabManager" => await labManagerRepository.GetAsync(login),
+                _ => throw new ArgumentOutOfRangeException("request", "Does not contain valid token")
             };
         }
     }

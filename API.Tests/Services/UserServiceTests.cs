@@ -19,8 +19,8 @@ namespace API.Tests.Services
             Assert.Throws<ArgumentException>(() =>
                 userService.Create("", "", "", "", "", null));
 
-            mockUserRepository.Verify(o => o.Get(It.IsAny<string>()), Times.Never);
-            mockUserRepository.Verify(o => o.Add(It.IsAny<User>()), Times.Never);
+            mockUserRepository.Verify(o => o.GetAsync(It.IsAny<string>()), Times.Never);
+            mockUserRepository.Verify(o => o.AddAsync(It.IsAny<User>()), Times.Never);
         }
 
         [Fact]
@@ -29,8 +29,8 @@ namespace API.Tests.Services
             Assert.Throws<LoginTakenException>(() =>
                 userService.Create("User", "user1", "abc", "abc", "abc", null));
 
-            mockUserRepository.Verify(o => o.Get(It.IsAny<string>()), Times.Once);
-            mockUserRepository.Verify(o => o.Add(It.IsAny<User>()), Times.Never);
+            mockUserRepository.Verify(o => o.GetAsync(It.IsAny<string>()), Times.Once);
+            mockUserRepository.Verify(o => o.AddAsync(It.IsAny<User>()), Times.Never);
         }
 
         [Fact]
@@ -39,8 +39,8 @@ namespace API.Tests.Services
             Assert.Throws<InvalidPasswordException>(() =>
                 userService.Create("User", "user3", "abc", "abc", "abc", null));
 
-            mockUserRepository.Verify(o => o.Get(It.IsAny<string>()), Times.Once);
-            mockUserRepository.Verify(o => o.Add(It.IsAny<User>()), Times.Never);
+            mockUserRepository.Verify(o => o.GetAsync(It.IsAny<string>()), Times.Once);
+            mockUserRepository.Verify(o => o.AddAsync(It.IsAny<User>()), Times.Never);
         }
 
         [Fact]
@@ -49,8 +49,8 @@ namespace API.Tests.Services
             Assert.Throws<RoleNotFoundException>(() =>
                 userService.Create("Student", "user3", "abc", "abc", "Qwerty1234", null));
 
-            mockUserRepository.Verify(o => o.Get(It.IsAny<string>()), Times.Once);
-            mockUserRepository.Verify(o => o.Add(It.IsAny<User>()), Times.Never);
+            mockUserRepository.Verify(o => o.GetAsync(It.IsAny<string>()), Times.Once);
+            mockUserRepository.Verify(o => o.AddAsync(It.IsAny<User>()), Times.Never);
         }
 
         [Fact]
@@ -58,8 +58,8 @@ namespace API.Tests.Services
         {
             userService.Create("User", "user3", "Andrew", "Smith", "Qwerty1234", null);
 
-            mockUserRepository.Verify(o => o.Get(It.IsAny<string>()), Times.Exactly(2));
-            mockUserRepository.Verify(o => o.Add(It.IsAny<User>()), Times.Once);
+            mockUserRepository.Verify(o => o.GetAsync(It.IsAny<string>()), Times.Exactly(2));
+            mockUserRepository.Verify(o => o.AddAsync(It.IsAny<User>()), Times.Once);
         }
 
         [Theory]
@@ -72,25 +72,25 @@ namespace API.Tests.Services
         {
             userService.Create(role, "user3", "Andrew", "Smith", "Qwerty1234", role == "Doctor" ? "1234" : null);
 
-            mockUserRepository.Verify(o => o.Get(It.IsAny<string>()), Times.Exactly(2));
-            mockUserRepository.Verify(o => o.Add(It.IsAny<User>()), Times.Once);
+            mockUserRepository.Verify(o => o.GetAsync(It.IsAny<string>()), Times.Exactly(2));
+            mockUserRepository.Verify(o => o.AddAsync(It.IsAny<User>()), Times.Once);
 
             switch (role)
             {
                 case "Admin":
-                    mockAdminRepository.Verify(o => o.Add(It.IsAny<Admin>()), Times.Once);
+                    mockAdminRepository.Verify(o => o.AddAsync(It.IsAny<Admin>()), Times.Once);
                     break;
                 case "Registrar":
-                    mockRegistrarRepository.Verify(o => o.Add(It.IsAny<Registrar>()), Times.Once);
+                    mockRegistrarRepository.Verify(o => o.AddAsync(It.IsAny<Registrar>()), Times.Once);
                     break;
                 case "Doctor":
-                    mockDoctorRepository.Verify(o => o.Add(It.IsAny<Doctor>()), Times.Once);
+                    mockDoctorRepository.Verify(o => o.AddAsync(It.IsAny<Doctor>()), Times.Once);
                     break;
                 case "LabTechnician":
-                    mockLabTechnicianRepository.Verify(o => o.Add(It.IsAny<LabTechnician>()), Times.Once);
+                    mockLabTechnicianRepository.Verify(o => o.AddAsync(It.IsAny<LabTechnician>()), Times.Once);
                     break;
                 case "LabManager":
-                    mockLabManagerRepository.Verify(o => o.Add(It.IsAny<LabManager>()), Times.Once);
+                    mockLabManagerRepository.Verify(o => o.AddAsync(It.IsAny<LabManager>()), Times.Once);
                     break;
             }
         }
@@ -120,7 +120,7 @@ namespace API.Tests.Services
         public void TestGetRoleWithCorrectLogin()
         {
             Assert.Contains("AdminRegistrarDoctorLabTechnicianLabManager", userService.GetRole("user1"));
-            mockUserRepository.Verify(o => o.Get(It.IsAny<string>()), Times.Once);
+            mockUserRepository.Verify(o => o.GetAsync(It.IsAny<string>()), Times.Once);
         }
 
         [Fact]

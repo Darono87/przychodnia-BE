@@ -63,7 +63,7 @@ namespace API.Tests
 
             // mock user repository setup
             // password hash everywhere is for 'Qwerty1234'
-            mockUserRepository.Setup(o => o.Get(It.IsIn(1)))
+            mockUserRepository.Setup(o => o.GetAsync(It.IsIn(1)))
                 .Returns(new User
                 {
                     Id = 1,
@@ -72,7 +72,7 @@ namespace API.Tests
                     LastName = "Doe",
                     PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
                 });
-            mockUserRepository.Setup(o => o.Get(It.IsIn(2)))
+            mockUserRepository.Setup(o => o.GetAsync(It.IsIn(2)))
                 .Returns(new User
                 {
                     Id = 2,
@@ -81,7 +81,7 @@ namespace API.Tests
                     LastName = "Smith",
                     PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
                 });
-            mockUserRepository.Setup(o => o.Get(It.IsIn("user1")))
+            mockUserRepository.Setup(o => o.GetAsync(It.IsIn("user1")))
                 .Returns(new User
                 {
                     Id = 1,
@@ -90,7 +90,7 @@ namespace API.Tests
                     LastName = "Doe",
                     PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
                 });
-            mockUserRepository.Setup(o => o.Get(It.IsIn("user2")))
+            mockUserRepository.Setup(o => o.GetAsync(It.IsIn("user2")))
                 .Returns(new User
                 {
                     Id = 2,
@@ -99,13 +99,13 @@ namespace API.Tests
                     LastName = "Smith",
                     PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
                 });
-            mockUserRepository.Setup(o => o.Add(It.IsIn<User>(null)))
+            mockUserRepository.Setup(o => o.AddAsync(It.IsIn<User>(null)))
                 .Throws(new ArgumentException());
-            mockUserRepository.Setup(o => o.Add(It.IsNotNull<User>()));
-            mockUserRepository.Setup(o => o.Update(It.IsAny<User>()));
+            mockUserRepository.Setup(o => o.AddAsync(It.IsNotNull<User>()));
+            mockUserRepository.Setup(o => o.UpdateAsync(It.IsAny<User>()));
 
             // mock admin repository setup
-            mockAdminRepository.Setup(o => o.Get(It.IsIn(1)))
+            mockAdminRepository.Setup(o => o.GetAsync(It.IsIn(1)))
                 .Returns(new Admin
                 {
                     Id = 1,
@@ -118,7 +118,7 @@ namespace API.Tests
                         PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
                     }
                 });
-            mockAdminRepository.Setup(o => o.Get(It.IsIn(2)))
+            mockAdminRepository.Setup(o => o.GetAsync(It.IsIn(2)))
                 .Returns(new Admin
                 {
                     Id = 2,
@@ -131,7 +131,7 @@ namespace API.Tests
                         PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
                     }
                 });
-            mockAdminRepository.Setup(o => o.Get(It.IsIn("user1")))
+            mockAdminRepository.Setup(o => o.GetAsync(It.IsIn("user1")))
                 .Returns(new Admin
                 {
                     Id = 1,
@@ -144,7 +144,7 @@ namespace API.Tests
                         PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
                     }
                 });
-            mockAdminRepository.Setup(o => o.Get(It.IsIn("user2")))
+            mockAdminRepository.Setup(o => o.GetAsync(It.IsIn("user2")))
                 .Returns(new Admin
                 {
                     Id = 2,
@@ -157,13 +157,13 @@ namespace API.Tests
                         PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
                     }
                 });
-            mockAdminRepository.Setup(o => o.Add(It.IsIn<Admin>(null)))
+            mockAdminRepository.Setup(o => o.AddAsync(It.IsIn<Admin>(null)))
                 .Throws(new ArgumentException());
-            mockAdminRepository.Setup(o => o.Add(It.IsNotNull<Admin>()));
-            mockAdminRepository.Setup(o => o.Update(It.IsAny<Admin>()));
+            mockAdminRepository.Setup(o => o.AddAsync(It.IsNotNull<Admin>()));
+            mockAdminRepository.Setup(o => o.UpdateAsync(It.IsAny<Admin>()));
 
             // mock registrar repository setup
-            mockRegistrarRepository.Setup(o => o.Get(It.IsIn(1)))
+            mockRegistrarRepository.Setup(o => o.GetAsync(It.IsIn(1)))
                 .Returns(new Registrar
                 {
                     Id = 1,
@@ -176,7 +176,7 @@ namespace API.Tests
                         PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
                     }
                 });
-            mockRegistrarRepository.Setup(o => o.Get(It.IsIn(2)))
+            mockRegistrarRepository.Setup(o => o.GetAsync(It.IsIn(2)))
                 .Returns(new Registrar
                 {
                     Id = 2,
@@ -189,7 +189,7 @@ namespace API.Tests
                         PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
                     }
                 });
-            mockRegistrarRepository.Setup(o => o.Get(It.IsIn("user1")))
+            mockRegistrarRepository.Setup(o => o.GetAsync(It.IsIn("user1")))
                 .Returns(new Registrar
                 {
                     Id = 1,
@@ -202,7 +202,7 @@ namespace API.Tests
                         PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
                     }
                 });
-            mockRegistrarRepository.Setup(o => o.Get(It.IsIn("user2")))
+            mockRegistrarRepository.Setup(o => o.GetAsync(It.IsIn("user2")))
                 .Returns(new Registrar
                 {
                     Id = 2,
@@ -215,13 +215,13 @@ namespace API.Tests
                         PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
                     }
                 });
-            mockRegistrarRepository.Setup(o => o.Add(It.IsIn<Registrar>(null)))
+            mockRegistrarRepository.Setup(o => o.AddAsync(It.IsIn<Registrar>(null)))
                 .Throws(new ArgumentException());
-            mockRegistrarRepository.Setup(o => o.Add(It.IsNotNull<Registrar>()));
-            mockRegistrarRepository.Setup(o => o.Update(It.IsAny<Registrar>()));
+            mockRegistrarRepository.Setup(o => o.AddAsync(It.IsNotNull<Registrar>()));
+            mockRegistrarRepository.Setup(o => o.UpdateAsync(It.IsAny<Registrar>()));
 
             // mock doctor repository setup
-            mockDoctorRepository.Setup(o => o.Get(It.IsIn(1)))
+            mockDoctorRepository.Setup(o => o.GetAsync(It.IsIn(1)))
                 .Returns(new Doctor
                 {
                     Id = 1,
@@ -234,7 +234,7 @@ namespace API.Tests
                         PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
                     }
                 });
-            mockDoctorRepository.Setup(o => o.Get(It.IsIn(2)))
+            mockDoctorRepository.Setup(o => o.GetAsync(It.IsIn(2)))
                 .Returns(new Doctor
                 {
                     Id = 2,
@@ -247,7 +247,7 @@ namespace API.Tests
                         PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
                     }
                 });
-            mockDoctorRepository.Setup(o => o.Get(It.IsIn("user1")))
+            mockDoctorRepository.Setup(o => o.GetAsync(It.IsIn("user1")))
                 .Returns(new Doctor
                 {
                     Id = 1,
@@ -260,7 +260,7 @@ namespace API.Tests
                         PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
                     }
                 });
-            mockDoctorRepository.Setup(o => o.Get(It.IsIn("user2")))
+            mockDoctorRepository.Setup(o => o.GetAsync(It.IsIn("user2")))
                 .Returns(new Doctor
                 {
                     Id = 2,
@@ -273,13 +273,13 @@ namespace API.Tests
                         PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
                     }
                 });
-            mockDoctorRepository.Setup(o => o.Add(It.IsIn<Doctor>(null)))
+            mockDoctorRepository.Setup(o => o.AddAsync(It.IsIn<Doctor>(null)))
                 .Throws(new ArgumentException());
-            mockDoctorRepository.Setup(o => o.Add(It.IsNotNull<Doctor>()));
-            mockDoctorRepository.Setup(o => o.Update(It.IsAny<Doctor>()));
+            mockDoctorRepository.Setup(o => o.AddAsync(It.IsNotNull<Doctor>()));
+            mockDoctorRepository.Setup(o => o.UpdateAsync(It.IsAny<Doctor>()));
 
             // mock lab technician repository setup
-            mockLabTechnicianRepository.Setup(o => o.Get(It.IsIn(1)))
+            mockLabTechnicianRepository.Setup(o => o.GetAsync(It.IsIn(1)))
                 .Returns(new LabTechnician
                 {
                     Id = 1,
@@ -292,7 +292,7 @@ namespace API.Tests
                         PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
                     }
                 });
-            mockLabTechnicianRepository.Setup(o => o.Get(It.IsIn(2)))
+            mockLabTechnicianRepository.Setup(o => o.GetAsync(It.IsIn(2)))
                 .Returns(new LabTechnician
                 {
                     Id = 2,
@@ -305,7 +305,7 @@ namespace API.Tests
                         PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
                     }
                 });
-            mockLabTechnicianRepository.Setup(o => o.Get(It.IsIn("user1")))
+            mockLabTechnicianRepository.Setup(o => o.GetAsync(It.IsIn("user1")))
                 .Returns(new LabTechnician
                 {
                     Id = 1,
@@ -318,7 +318,7 @@ namespace API.Tests
                         PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
                     }
                 });
-            mockLabTechnicianRepository.Setup(o => o.Get(It.IsIn("user2")))
+            mockLabTechnicianRepository.Setup(o => o.GetAsync(It.IsIn("user2")))
                 .Returns(new LabTechnician
                 {
                     Id = 2,
@@ -331,13 +331,13 @@ namespace API.Tests
                         PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
                     }
                 });
-            mockLabTechnicianRepository.Setup(o => o.Add(It.IsIn<LabTechnician>(null)))
+            mockLabTechnicianRepository.Setup(o => o.AddAsync(It.IsIn<LabTechnician>(null)))
                 .Throws(new ArgumentException());
-            mockLabTechnicianRepository.Setup(o => o.Add(It.IsNotNull<LabTechnician>()));
-            mockLabTechnicianRepository.Setup(o => o.Update(It.IsAny<LabTechnician>()));
+            mockLabTechnicianRepository.Setup(o => o.AddAsync(It.IsNotNull<LabTechnician>()));
+            mockLabTechnicianRepository.Setup(o => o.UpdateAsync(It.IsAny<LabTechnician>()));
 
             // mock lab manager repository setup
-            mockLabManagerRepository.Setup(o => o.Get(It.IsIn(1)))
+            mockLabManagerRepository.Setup(o => o.GetAsync(It.IsIn(1)))
                 .Returns(new LabManager
                 {
                     Id = 1,
@@ -350,7 +350,7 @@ namespace API.Tests
                         PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
                     }
                 });
-            mockLabManagerRepository.Setup(o => o.Get(It.IsIn(2)))
+            mockLabManagerRepository.Setup(o => o.GetAsync(It.IsIn(2)))
                 .Returns(new LabManager
                 {
                     Id = 2,
@@ -363,7 +363,7 @@ namespace API.Tests
                         PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
                     }
                 });
-            mockLabManagerRepository.Setup(o => o.Get(It.IsIn("user1")))
+            mockLabManagerRepository.Setup(o => o.GetAsync(It.IsIn("user1")))
                 .Returns(new LabManager
                 {
                     Id = 1,
@@ -376,7 +376,7 @@ namespace API.Tests
                         PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
                     }
                 });
-            mockLabManagerRepository.Setup(o => o.Get(It.IsIn("user2")))
+            mockLabManagerRepository.Setup(o => o.GetAsync(It.IsIn("user2")))
                 .Returns(new LabManager
                 {
                     Id = 2,
@@ -389,10 +389,10 @@ namespace API.Tests
                         PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
                     }
                 });
-            mockLabManagerRepository.Setup(o => o.Add(It.IsIn<LabManager>(null)))
+            mockLabManagerRepository.Setup(o => o.AddAsync(It.IsIn<LabManager>(null)))
                 .Throws(new ArgumentException());
-            mockLabManagerRepository.Setup(o => o.Add(It.IsNotNull<LabManager>()));
-            mockLabManagerRepository.Setup(o => o.Update(It.IsAny<LabManager>()));
+            mockLabManagerRepository.Setup(o => o.AddAsync(It.IsNotNull<LabManager>()));
+            mockLabManagerRepository.Setup(o => o.UpdateAsync(It.IsAny<LabManager>()));
 
             mockJwtManager.Setup(o => o.GenerateTokens(It.IsIn("user1"), It.IsAny<string>(), It.IsAny<DateTime>()))
                 .Returns(new AuthenticationDTO

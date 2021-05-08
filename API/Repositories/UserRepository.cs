@@ -3,8 +3,10 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Linq;
+using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories
 {
@@ -17,26 +19,30 @@ namespace API.Repositories
             this.context = context;
         }
 
-        public void Add(User user)
+        public async Task<User> AddAsync(User user)
         {
-            context.Users.Add(user);
-            context.SaveChanges();
+            var result = context.Users.Add(user);
+            await context.SaveChangesAsync();
+
+            return result.Entity;
         }
 
-        public void Update(User user)
+        public async Task<User> UpdateAsync(User user)
         {
-            context.Users.Update(user);
-            context.SaveChanges();
+            var result = context.Users.Update(user);
+            await context.SaveChangesAsync();
+
+            return result.Entity;
         }
 
-        public User Get(int id)
+        public async Task<User> GetAsync(int id)
         {
-            return context.Users.Find(id);
+            return await context.Users.FindAsync(id);
         }
 
-        public User Get(string login)
+        public async Task<User> GetAsync(string login)
         {
-            return context.Users.FirstOrDefault(user => user.Login == login);
+            return await context.Users.FirstOrDefaultAsync(user => user.Login == login);
         }
     }
 }

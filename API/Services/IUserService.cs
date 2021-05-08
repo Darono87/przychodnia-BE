@@ -3,22 +3,24 @@
 // See the LICENSE file in the project root for more information.
 
 #nullable enable
+using System.Threading.Tasks;
 using API.DTO;
+using API.Entities;
 using Microsoft.AspNetCore.Http;
 
 namespace API.Services
 {
     public interface IUserService
     {
-        void Create(string role, string login, string firstName, string lastName, string password,
+        Task<User> Create(string role, string login, string firstName, string lastName, string password,
             string? permitNumber);
 
-        AuthenticationDTO Authenticate(string login, string password);
+        Task<AuthenticationDTO> Authenticate(string login, string password);
 
-        AuthenticationDTO Refresh(string accessToken, string refreshToken);
+        Task<AuthenticationDTO> Refresh(string accessToken, string refreshToken);
 
-        string GetRole(string login);
+        Task<string> GetRole(string login);
 
-        object GetCurrentUser(HttpRequest request);
+        Task<object> GetCurrentUser(HttpRequest request);
     }
 }

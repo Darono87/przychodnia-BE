@@ -3,8 +3,10 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Linq;
+using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories
 {
@@ -17,27 +19,31 @@ namespace API.Repositories
             this.context = context;
         }
 
-        public void Add(Admin obj)
+        public async Task<Admin> AddAsync(Admin obj)
         {
-            context.Admins.Add(obj);
-            context.SaveChanges();
+            var result = context.Admins.Add(obj);
+            await context.SaveChangesAsync();
+
+            return result.Entity;
         }
 
-        public void Update(Admin obj)
+        public async Task<Admin> UpdateAsync(Admin obj)
         {
-            context.Admins.Update(obj);
-            context.SaveChanges();
+            var result = context.Admins.Update(obj);
+            await context.SaveChangesAsync();
+
+            return result.Entity;
         }
 
-        public Admin Get(int id)
+        public async Task<Admin> GetAsync(int id)
         {
-            return context.Admins.Find(id);
+            return await context.Admins.FindAsync(id);
         }
 
-        public Admin Get(string login)
+        public async Task<Admin> GetAsync(string login)
         {
-            return context.Admins
-                .FirstOrDefault(a =>
+            return await context.Admins
+                .FirstOrDefaultAsync(a =>
                     a.User.Id == context.Users
                         .FirstOrDefault(u => u.Login == login).Id);
         }
