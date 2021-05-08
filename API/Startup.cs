@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
 using API.Repositories;
@@ -11,22 +8,20 @@ using API.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 
 namespace API
 {
     public class Startup
     {
         private readonly IConfiguration Config;
-        private readonly String CorsPolicyName = "FreeRealEstate";
+        private readonly string CorsPolicyName = "FreeRealEstate";
 
         public Startup(IConfiguration Config)
         {
@@ -51,7 +46,7 @@ namespace API
             {
                 options.RequireHttpsMetadata = true;
                 options.SaveToken = true;
-                options.TokenValidationParameters = new TokenValidationParameters()
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidIssuer = jwtConfig.Issuer,
@@ -66,31 +61,32 @@ namespace API
 
             services.AddCors(options =>
             {
-                options.AddPolicy(CorsPolicyName, builder=>{
+                options.AddPolicy(CorsPolicyName, builder =>
+                {
                     builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-                    });
+                });
             });
 
             services.AddTransient<IGenericUserRepository<User>, UserRepository>();
             services.AddTransient<IGenericUserRepository<Admin>, AdminRepository>();
-            services.AddTransient<IGenericUserRepository<Registrator>, RegistratorRepository>();
-            services.AddTransient<IGenericUserRepository<Doctor>, DoctorRepository>();            
-            services.AddTransient<IGenericUserRepository<LabTechnician>, LabTechnicianRepository>(); 
+            services.AddTransient<IGenericUserRepository<Registrar>, RegistrarRepository>();
+            services.AddTransient<IGenericUserRepository<Doctor>, DoctorRepository>();
+            services.AddTransient<IGenericUserRepository<LabTechnician>, LabTechnicianRepository>();
             services.AddTransient<IGenericUserRepository<LabManager>, LabManagerRepository>();
-            services.AddTransient<IPatientRepository,PatientRepository>();
-            services.AddTransient<IDoctorRepository,DoctorRepository>();
+            services.AddTransient<IPatientRepository, PatientRepository>();
+            services.AddTransient<IDoctorRepository, DoctorRepository>();
             services.AddTransient<IAppointmentRepository, AppointmentRepository>();
             services.AddTransient<IAppointmentService, AppointmentService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IJwtManager, JwtManager>();
-            
+
             services.AddControllers()
-                .AddNewtonsoftJson(options => 
-                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-            
+                .AddNewtonsoftJson(options =>
+                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "API", Version = "v1"});
             });
         }
 

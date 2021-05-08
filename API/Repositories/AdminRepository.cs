@@ -16,7 +16,7 @@ namespace API.Repositories
         {
             this.context = context;
         }
-        
+
         public void Add(Admin obj)
         {
             context.Admins.Add(obj);
@@ -37,7 +37,7 @@ namespace API.Repositories
         public Admin Get(string login)
         {
             return context.Admins
-                .FirstOrDefault(a => 
+                .FirstOrDefault(a =>
                     a.User.Id == context.Users
                         .FirstOrDefault(u => u.Login == login).Id);
         }

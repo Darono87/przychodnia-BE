@@ -9,30 +9,23 @@ namespace API.Entities
 {
     public class LabExamination
     {
-        [Key]
-        public int Id { get; set; }
+        [Key] public int Id { get; set; }
 
         public string DoctorRemarks { get; set; }
 
-        [Required]
-        public DateTime IssueDate { get; set; }
+        [Required] public DateTime IssueDate { get; set; }
 
-        [Required]
-        public string Result { get; set; }
+        [Required] public string Result { get; set; }
 
-        [Required]
-        public DateTime FinishDate { get; set; }
+        [Required] public DateTime FinishDate { get; set; }
 
         public string ManagerRemarks { get; set; }
 
-        [Required]
-        public DateTime ConfirmationDate { get; set; }
+        [Required] public DateTime ConfirmationDate { get; set; }
 
-        [Required]
-        public ExaminationStatus Status { get; set; }
+        [Required] public ExaminationStatus Status { get; set; }
 
-        [Required]
-        public ExaminationCode ExaminationCode { get; set; }
+        [Required] public ExaminationCode ExaminationCode { get; set; }
 
         public LabTechnician Technician { get; set; }
         public LabManager Manager { get; set; }

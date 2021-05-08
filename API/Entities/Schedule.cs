@@ -9,16 +9,12 @@ namespace API.Entities
 {
     public class Schedule
     {
-        [Key]
-        public int Id { get; set; }
+        [Key] public int Id { get; set; }
 
-        [Required]
-        public DateTime StartDate { get; set; }
+        [Required] public DateTime StartDate { get; set; }
 
-        [Required]
-        public DateTime FinishDate { get; set; }
+        [Required] public DateTime FinishDate { get; set; }
 
-        [Required]
-        public Doctor Doctor { get; set; }
+        [Required] public Doctor Doctor { get; set; }
     }
 }

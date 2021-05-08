@@ -1,7 +1,4 @@
-﻿using System;
-using API.DTO;
-using API.Entities;
-using API.Repositories;
+﻿using API.DTO;
 using API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +17,7 @@ namespace API.Controllers
         }
 
         [HttpPost("add")]
-        [Authorize(Roles = "Registrator")]
+        [Authorize(Roles = "Registrar")]
         public IActionResult AddAppointment([FromBody] AppointmentDTO appointmentDto)
         {
             return appointmentService.CreateAppointment(appointmentDto, Request);

@@ -14,8 +14,8 @@ namespace API.Utils
 {
     public class JwtManager : IJwtManager
     {
-        private readonly ConcurrentDictionary<string, string> refreshTokens;
         private readonly JwtConfig jwtConfig;
+        private readonly ConcurrentDictionary<string, string> refreshTokens;
         private readonly byte[] secret;
 
         public JwtManager(JwtConfig jwtConfig)
@@ -31,22 +31,24 @@ namespace API.Utils
             var accessToken = new JwtSecurityToken(
                 jwtConfig.Issuer,
                 jwtConfig.Audience,
-                new Claim[] { new(ClaimTypes.Role, role), new(ClaimTypes.Name, username) },
+                new Claim[] {new(ClaimTypes.Role, role), new(ClaimTypes.Name, username)},
                 expires: startDate.AddMinutes(jwtConfig.AccessTokenExpiration),
-                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(secret), SecurityAlgorithms.HmacSha256Signature)
-                );
+                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(secret),
+                    SecurityAlgorithms.HmacSha256Signature)
+            );
             var refreshToken = new JwtSecurityToken(
                 jwtConfig.Issuer,
                 jwtConfig.Audience,
-                new Claim[] { new(ClaimTypes.Role, role), new(ClaimTypes.Name, username) },
+                new Claim[] {new(ClaimTypes.Role, role), new(ClaimTypes.Name, username)},
                 expires: startDate.AddMinutes(jwtConfig.RefreshTokenExpiration),
-                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(secret), SecurityAlgorithms.HmacSha256Signature)
+                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(secret),
+                    SecurityAlgorithms.HmacSha256Signature)
             );
 
-            var result = new AuthenticationDTO()
+            var result = new AuthenticationDTO
             {
-                AccessToken = new JwtSecurityTokenHandler().WriteToken(accessToken), 
-                RefreshToken = new JwtSecurityTokenHandler().WriteToken(refreshToken), 
+                AccessToken = new JwtSecurityTokenHandler().WriteToken(accessToken),
+                RefreshToken = new JwtSecurityTokenHandler().WriteToken(refreshToken),
                 Role = role
             };
 

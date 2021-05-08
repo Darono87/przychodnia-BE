@@ -8,36 +8,36 @@ using API.Entities;
 
 namespace API.Repositories
 {
-    public class RegistratorRepository : IGenericUserRepository<Registrator>
+    public class RegistrarRepository : IGenericUserRepository<Registrar>
     {
         private readonly DataContext context;
 
-        public RegistratorRepository(DataContext context)
+        public RegistrarRepository(DataContext context)
         {
             this.context = context;
         }
 
-        public void Add(Registrator obj)
+        public void Add(Registrar obj)
         {
-            context.Registrators.Add(obj);
+            context.Registrars.Add(obj);
             context.SaveChanges();
         }
 
-        public void Update(Registrator obj)
+        public void Update(Registrar obj)
         {
-            context.Registrators.Update(obj);
+            context.Registrars.Update(obj);
             context.SaveChanges();
         }
 
-        public Registrator Get(int id)
+        public Registrar Get(int id)
         {
-            return context.Registrators.Find(id);
+            return context.Registrars.Find(id);
         }
 
-        public Registrator Get(string login)
+        public Registrar Get(string login)
         {
-            return context.Registrators
-                .FirstOrDefault(a => 
+            return context.Registrars
+                .FirstOrDefault(a =>
                     a.User.Id == context.Users
                         .FirstOrDefault(u => u.Login == login).Id);
         }

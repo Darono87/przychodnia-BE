@@ -8,13 +8,20 @@ using API.Entities;
 
 namespace API.Repositories
 {
-    public class DoctorRepository : IGenericUserRepository<Doctor>,IDoctorRepository
+    public class DoctorRepository : IGenericUserRepository<Doctor>, IDoctorRepository
     {
         private readonly DataContext context;
 
         public DoctorRepository(DataContext context)
         {
             this.context = context;
+        }
+
+        public Doctor GetByPermitNumber(string permitNumber)
+        {
+            return context.Doctors
+                .FirstOrDefault(a =>
+                    a.PermitNumber == permitNumber);
         }
 
         public void Add(Doctor obj)
@@ -37,16 +44,9 @@ namespace API.Repositories
         public Doctor Get(string login)
         {
             return context.Doctors
-                .FirstOrDefault(a => 
+                .FirstOrDefault(a =>
                     a.User.Id == context.Users
                         .FirstOrDefault(u => u.Login == login).Id);
-        }
-
-        public Doctor GetByPermitNumber(string permitNumber)
-        {
-            return context.Doctors
-                .FirstOrDefault(a =>
-                    a.PermitNumber == permitNumber);
         }
     }
 }

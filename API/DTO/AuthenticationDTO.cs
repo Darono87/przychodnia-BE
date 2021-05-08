@@ -9,6 +9,20 @@ namespace API.DTO
 {
     public class AuthenticationDTO
     {
+        public AuthenticationDTO()
+        {
+            AccessToken = "";
+            RefreshToken = "";
+            Role = "";
+        }
+
+        public AuthenticationDTO(string accessToken, string refreshToken, string role)
+        {
+            AccessToken = accessToken;
+            RefreshToken = refreshToken;
+            Role = role;
+        }
+
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
         public string Role { get; set; }
@@ -19,7 +33,7 @@ namespace API.DTO
             {
                 null => false,
                 AuthenticationDTO other => AccessToken == other.AccessToken && RefreshToken == other.RefreshToken &&
-                                            Role == other.Role,
+                                           Role == other.Role,
                 _ => base.Equals(obj)
             };
         }

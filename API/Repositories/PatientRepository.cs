@@ -12,7 +12,7 @@ namespace API.Repositories
         {
             this.context = context;
         }
-        
+
         public void Add(Patient patient)
         {
             context.Patients.Add(patient);
@@ -33,7 +33,7 @@ namespace API.Repositories
         public Patient Get(string PeselNumber)
         {
             return context.Patients
-                .FirstOrDefault(a => 
+                .FirstOrDefault(a =>
                     a.PeselNumber == PeselNumber);
         }
     }

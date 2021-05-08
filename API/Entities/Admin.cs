@@ -10,7 +10,6 @@ namespace API.Entities
     {
         public User User { get; set; }
 
-        [Key]
-        public int Id { get; set; }
+        [Key] public int Id { get; set; }
     }
 }

@@ -8,13 +8,10 @@ namespace API.Entities
 {
     public class PhysicalExamination
     {
-        [Key]
-        public int Id { get; set; }
+        [Key] public int Id { get; set; }
 
-        [Required]
-        public string Result { get; set; }
+        [Required] public string Result { get; set; }
 
-        [Required]
-        public ExaminationCode ExaminationCode { get; set; }
+        [Required] public ExaminationCode ExaminationCode { get; set; }
     }
 }

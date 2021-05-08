@@ -10,7 +10,6 @@ namespace API.Exceptions
     {
         public LoginTakenException() : base("Login is already in use")
         {
-
         }
     }
 }

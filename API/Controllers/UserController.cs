@@ -4,8 +4,6 @@
 
 using System;
 using API.DTO;
-using API.Entities;
-using API.Exceptions;
 using API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,9 +25,9 @@ namespace API.Controllers
         public IActionResult GetInfo()
         {
             var res = userService.GetCurrentUser(Request);
-            return new JsonResult(new {message = res.GetType() });
+            return new JsonResult(new {message = res.GetType()});
         }
-        
+
         [HttpPost("create")]
         [Authorize(Roles = "Admin")]
         public IActionResult Create([FromBody] UserCreationDTO userDto)
@@ -78,4 +76,3 @@ namespace API.Controllers
         }
     }
 }
-

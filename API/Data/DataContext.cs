@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Data
 {
-
     public class DataContext : DbContext
     {
         public DataContext([NotNullAttribute] DbContextOptions options) : base(options)
@@ -13,7 +12,7 @@ namespace API.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Doctor> Doctors { get; set; }
-        public DbSet<Registrator> Registrators { get; set; }
+        public DbSet<Registrar> Registrars { get; set; }
         public DbSet<LabTechnician> LabTechnicians { get; set; }
         public DbSet<LabManager> LabManagers { get; set; }
         public DbSet<Patient> Patients { get; set; }

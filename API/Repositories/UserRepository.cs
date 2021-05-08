@@ -16,7 +16,7 @@ namespace API.Repositories
         {
             this.context = context;
         }
-        
+
         public void Add(User user)
         {
             context.Users.Add(user);

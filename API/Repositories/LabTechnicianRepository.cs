@@ -37,7 +37,7 @@ namespace API.Repositories
         public LabTechnician Get(string login)
         {
             return context.LabTechnicians
-                .FirstOrDefault(a => 
+                .FirstOrDefault(a =>
                     a.User.Id == context.Users
                         .FirstOrDefault(u => u.Login == login).Id);
         }

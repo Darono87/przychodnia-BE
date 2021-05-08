@@ -8,7 +8,8 @@ namespace API.Exceptions
 {
     public class InvalidPasswordException : Exception
     {
-        public InvalidPasswordException() : base("Password must have at least 8 characters (min. 1 capital letter, 1 number)")
+        public InvalidPasswordException() : base(
+            "Password must have at least 8 characters (min. 1 capital letter, 1 number)")
         {
         }
     }

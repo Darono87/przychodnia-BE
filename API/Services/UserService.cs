@@ -20,25 +20,26 @@ namespace API.Services
 {
     public class UserService : IUserService
     {
-        private readonly DataContext context;
-        private readonly IGenericUserRepository<User> userRepository;
         private readonly IGenericUserRepository<Admin> adminRepository;
-        private readonly IGenericUserRepository<Registrator> registratorRepository;
+        private readonly DataContext context;
         private readonly IGenericUserRepository<Doctor> doctorRepository;
-        private readonly IGenericUserRepository<LabTechnician> labTechnicianRepository;
-        private readonly IGenericUserRepository<LabManager> labManagerRepository;
         private readonly IJwtManager jwtManager;
-        
-        private readonly string[] roles = 
+        private readonly IGenericUserRepository<LabManager> labManagerRepository;
+        private readonly IGenericUserRepository<LabTechnician> labTechnicianRepository;
+        private readonly IGenericUserRepository<Registrar> registrarRepository;
+
+        private readonly string[] roles =
         {
-            typeof(User).ToString(), typeof(Registrator).ToString(), typeof(Doctor).ToString(),
+            typeof(User).ToString(), typeof(Registrar).ToString(), typeof(Doctor).ToString(),
             typeof(LabTechnician).ToString(), typeof(LabManager).ToString(), typeof(Admin).ToString()
         };
 
+        private readonly IGenericUserRepository<User> userRepository;
+
         public UserService(
-            IGenericUserRepository<User> userRepository, 
+            IGenericUserRepository<User> userRepository,
             IGenericUserRepository<Admin> adminRepository,
-            IGenericUserRepository<Registrator> registratorRepository,
+            IGenericUserRepository<Registrar> registrarRepository,
             IGenericUserRepository<Doctor> doctorRepository,
             IGenericUserRepository<LabTechnician> labTechnicianRepository,
             IGenericUserRepository<LabManager> labManagerRepository,
@@ -47,7 +48,7 @@ namespace API.Services
         {
             this.userRepository = userRepository;
             this.adminRepository = adminRepository;
-            this.registratorRepository = registratorRepository;
+            this.registrarRepository = registrarRepository;
             this.doctorRepository = doctorRepository;
             this.labTechnicianRepository = labTechnicianRepository;
             this.labManagerRepository = labManagerRepository;
@@ -55,7 +56,8 @@ namespace API.Services
             this.jwtManager = jwtManager;
         }
 
-        public void Create(string role, string login, string firstName, string lastName, string password, string? permitNumber)
+        public void Create(string role, string login, string firstName, string lastName, string password,
+            string? permitNumber)
         {
             if (login == "" || firstName == "" || lastName == "" || password == "")
             {
@@ -80,7 +82,7 @@ namespace API.Services
             }
 
             context.Database?.BeginTransaction();
-            
+
             userRepository.Add(new User
             {
                 FirstName = firstName,
@@ -94,38 +96,22 @@ namespace API.Services
             switch (role)
             {
                 case "Admin":
-                    adminRepository.Add(new Admin()
-                    {
-                        User = createdUser
-                    });
+                    adminRepository.Add(new Admin {User = createdUser});
                     break;
-                case "Registrator":
-                    registratorRepository.Add(new Registrator()
-                    {
-                        User = createdUser
-                    });                    
+                case "Registrar":
+                    registrarRepository.Add(new Registrar {User = createdUser});
                     break;
                 case "Doctor":
-                    doctorRepository.Add(new Doctor()
-                    {
-                        User = createdUser,
-                        PermitNumber = permitNumber
-                    });
+                    doctorRepository.Add(new Doctor {User = createdUser, PermitNumber = permitNumber});
                     break;
                 case "LabTechnician":
-                    labTechnicianRepository.Add(new LabTechnician()
-                    {
-                        User = createdUser
-                    });
+                    labTechnicianRepository.Add(new LabTechnician {User = createdUser});
                     break;
                 case "LabManager":
-                    labManagerRepository.Add(new LabManager()
-                    {
-                        User = createdUser
-                    });                    
+                    labManagerRepository.Add(new LabManager {User = createdUser});
                     break;
             }
-            
+
             context.Database?.CommitTransaction();
         }
 
@@ -191,27 +177,27 @@ namespace API.Services
             string role = "";
 
             role += adminRepository.Get(login) != null ? "Admin" : "";
-            role += registratorRepository.Get(login) != null ? "Registrator" : "";
+            role += registrarRepository.Get(login) != null ? "Registrar" : "";
             role += doctorRepository.Get(login) != null ? "Doctor" : "";
             role += labTechnicianRepository.Get(login) != null ? "LabTechnician" : "";
             role += labManagerRepository.Get(login) != null ? "LabManager" : "";
 
             return role;
         }
-        
+
         public object GetCurrentUser(HttpRequest request)
         {
             var accessToken = request.Headers[HeaderNames.Authorization][0].Split(" ")[1];
             var handler = new JwtSecurityTokenHandler();
             var data = handler.ReadJwtToken(accessToken);
-            
+
             var login = data.Claims.Where(c => c.Type == ClaimTypes.Name).ToArray()[0].Value;
             var role = data.Claims.Where(c => c.Type == ClaimTypes.Role).ToArray()[0].Value;
 
             return role switch
             {
                 "Admin" => adminRepository.Get(login),
-                "Registrator" => registratorRepository.Get(login),
+                "Registrar" => registrarRepository.Get(login),
                 "Doctor" => doctorRepository.Get(login),
                 "LabTechnician" => labTechnicianRepository.Get(login),
                 "LabManager" => labManagerRepository.Get(login),

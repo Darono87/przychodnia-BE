@@ -16,43 +16,89 @@ namespace API.Tests
 {
     public class BaseTest
     {
-        protected Mock<IGenericUserRepository<User>> mockUserRepository;
-        protected IGenericUserRepository<User> userRepository;
-        protected Mock<IGenericUserRepository<Admin>> mockAdminRepository;
         protected IGenericUserRepository<Admin> adminRepository;
-        protected Mock<IGenericUserRepository<Registrator>> mockRegistratorRepository;
-        protected IGenericUserRepository<Registrator> registratorRepository;
-        protected Mock<IGenericUserRepository<Doctor>> mockDoctorRepository;
         protected IGenericUserRepository<Doctor> doctorRepository;
-        protected Mock<IGenericUserRepository<LabTechnician>> mockLabTechnicianRepository;
-        protected IGenericUserRepository<LabTechnician> labTechnicianRepository;
-        protected Mock<IGenericUserRepository<LabManager>> mockLabManagerRepository;
-        protected IGenericUserRepository<LabManager> labManagerRepository;
-        protected Mock<IJwtManager> mockJwtManager;
         protected IJwtManager jwtManager;
-        
+        protected IGenericUserRepository<LabManager> labManagerRepository;
+        protected IGenericUserRepository<LabTechnician> labTechnicianRepository;
+        protected Mock<IGenericUserRepository<Admin>> mockAdminRepository;
+        protected Mock<IGenericUserRepository<Doctor>> mockDoctorRepository;
+        protected Mock<IJwtManager> mockJwtManager;
+        protected Mock<IGenericUserRepository<LabManager>> mockLabManagerRepository;
+        protected Mock<IGenericUserRepository<LabTechnician>> mockLabTechnicianRepository;
+        protected Mock<IGenericUserRepository<Registrar>> mockRegistrarRepository;
+        protected Mock<IGenericUserRepository<User>> mockUserRepository;
+        protected IGenericUserRepository<Registrar> registrarRepository;
+        protected IGenericUserRepository<User> userRepository;
+
         protected IUserService userService;
+
+        public BaseTest()
+        {
+            Setup();
+
+            var dataContext = new Mock<DataContext>(new DbContextOptionsBuilder().Options);
+
+            userService = new UserService(
+                userRepository,
+                adminRepository,
+                registrarRepository,
+                doctorRepository,
+                labTechnicianRepository,
+                labManagerRepository,
+                dataContext.Object,
+                jwtManager
+            );
+        }
 
         private void Setup()
         {
             mockUserRepository = new Mock<IGenericUserRepository<User>>();
             mockAdminRepository = new Mock<IGenericUserRepository<Admin>>();
-            mockRegistratorRepository = new Mock<IGenericUserRepository<Registrator>>();
+            mockRegistrarRepository = new Mock<IGenericUserRepository<Registrar>>();
             mockDoctorRepository = new Mock<IGenericUserRepository<Doctor>>();
             mockLabTechnicianRepository = new Mock<IGenericUserRepository<LabTechnician>>();
             mockLabManagerRepository = new Mock<IGenericUserRepository<LabManager>>();
             mockJwtManager = new Mock<IJwtManager>();
-            
+
             // mock user repository setup
             // password hash everywhere is for 'Qwerty1234'
             mockUserRepository.Setup(o => o.Get(It.IsIn(1)))
-                .Returns(new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe", PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4." });
+                .Returns(new User
+                {
+                    Id = 1,
+                    Login = "user1",
+                    FirstName = "John",
+                    LastName = "Doe",
+                    PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
+                });
             mockUserRepository.Setup(o => o.Get(It.IsIn(2)))
-                .Returns(new User() {Id = 2, Login = "user2", FirstName = "Jane", LastName = "Smith", PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4." });
+                .Returns(new User
+                {
+                    Id = 2,
+                    Login = "user2",
+                    FirstName = "Jane",
+                    LastName = "Smith",
+                    PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
+                });
             mockUserRepository.Setup(o => o.Get(It.IsIn("user1")))
-                .Returns(new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe", PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4." });
+                .Returns(new User
+                {
+                    Id = 1,
+                    Login = "user1",
+                    FirstName = "John",
+                    LastName = "Doe",
+                    PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
+                });
             mockUserRepository.Setup(o => o.Get(It.IsIn("user2")))
-                .Returns(new User() {Id = 2, Login = "user2", FirstName = "Jane", LastName = "Smith", PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4." });
+                .Returns(new User
+                {
+                    Id = 2,
+                    Login = "user2",
+                    FirstName = "Jane",
+                    LastName = "Smith",
+                    PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
+                });
             mockUserRepository.Setup(o => o.Add(It.IsIn<User>(null)))
                 .Throws(new ArgumentException());
             mockUserRepository.Setup(o => o.Add(It.IsNotNull<User>()));
@@ -60,102 +106,230 @@ namespace API.Tests
 
             // mock admin repository setup
             mockAdminRepository.Setup(o => o.Get(It.IsIn(1)))
-                .Returns(new Admin()
+                .Returns(new Admin
                 {
-                    Id = 1, User = new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe", PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4." }
+                    Id = 1,
+                    User = new User
+                    {
+                        Id = 1,
+                        Login = "user1",
+                        FirstName = "John",
+                        LastName = "Doe",
+                        PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
+                    }
                 });
             mockAdminRepository.Setup(o => o.Get(It.IsIn(2)))
-                .Returns(new Admin()
+                .Returns(new Admin
                 {
-                    Id = 2, User = new User() { Id = 2, Login = "user2", FirstName = "Jane", LastName = "Smith", PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4." }
+                    Id = 2,
+                    User = new User
+                    {
+                        Id = 2,
+                        Login = "user2",
+                        FirstName = "Jane",
+                        LastName = "Smith",
+                        PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
+                    }
                 });
             mockAdminRepository.Setup(o => o.Get(It.IsIn("user1")))
-                .Returns(new Admin()
+                .Returns(new Admin
                 {
-                    Id = 1, User = new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe", PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4." }
+                    Id = 1,
+                    User = new User
+                    {
+                        Id = 1,
+                        Login = "user1",
+                        FirstName = "John",
+                        LastName = "Doe",
+                        PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
+                    }
                 });
             mockAdminRepository.Setup(o => o.Get(It.IsIn("user2")))
-                .Returns(new Admin()
+                .Returns(new Admin
                 {
-                    Id = 2, User = new User() { Id = 2, Login = "user2", FirstName = "Jane", LastName = "Smith", PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4." }
+                    Id = 2,
+                    User = new User
+                    {
+                        Id = 2,
+                        Login = "user2",
+                        FirstName = "Jane",
+                        LastName = "Smith",
+                        PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
+                    }
                 });
             mockAdminRepository.Setup(o => o.Add(It.IsIn<Admin>(null)))
                 .Throws(new ArgumentException());
             mockAdminRepository.Setup(o => o.Add(It.IsNotNull<Admin>()));
             mockAdminRepository.Setup(o => o.Update(It.IsAny<Admin>()));
-            
-            // mock registrator repository setup
-            mockRegistratorRepository.Setup(o => o.Get(It.IsIn(1)))
-                .Returns(new Registrator()
+
+            // mock registrar repository setup
+            mockRegistrarRepository.Setup(o => o.Get(It.IsIn(1)))
+                .Returns(new Registrar
                 {
-                    Id = 1, User = new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe", PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4." }
+                    Id = 1,
+                    User = new User
+                    {
+                        Id = 1,
+                        Login = "user1",
+                        FirstName = "John",
+                        LastName = "Doe",
+                        PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
+                    }
                 });
-            mockRegistratorRepository.Setup(o => o.Get(It.IsIn(2)))
-                .Returns(new Registrator()
+            mockRegistrarRepository.Setup(o => o.Get(It.IsIn(2)))
+                .Returns(new Registrar
                 {
-                    Id = 2, User = new User() { Id = 2, Login = "user2", FirstName = "Jane", LastName = "Smith", PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4." }
+                    Id = 2,
+                    User = new User
+                    {
+                        Id = 2,
+                        Login = "user2",
+                        FirstName = "Jane",
+                        LastName = "Smith",
+                        PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
+                    }
                 });
-            mockRegistratorRepository.Setup(o => o.Get(It.IsIn("user1")))
-                .Returns(new Registrator()
+            mockRegistrarRepository.Setup(o => o.Get(It.IsIn("user1")))
+                .Returns(new Registrar
                 {
-                    Id = 1, User = new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe", PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4." }
+                    Id = 1,
+                    User = new User
+                    {
+                        Id = 1,
+                        Login = "user1",
+                        FirstName = "John",
+                        LastName = "Doe",
+                        PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
+                    }
                 });
-            mockRegistratorRepository.Setup(o => o.Get(It.IsIn("user2")))
-                .Returns(new Registrator()
+            mockRegistrarRepository.Setup(o => o.Get(It.IsIn("user2")))
+                .Returns(new Registrar
                 {
-                    Id = 2, User = new User() { Id = 2, Login = "user2", FirstName = "Jane", LastName = "Smith", PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4." }
+                    Id = 2,
+                    User = new User
+                    {
+                        Id = 2,
+                        Login = "user2",
+                        FirstName = "Jane",
+                        LastName = "Smith",
+                        PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
+                    }
                 });
-            mockRegistratorRepository.Setup(o => o.Add(It.IsIn<Registrator>(null)))
+            mockRegistrarRepository.Setup(o => o.Add(It.IsIn<Registrar>(null)))
                 .Throws(new ArgumentException());
-            mockRegistratorRepository.Setup(o => o.Add(It.IsNotNull<Registrator>()));
-            mockRegistratorRepository.Setup(o => o.Update(It.IsAny<Registrator>()));
-            
+            mockRegistrarRepository.Setup(o => o.Add(It.IsNotNull<Registrar>()));
+            mockRegistrarRepository.Setup(o => o.Update(It.IsAny<Registrar>()));
+
             // mock doctor repository setup
             mockDoctorRepository.Setup(o => o.Get(It.IsIn(1)))
-                .Returns(new Doctor()
+                .Returns(new Doctor
                 {
-                    Id = 1, User = new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe", PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4." }
+                    Id = 1,
+                    User = new User
+                    {
+                        Id = 1,
+                        Login = "user1",
+                        FirstName = "John",
+                        LastName = "Doe",
+                        PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
+                    }
                 });
             mockDoctorRepository.Setup(o => o.Get(It.IsIn(2)))
-                .Returns(new Doctor()
+                .Returns(new Doctor
                 {
-                    Id = 2, User = new User() { Id = 2, Login = "user2", FirstName = "Jane", LastName = "Smith", PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4." }
+                    Id = 2,
+                    User = new User
+                    {
+                        Id = 2,
+                        Login = "user2",
+                        FirstName = "Jane",
+                        LastName = "Smith",
+                        PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
+                    }
                 });
             mockDoctorRepository.Setup(o => o.Get(It.IsIn("user1")))
-                .Returns(new Doctor()
+                .Returns(new Doctor
                 {
-                    Id = 1, User = new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe", PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4." }
+                    Id = 1,
+                    User = new User
+                    {
+                        Id = 1,
+                        Login = "user1",
+                        FirstName = "John",
+                        LastName = "Doe",
+                        PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
+                    }
                 });
             mockDoctorRepository.Setup(o => o.Get(It.IsIn("user2")))
-                .Returns(new Doctor()
+                .Returns(new Doctor
                 {
-                    Id = 2, User = new User() { Id = 2, Login = "user2", FirstName = "Jane", LastName = "Smith", PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4." }
+                    Id = 2,
+                    User = new User
+                    {
+                        Id = 2,
+                        Login = "user2",
+                        FirstName = "Jane",
+                        LastName = "Smith",
+                        PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
+                    }
                 });
             mockDoctorRepository.Setup(o => o.Add(It.IsIn<Doctor>(null)))
                 .Throws(new ArgumentException());
             mockDoctorRepository.Setup(o => o.Add(It.IsNotNull<Doctor>()));
             mockDoctorRepository.Setup(o => o.Update(It.IsAny<Doctor>()));
-            
+
             // mock lab technician repository setup
             mockLabTechnicianRepository.Setup(o => o.Get(It.IsIn(1)))
-                .Returns(new LabTechnician()
+                .Returns(new LabTechnician
                 {
-                    Id = 1, User = new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe", PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4." }
+                    Id = 1,
+                    User = new User
+                    {
+                        Id = 1,
+                        Login = "user1",
+                        FirstName = "John",
+                        LastName = "Doe",
+                        PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
+                    }
                 });
             mockLabTechnicianRepository.Setup(o => o.Get(It.IsIn(2)))
-                .Returns(new LabTechnician()
+                .Returns(new LabTechnician
                 {
-                    Id = 2, User = new User() { Id = 2, Login = "user2", FirstName = "Jane", LastName = "Smith", PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4." }
+                    Id = 2,
+                    User = new User
+                    {
+                        Id = 2,
+                        Login = "user2",
+                        FirstName = "Jane",
+                        LastName = "Smith",
+                        PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
+                    }
                 });
             mockLabTechnicianRepository.Setup(o => o.Get(It.IsIn("user1")))
-                .Returns(new LabTechnician()
+                .Returns(new LabTechnician
                 {
-                    Id = 1, User = new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe", PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4." }
+                    Id = 1,
+                    User = new User
+                    {
+                        Id = 1,
+                        Login = "user1",
+                        FirstName = "John",
+                        LastName = "Doe",
+                        PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
+                    }
                 });
             mockLabTechnicianRepository.Setup(o => o.Get(It.IsIn("user2")))
-                .Returns(new LabTechnician()
+                .Returns(new LabTechnician
                 {
-                    Id = 2, User = new User() { Id = 2, Login = "user2", FirstName = "Jane", LastName = "Smith", PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4." }
+                    Id = 2,
+                    User = new User
+                    {
+                        Id = 2,
+                        Login = "user2",
+                        FirstName = "Jane",
+                        LastName = "Smith",
+                        PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
+                    }
                 });
             mockLabTechnicianRepository.Setup(o => o.Add(It.IsIn<LabTechnician>(null)))
                 .Throws(new ArgumentException());
@@ -164,24 +338,56 @@ namespace API.Tests
 
             // mock lab manager repository setup
             mockLabManagerRepository.Setup(o => o.Get(It.IsIn(1)))
-                .Returns(new LabManager()
+                .Returns(new LabManager
                 {
-                    Id = 1, User = new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe", PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4." }
+                    Id = 1,
+                    User = new User
+                    {
+                        Id = 1,
+                        Login = "user1",
+                        FirstName = "John",
+                        LastName = "Doe",
+                        PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
+                    }
                 });
             mockLabManagerRepository.Setup(o => o.Get(It.IsIn(2)))
-                .Returns(new LabManager()
+                .Returns(new LabManager
                 {
-                    Id = 2, User = new User() { Id = 2, Login = "user2", FirstName = "Jane", LastName = "Smith", PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4." }
+                    Id = 2,
+                    User = new User
+                    {
+                        Id = 2,
+                        Login = "user2",
+                        FirstName = "Jane",
+                        LastName = "Smith",
+                        PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
+                    }
                 });
             mockLabManagerRepository.Setup(o => o.Get(It.IsIn("user1")))
-                .Returns(new LabManager()
+                .Returns(new LabManager
                 {
-                    Id = 1, User = new User() {Id = 1, Login = "user1", FirstName = "John", LastName = "Doe", PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4." }
+                    Id = 1,
+                    User = new User
+                    {
+                        Id = 1,
+                        Login = "user1",
+                        FirstName = "John",
+                        LastName = "Doe",
+                        PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
+                    }
                 });
             mockLabManagerRepository.Setup(o => o.Get(It.IsIn("user2")))
-                .Returns(new LabManager()
+                .Returns(new LabManager
                 {
-                    Id = 2, User = new User() { Id = 2, Login = "user2", FirstName = "Jane", LastName = "Smith", PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4." }
+                    Id = 2,
+                    User = new User
+                    {
+                        Id = 2,
+                        Login = "user2",
+                        FirstName = "Jane",
+                        LastName = "Smith",
+                        PasswordHash = "$2b$10$vpOJvQlBeI.BFMpeiJ9Jq.f//JeoAqRXKRXt5p.swv.Qj9L9nBq4."
+                    }
                 });
             mockLabManagerRepository.Setup(o => o.Add(It.IsIn<LabManager>(null)))
                 .Throws(new ArgumentException());
@@ -189,12 +395,12 @@ namespace API.Tests
             mockLabManagerRepository.Setup(o => o.Update(It.IsAny<LabManager>()));
 
             mockJwtManager.Setup(o => o.GenerateTokens(It.IsIn("user1"), It.IsAny<string>(), It.IsAny<DateTime>()))
-                .Returns(new AuthenticationDTO()
+                .Returns(new AuthenticationDTO
                 {
                     AccessToken = "access_token1", RefreshToken = "refresh_token1", Role = "User"
                 });
             mockJwtManager.Setup(o => o.GenerateTokens(It.IsIn("user2"), It.IsAny<string>(), It.IsAny<DateTime>()))
-                .Returns(new AuthenticationDTO()
+                .Returns(new AuthenticationDTO
                 {
                     AccessToken = "access_token2", RefreshToken = "refresh_token2", Role = "User"
                 });
@@ -205,29 +411,11 @@ namespace API.Tests
 
             userRepository = mockUserRepository.Object;
             adminRepository = mockAdminRepository.Object;
-            registratorRepository = mockRegistratorRepository.Object;
+            registrarRepository = mockRegistrarRepository.Object;
             doctorRepository = mockDoctorRepository.Object;
             labTechnicianRepository = mockLabTechnicianRepository.Object;
             labManagerRepository = mockLabManagerRepository.Object;
             jwtManager = mockJwtManager.Object;
-        }
-
-        public BaseTest()
-        {
-            Setup();
-
-            var dataContext = new Mock<DataContext>(new DbContextOptionsBuilder().Options);
-
-            userService = new UserService(
-                userRepository, 
-                adminRepository, 
-                registratorRepository,
-                doctorRepository, 
-                labTechnicianRepository, 
-                labManagerRepository,
-                dataContext.Object,
-                jwtManager
-            );
         }
     }
 }
