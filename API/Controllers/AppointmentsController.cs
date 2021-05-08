@@ -25,7 +25,7 @@ namespace API.Controllers
         [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
         // below only when credentials are invalid
         [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status422UnprocessableEntity)]
-        public async Task<IActionResult> AddAppointment([FromBody] AppointmentDto appointmentDto)
+        public async Task<IActionResult> AddAppointmentAsync([FromBody] AppointmentDto appointmentDto)
         {
             return await appointmentService.CreateAppointmentAsync(appointmentDto, Request);
         }

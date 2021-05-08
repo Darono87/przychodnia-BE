@@ -24,7 +24,7 @@ namespace API.Controllers
         [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
         // below only when credentials are invalid
         [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status422UnprocessableEntity)]
-        public IActionResult RegisterPatient([FromBody] PatientDto patientDto)
+        public IActionResult RegisterPatientAsync([FromBody] PatientDto patientDto)
         {
             if (patientRepository.Get(patientDto.PeselNumber) != null)
             {

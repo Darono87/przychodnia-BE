@@ -30,7 +30,7 @@ namespace API.Controllers
         [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
         // below only when login is taken
         [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status422UnprocessableEntity)]
-        public async Task<IActionResult> Create([FromBody] UserCreationDto userDto)
+        public async Task<IActionResult> CreateAsync([FromBody] UserCreationDto userDto)
         {
             return await userService.CreateAsync(userDto.Role, userDto.Login, userDto.FirstName,
                 userDto.LastName,
@@ -44,7 +44,7 @@ namespace API.Controllers
         [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
         // below only when credentials are invalid
         [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status422UnprocessableEntity)]
-        public async Task<IActionResult> Authenticate([FromBody] LoginDto loginDto)
+        public async Task<IActionResult> AuthenticateAsync([FromBody] LoginDto loginDto)
         {
             return await userService.AuthenticateAsync(loginDto.Login, loginDto.Password);
         }
@@ -55,7 +55,7 @@ namespace API.Controllers
         [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
         // below only when credentials are invalid
         [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status422UnprocessableEntity)]
-        public async Task<IActionResult> Refresh([FromBody] RefreshDto refreshDto)
+        public async Task<IActionResult> RefreshAsync([FromBody] RefreshDto refreshDto)
         {
             return await userService.RefreshAsync(refreshDto.AccessToken, refreshDto.RefreshToken);
         }

@@ -19,7 +19,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Address>>> Get()
+        public async Task<ActionResult<IEnumerable<Address>>> GetAsync()
         {
             return await context.Addresses.ToListAsync();
         }
