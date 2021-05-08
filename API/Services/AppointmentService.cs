@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using API.DTO;
 using API.Entities;
 using API.Repositories;
@@ -25,9 +26,10 @@ namespace API.Services
             this.userService = userService;
         }
 
-        public IActionResult CreateAppointment(AppointmentDTO appointmentDto, HttpRequest request)
+        public async Task<IActionResult> CreateAppointment(AppointmentDTO appointmentDto, HttpRequest request)
         {
-            var doctor = doctorRepository.GetByPermitNumberAsync(appointmentDto.PermitNumber);
+            var doctor = await doctorRepository.GetByPermitNumberAsync(appointmentDto.PermitNumber);
+            
             if (doctor == null)
             {
                 return new JsonResult(new
@@ -37,6 +39,7 @@ namespace API.Services
             }
 
             var patient = patientRepository.Get(appointmentDto.PeselNumber);
+            
             if (patient == null)
             {
                 return new JsonResult(new {message = "No patient with given identity number was found"})
@@ -57,7 +60,7 @@ namespace API.Services
                 return new JsonResult(new {message = "Given registration date is invalid"}) {StatusCode = 422};
             }
 
-            if (userService.GetCurrentUser(request) is not Registrar registrar)
+            if (await userService.GetCurrentUser(request) is not Registrar registrar)
             {
                 return new JsonResult(new {message = "Could not load registrar"}) {StatusCode = 422};
             }

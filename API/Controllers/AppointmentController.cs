@@ -1,4 +1,5 @@
-﻿using API.DTO;
+﻿using System.Threading.Tasks;
+using API.DTO;
 using API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +8,7 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AppointmentController : Controller
+    public class AppointmentController : ControllerBase
     {
         private readonly IAppointmentService appointmentService;
 
@@ -18,9 +19,9 @@ namespace API.Controllers
 
         [HttpPost("add")]
         [Authorize(Roles = "Registrar")]
-        public IActionResult AddAppointment([FromBody] AppointmentDTO appointmentDto)
+        public async Task<IActionResult> AddAppointment([FromBody] AppointmentDTO appointmentDto)
         {
-            return appointmentService.CreateAppointment(appointmentDto, Request);
+            return await appointmentService.CreateAppointment(appointmentDto, Request);
         }
     }
 }

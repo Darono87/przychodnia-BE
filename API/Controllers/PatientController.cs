@@ -8,7 +8,7 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class PatientController
+    public class PatientController : ControllerBase
     {
         private readonly IPatientRepository patientRepository;
 
@@ -19,9 +19,9 @@ namespace API.Controllers
 
         [HttpPost("register")]
         [Authorize(Roles = "Admin,Registrar")]
-        public IActionResult RegisterPatient([FromBody] PatientDTO patientDTO)
+        public IActionResult RegisterPatient([FromBody] PatientDTO patientDto)
         {
-            if (patientRepository.Get(patientDTO.PeselNumber) != null)
+            if (patientRepository.Get(patientDto.PeselNumber) != null)
             {
                 return new JsonResult(new {message = "Patient with given identity number already exists"})
                 {
@@ -31,16 +31,16 @@ namespace API.Controllers
 
             var patient = new Patient
             {
-                FirstName = patientDTO.FirstName,
-                LastName = patientDTO.LastName,
-                PeselNumber = patientDTO.PeselNumber,
+                FirstName = patientDto.FirstName,
+                LastName = patientDto.LastName,
+                PeselNumber = patientDto.PeselNumber,
                 Address = new Address
                 {
-                    Country = patientDTO.Country,
-                    City = patientDTO.City,
-                    BuildingNumber = patientDTO.BuildingNumber,
-                    PostalCode = patientDTO.PostalCode,
-                    Street = patientDTO.Street
+                    Country = patientDto.Country,
+                    City = patientDto.City,
+                    BuildingNumber = patientDto.BuildingNumber,
+                    PostalCode = patientDto.PostalCode,
+                    Street = patientDto.Street
                 }
             };
 

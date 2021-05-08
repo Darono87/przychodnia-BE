@@ -95,19 +95,19 @@ namespace API.Services
             switch (role)
             {
                 case "Admin":
-                    await adminRepository.AddAsync(new Admin {User = createdUser});
+                    createdUser.Admin = await adminRepository.AddAsync(new Admin {User = createdUser});
                     break;
                 case "Registrar":
-                    await registrarRepository.AddAsync(new Registrar {User = createdUser});
+                    createdUser.Registrar = await registrarRepository.AddAsync(new Registrar {User = createdUser});
                     break;
                 case "Doctor":
-                    await doctorRepository.AddAsync(new Doctor {User = createdUser, PermitNumber = permitNumber});
+                    createdUser.Doctor = await doctorRepository.AddAsync(new Doctor {User = createdUser, PermitNumber = permitNumber});
                     break;
                 case "LabTechnician":
-                    await labTechnicianRepository.AddAsync(new LabTechnician {User = createdUser});
+                    createdUser.LabTechnician = await labTechnicianRepository.AddAsync(new LabTechnician {User = createdUser});
                     break;
                 case "LabManager":
-                    await labManagerRepository.AddAsync(new LabManager {User = createdUser});
+                    createdUser.LabManager = await labManagerRepository.AddAsync(new LabManager {User = createdUser});
                     break;
             }
 
@@ -168,7 +168,7 @@ namespace API.Services
                 throw new ArgumentException("Login cannot be empty");
             }
 
-            var user = userRepository.GetAsync(login);
+            var user = await userRepository.GetAsync(login);
 
             if (user == null)
             {

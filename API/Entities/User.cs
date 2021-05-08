@@ -19,9 +19,10 @@ namespace API.Entities
 
         [Required] [MaxLength(400)] public string PasswordHash { get; set; }
 
-        public ICollection<Doctor> Doctors { get; set; }
-        public ICollection<Registrar> Registrars { get; set; }
-        public ICollection<LabTechnician> LabTechnicians { get; set; }
-        public ICollection<LabManager> LabManagers { get; set; }
+        public Doctor Doctor { get; set; }
+        public Registrar Registrar { get; set; }
+        public LabTechnician LabTechnician { get; set; }
+        public LabManager LabManager { get; set; }
+        public Admin Admin { get; set; }
     }
 }
