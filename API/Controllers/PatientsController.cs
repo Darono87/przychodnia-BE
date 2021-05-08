@@ -2,6 +2,7 @@
 using API.Entities;
 using API.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -19,6 +20,10 @@ namespace API.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Registrar")]
+        [ProducesResponseType(typeof(Patient), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
+        // below only when credentials are invalid
+        [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status422UnprocessableEntity)]
         public IActionResult RegisterPatient([FromBody] PatientDto patientDto)
         {
             if (patientRepository.Get(patientDto.PeselNumber) != null)

@@ -1,4 +1,5 @@
-﻿using API.Data;
+﻿using System.Threading.Tasks;
+using API.Data;
 using API.Entities;
 
 namespace API.Repositories
@@ -12,21 +13,25 @@ namespace API.Repositories
             this.context = context;
         }
 
-        public void Add(Appointment appointment)
+        public async Task<Appointment> AddAsync(Appointment appointment)
         {
-            context.Appointments.Add(appointment);
-            context.SaveChanges();
+            var result = context.Appointments.Add(appointment);
+            await context.SaveChangesAsync();
+
+            return result.Entity;
         }
 
-        public void Update(Appointment appointment)
+        public async Task<Appointment> UpdateAsync(Appointment appointment)
         {
-            context.Appointments.Update(appointment);
-            context.SaveChanges();
+            var result = context.Appointments.Update(appointment);
+            await context.SaveChangesAsync();
+
+            return result.Entity;
         }
 
-        public Appointment Get(int id)
+        public async Task<Appointment> GetAsync(int id)
         {
-            return context.Appointments.Find(id);
+            return await context.Appointments.FindAsync(id);
         }
     }
 }

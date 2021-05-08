@@ -29,40 +29,38 @@ namespace API.Services
         public async Task<IActionResult> CreateAppointmentAsync(AppointmentDto appointmentDto, HttpRequest request)
         {
             var doctor = await doctorRepository.GetByPermitNumberAsync(appointmentDto.PermitNumber);
-            
+
             if (doctor == null)
             {
-                return new JsonResult(new
-                {
-                    message = "No doctor with given permit number was found"
-                }) {StatusCode = 422};
-            }
-
-            var patient = patientRepository.Get(appointmentDto.PeselNumber);
-            
-            if (patient == null)
-            {
-                return new JsonResult(new {message = "No patient with given identity number was found"})
+                return new JsonResult(new ExceptionDto() {Message = "No doctor with given permit number was found"})
                 {
                     StatusCode = 422
                 };
             }
 
-            if (string.IsNullOrEmpty(appointmentDto.Description))
+            var patient = patientRepository.Get(appointmentDto.PeselNumber);
+
+            if (patient == null)
             {
-                return new JsonResult(new {message = "No appointment description was given"}) {StatusCode = 422};
+                return new JsonResult(new ExceptionDto() {Message = "No patient with given identity number was found"})
+                {
+                    StatusCode = 422
+                };
             }
 
             var timeNow = DateTime.Now;
 
             if (appointmentDto.ScheduledDate < timeNow)
             {
-                return new JsonResult(new {message = "Given registration date is invalid"}) {StatusCode = 422};
+                return new JsonResult(new ExceptionDto() {Message = "Given registration date is invalid"})
+                {
+                    StatusCode = 422
+                };
             }
 
             if (await userService.GetCurrentUserAsync(request) is not Registrar registrar)
             {
-                return new JsonResult(new {message = "Could not load registrar"}) {StatusCode = 422};
+                return new JsonResult(new ExceptionDto() {Message = "Could not find registrar"}) {StatusCode = 422};
             }
 
             var appointment = new Appointment
@@ -76,8 +74,7 @@ namespace API.Services
                 Registrar = registrar
             };
 
-            appointmentRepository.Add(appointment);
-            return new OkResult();
+            return new JsonResult(await appointmentRepository.AddAsync(appointment));
         }
     }
 }
