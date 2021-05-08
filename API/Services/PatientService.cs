@@ -18,12 +18,12 @@ namespace API.Services
         {
             this.patientRepository = patientRepository;
         }
-        
+
         public async Task<IActionResult> RegisterAsync(PatientDto patientDto)
         {
             if (patientRepository.GetAsync(patientDto.PeselNumber) != null)
             {
-                return new JsonResult(new ExceptionDto() {Message = "Patient with given identity number already exists"})
+                return new JsonResult(new ExceptionDto {Message = "Patient with given identity number already exists"})
                 {
                     StatusCode = 422
                 };

@@ -6,10 +6,10 @@ namespace API.DTO
     {
         [Required(ErrorMessage = "First name is required")]
         public string FirstName { get; set; }
-        
+
         [Required(ErrorMessage = "Last name is required")]
         public string LastName { get; set; }
-        
+
         [Required(ErrorMessage = "Pesel number is required")]
         public string PeselNumber { get; set; }
 

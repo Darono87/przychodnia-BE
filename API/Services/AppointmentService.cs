@@ -32,7 +32,7 @@ namespace API.Services
 
             if (doctor == null)
             {
-                return new JsonResult(new ExceptionDto() {Message = "No doctor with given permit number was found"})
+                return new JsonResult(new ExceptionDto {Message = "No doctor with given permit number was found"})
                 {
                     StatusCode = 422
                 };
@@ -42,7 +42,7 @@ namespace API.Services
 
             if (patient == null)
             {
-                return new JsonResult(new ExceptionDto() {Message = "No patient with given identity number was found"})
+                return new JsonResult(new ExceptionDto {Message = "No patient with given identity number was found"})
                 {
                     StatusCode = 422
                 };
@@ -52,7 +52,7 @@ namespace API.Services
 
             if (appointmentDto.ScheduledDate < timeNow)
             {
-                return new JsonResult(new ExceptionDto() {Message = "Given registration date is invalid"})
+                return new JsonResult(new ExceptionDto {Message = "Given registration date is invalid"})
                 {
                     StatusCode = 422
                 };
@@ -60,7 +60,7 @@ namespace API.Services
 
             if (await userService.GetCurrentUserAsync(request) is not Registrar registrar)
             {
-                return new JsonResult(new ExceptionDto() {Message = "Could not find registrar"}) {StatusCode = 422};
+                return new JsonResult(new ExceptionDto {Message = "Could not find registrar"}) {StatusCode = 422};
             }
 
             var appointment = new Appointment

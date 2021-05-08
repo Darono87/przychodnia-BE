@@ -9,14 +9,11 @@ namespace API.DTO
 {
     public class AuthenticationDto
     {
-        [Required]
-        public string AccessToken { get; set; }
-        
-        [Required]
-        public string RefreshToken { get; set; }
-        
-        [Required]
-        public string Role { get; set; }
+        [Required] public string AccessToken { get; set; }
+
+        [Required] public string RefreshToken { get; set; }
+
+        [Required] public string Role { get; set; }
 
         public override bool Equals(object? obj)
         {

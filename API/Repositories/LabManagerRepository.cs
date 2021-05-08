@@ -30,9 +30,9 @@ namespace API.Repositories
 
         public async Task<LabManager> UpdateAsync(LabManager obj)
         {
-            var result  = context.LabManagers.Update(obj);
+            var result = context.LabManagers.Update(obj);
             await context.SaveChangesAsync();
-            
+
             return result.Entity;
         }
 

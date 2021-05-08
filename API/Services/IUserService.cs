@@ -4,8 +4,6 @@
 
 #nullable enable
 using System.Threading.Tasks;
-using API.DTO;
-using API.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

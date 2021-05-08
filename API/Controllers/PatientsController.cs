@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using API.DTO;
 using API.Entities;
-using API.Repositories;
 using API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

@@ -4,7 +4,6 @@
 
 using System.Threading.Tasks;
 using API.DTO;
-using API.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Services

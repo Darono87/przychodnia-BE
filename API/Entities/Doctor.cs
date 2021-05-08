@@ -10,8 +10,7 @@ namespace API.Entities
 {
     public class Doctor
     {
-        [ForeignKey("UserId")]
-        public User User { get; set; }
+        [ForeignKey("UserId")] public User User { get; set; }
 
         [Key] public int Id { get; set; }
 

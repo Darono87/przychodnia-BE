@@ -9,9 +9,12 @@ namespace API.Utils
 {
     public class RoleAttribute : ValidationAttribute
     {
-        private static readonly string[] roles = new string[] {"Admin","Registrar","Doctor","LabTechnician","LabManager"};
-        public string GetErrorMessage() =>
-            "Role has to be one of: Admin, Registrar, Doctor, LabTechnician or LabManager";
+        private static readonly string[] roles = {"Admin", "Registrar", "Doctor", "LabTechnician", "LabManager"};
+
+        public string GetErrorMessage()
+        {
+            return "Role has to be one of: Admin, Registrar, Doctor, LabTechnician or LabManager";
+        }
 
 
         protected override ValidationResult IsValid(object value,

@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
@@ -10,16 +9,18 @@ namespace API.Utils
 {
     public class PasswordAttribute : ValidationAttribute
     {
-        private static readonly string[] capitalLetters = new string[]
+        private static readonly string[] capitalLetters =
         {
             "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",
             "V", "W", "X", "Y", "Z"
         };
 
-        private static readonly string[] numbers = new string[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
+        private static readonly string[] numbers = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
 
-        public string GetErrorMessage() =>
-            "Password must have at least 8 characters with at least 1 capital letter and 1 number.";
+        public string GetErrorMessage()
+        {
+            return "Password must have at least 8 characters with at least 1 capital letter and 1 number.";
+        }
 
 
         protected override ValidationResult IsValid(object value,

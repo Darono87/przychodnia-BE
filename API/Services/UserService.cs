@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using API.Data;
 using API.DTO;
 using API.Entities;
-using API.Exceptions;
 using API.Repositories;
 using API.Utils;
 using Microsoft.AspNetCore.Http;
@@ -58,14 +57,15 @@ namespace API.Services
             this.jwtManager = jwtManager;
         }
 
-        public async Task<IActionResult> CreateAsync(string role, string login, string firstName, string lastName, string password,
+        public async Task<IActionResult> CreateAsync(string role, string login, string firstName, string lastName,
+            string password,
             string? permitNumber)
         {
             var existingUser = await userRepository.GetAsync(login);
 
             if (existingUser != null)
             {
-                return new JsonResult(new ExceptionDto() {Message = "Login is already in use"}) { StatusCode = 422 };
+                return new JsonResult(new ExceptionDto {Message = "Login is already in use"}) {StatusCode = 422};
             }
 
             context.Database?.BeginTransactionAsync();
@@ -87,10 +87,12 @@ namespace API.Services
                     createdUser.Registrar = await registrarRepository.AddAsync(new Registrar {User = createdUser});
                     break;
                 case "Doctor":
-                    createdUser.Doctor = await doctorRepository.AddAsync(new Doctor {User = createdUser, PermitNumber = permitNumber});
+                    createdUser.Doctor =
+                        await doctorRepository.AddAsync(new Doctor {User = createdUser, PermitNumber = permitNumber});
                     break;
                 case "LabTechnician":
-                    createdUser.LabTechnician = await labTechnicianRepository.AddAsync(new LabTechnician {User = createdUser});
+                    createdUser.LabTechnician =
+                        await labTechnicianRepository.AddAsync(new LabTechnician {User = createdUser});
                     break;
                 case "LabManager":
                     createdUser.LabManager = await labManagerRepository.AddAsync(new LabManager {User = createdUser});
@@ -108,7 +110,7 @@ namespace API.Services
 
             if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
             {
-                return new JsonResult(new ExceptionDto() {Message = "Invalid credentials"}) { StatusCode = 422 };
+                return new JsonResult(new ExceptionDto {Message = "Invalid credentials"}) {StatusCode = 422};
             }
 
             return new JsonResult(jwtManager.GenerateTokens(login, await GetRoleAsync(login), DateTime.Now));
@@ -123,7 +125,7 @@ namespace API.Services
 
             if (DateTime.Now > date)
             {
-                return new JsonResult(new ExceptionDto() {Message = "Refresh Token is expired"}) { StatusCode = 422 };
+                return new JsonResult(new ExceptionDto {Message = "Refresh Token is expired"}) {StatusCode = 422};
             }
 
             var login = data.Claims.Where(c => c.Type == ClaimTypes.Name).ToArray()[0].Value;
@@ -131,7 +133,10 @@ namespace API.Services
 
             if (user == null || !jwtManager.ContainsRefreshToken(refreshToken))
             {
-                return new JsonResult(new ExceptionDto() {Message = "User does not exist or refresh token is invalid"}) { StatusCode = 422 };
+                return new JsonResult(new ExceptionDto {Message = "User does not exist or refresh token is invalid"})
+                {
+                    StatusCode = 422
+                };
             }
 
             return new JsonResult(jwtManager.GenerateTokens(user.Login, await GetRoleAsync(user.Login), DateTime.Now));
@@ -153,11 +158,11 @@ namespace API.Services
 
             string role = "";
 
-            role += (await adminRepository.GetAsync(login)) != null ? "Admin" : "";
-            role += (await registrarRepository.GetAsync(login)) != null ? "Registrar" : "";
-            role += (await doctorRepository.GetAsync(login)) != null ? "Doctor" : "";
-            role += (await labTechnicianRepository.GetAsync(login)) != null ? "LabTechnician" : "";
-            role += (await labManagerRepository.GetAsync(login)) != null ? "LabManager" : "";
+            role += await adminRepository.GetAsync(login) != null ? "Admin" : "";
+            role += await registrarRepository.GetAsync(login) != null ? "Registrar" : "";
+            role += await doctorRepository.GetAsync(login) != null ? "Doctor" : "";
+            role += await labTechnicianRepository.GetAsync(login) != null ? "LabTechnician" : "";
+            role += await labManagerRepository.GetAsync(login) != null ? "LabManager" : "";
 
             return role;
         }

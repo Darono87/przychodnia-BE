@@ -9,8 +9,7 @@ namespace API.Entities
 {
     public class Admin
     {
-        [ForeignKey("UserId")]
-        public User User { get; set; }
+        [ForeignKey("UserId")] public User User { get; set; }
 
         [Key] public int Id { get; set; }
     }
