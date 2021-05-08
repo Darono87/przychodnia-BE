@@ -7,6 +7,6 @@ namespace API.Services
 {
     public interface IAppointmentService
     {
-        Task<IActionResult> CreateAppointment(AppointmentDto appointmentDto, HttpRequest request);
+        Task<IActionResult> CreateAppointmentAsync(AppointmentDto appointmentDto, HttpRequest request);
     }
 }

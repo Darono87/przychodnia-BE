@@ -17,7 +17,7 @@ namespace API.Tests.Services
         public void TestCreateWithEmptyStrings()
         {
             Assert.Throws<ArgumentException>(() =>
-                userService.Create("", "", "", "", "", null));
+                userService.CreateAsync("", "", "", "", "", null));
 
             mockUserRepository.Verify(o => o.GetAsync(It.IsAny<string>()), Times.Never);
             mockUserRepository.Verify(o => o.AddAsync(It.IsAny<User>()), Times.Never);
@@ -27,7 +27,7 @@ namespace API.Tests.Services
         public void TestCreateWithTakenLogin()
         {
             Assert.Throws<LoginTakenException>(() =>
-                userService.Create("User", "user1", "abc", "abc", "abc", null));
+                userService.CreateAsync("User", "user1", "abc", "abc", "abc", null));
 
             mockUserRepository.Verify(o => o.GetAsync(It.IsAny<string>()), Times.Once);
             mockUserRepository.Verify(o => o.AddAsync(It.IsAny<User>()), Times.Never);
@@ -37,7 +37,7 @@ namespace API.Tests.Services
         public void TestCreateWithInvalidPassword()
         {
             Assert.Throws<InvalidPasswordException>(() =>
-                userService.Create("User", "user3", "abc", "abc", "abc", null));
+                userService.CreateAsync("User", "user3", "abc", "abc", "abc", null));
 
             mockUserRepository.Verify(o => o.GetAsync(It.IsAny<string>()), Times.Once);
             mockUserRepository.Verify(o => o.AddAsync(It.IsAny<User>()), Times.Never);
@@ -47,7 +47,7 @@ namespace API.Tests.Services
         public void TestCreateWithNotExistingRole()
         {
             Assert.Throws<RoleNotFoundException>(() =>
-                userService.Create("Student", "user3", "abc", "abc", "Qwerty1234", null));
+                userService.CreateAsync("Student", "user3", "abc", "abc", "Qwerty1234", null));
 
             mockUserRepository.Verify(o => o.GetAsync(It.IsAny<string>()), Times.Once);
             mockUserRepository.Verify(o => o.AddAsync(It.IsAny<User>()), Times.Never);
@@ -56,7 +56,7 @@ namespace API.Tests.Services
         [Fact]
         public void TestCreateWithCorrectData()
         {
-            userService.Create("User", "user3", "Andrew", "Smith", "Qwerty1234", null);
+            userService.CreateAsync("User", "user3", "Andrew", "Smith", "Qwerty1234", null);
 
             mockUserRepository.Verify(o => o.GetAsync(It.IsAny<string>()), Times.Exactly(2));
             mockUserRepository.Verify(o => o.AddAsync(It.IsAny<User>()), Times.Once);
@@ -70,7 +70,7 @@ namespace API.Tests.Services
         [InlineData("LabManager")]
         public void TestCreateWithDifferentRoles(string role)
         {
-            userService.Create(role, "user3", "Andrew", "Smith", "Qwerty1234", role == "Doctor" ? "1234" : null);
+            userService.CreateAsync(role, "user3", "Andrew", "Smith", "Qwerty1234", role == "Doctor" ? "1234" : null);
 
             mockUserRepository.Verify(o => o.GetAsync(It.IsAny<string>()), Times.Exactly(2));
             mockUserRepository.Verify(o => o.AddAsync(It.IsAny<User>()), Times.Once);
@@ -103,7 +103,7 @@ namespace API.Tests.Services
                 AccessToken = "access_token1", RefreshToken = "refresh_token1", Role = "User"
             };
 
-            Assert.Equal(expectedResult, userService.Authenticate("user1", "Qwerty1234"));
+            Assert.Equal(expectedResult, userService.AuthenticateAsync("user1", "Qwerty1234"));
             mockJwtManager.Verify(o => o.GenerateTokens(It.IsIn("user1"), It.IsAny<string>(), It.IsAny<DateTime>()),
                 Times.Once);
         }
@@ -113,20 +113,20 @@ namespace API.Tests.Services
         [InlineData("", "")]
         public void TestAuthenticateWithInvalidCredentials(string username, string password)
         {
-            Assert.Throws<ArgumentException>(() => userService.Authenticate(username, password));
+            Assert.Throws<ArgumentException>(() => userService.AuthenticateAsync(username, password));
         }
 
         [Fact]
         public void TestGetRoleWithCorrectLogin()
         {
-            Assert.Contains("AdminRegistrarDoctorLabTechnicianLabManager", userService.GetRole("user1"));
+            Assert.Contains("AdminRegistrarDoctorLabTechnicianLabManager", userService.GetRoleAsync("user1"));
             mockUserRepository.Verify(o => o.GetAsync(It.IsAny<string>()), Times.Once);
         }
 
         [Fact]
         public void TestGetRoleWithIncorrectLogin()
         {
-            Assert.Throws<ArgumentException>(() => userService.GetRole(""));
+            Assert.Throws<ArgumentException>(() => userService.GetRoleAsync(""));
         }
 
         [Fact]
@@ -137,7 +137,7 @@ namespace API.Tests.Services
                 AccessToken = "access_token1", RefreshToken = "refresh_token1", Role = "User"
             };
 
-            Assert.Equal(expectedResult, userService.Refresh("user1", "refresh_token1"));
+            Assert.Equal(expectedResult, userService.RefreshAsync("user1", "refresh_token1"));
             mockJwtManager.Verify(o => o.GenerateTokens(It.IsIn("user1"), It.IsAny<string>(), It.IsAny<DateTime>()),
                 Times.Once);
         }
@@ -147,7 +147,7 @@ namespace API.Tests.Services
         [InlineData("", "")]
         public void TestRefreshWithInvalidCredentials(string login, string refreshToken)
         {
-            Assert.Throws<ArgumentException>(() => userService.Refresh(login, refreshToken));
+            Assert.Throws<ArgumentException>(() => userService.RefreshAsync(login, refreshToken));
         }
     }
 }

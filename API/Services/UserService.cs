@@ -58,7 +58,7 @@ namespace API.Services
             this.jwtManager = jwtManager;
         }
 
-        public async Task<IActionResult> Create(string role, string login, string firstName, string lastName, string password,
+        public async Task<IActionResult> CreateAsync(string role, string login, string firstName, string lastName, string password,
             string? permitNumber)
         {
             var existingUser = userRepository.GetAsync(login);
@@ -102,7 +102,7 @@ namespace API.Services
             return new JsonResult(createdUser);
         }
 
-        public async Task<IActionResult> Authenticate(string login, string password)
+        public async Task<IActionResult> AuthenticateAsync(string login, string password)
         {
             var user = await userRepository.GetAsync(login);
 
@@ -111,10 +111,10 @@ namespace API.Services
                 return new JsonResult(new ExceptionDto() {Message = "Invalid credentials"}) { StatusCode = 422 };
             }
 
-            return new JsonResult(jwtManager.GenerateTokens(login, await GetRole(login), DateTime.Now));
+            return new JsonResult(jwtManager.GenerateTokens(login, await GetRoleAsync(login), DateTime.Now));
         }
 
-        public async Task<IActionResult> Refresh(string accessToken, string refreshToken)
+        public async Task<IActionResult> RefreshAsync(string accessToken, string refreshToken)
         {
             var handler = new JwtSecurityTokenHandler();
             var data = handler.ReadJwtToken(accessToken);
@@ -134,10 +134,10 @@ namespace API.Services
                 return new JsonResult(new ExceptionDto() {Message = "User does not exist or refresh token is invalid"}) { StatusCode = 422 };
             }
 
-            return new JsonResult(jwtManager.GenerateTokens(user.Login, await GetRole(user.Login), DateTime.Now));
+            return new JsonResult(jwtManager.GenerateTokens(user.Login, await GetRoleAsync(user.Login), DateTime.Now));
         }
 
-        public async Task<string> GetRole(string login)
+        public async Task<string> GetRoleAsync(string login)
         {
             if (login == "")
             {
@@ -162,7 +162,7 @@ namespace API.Services
             return role;
         }
 
-        public async Task<object> GetCurrentUser(HttpRequest request)
+        public async Task<object> GetCurrentUserAsync(HttpRequest request)
         {
             var accessToken = request.Headers[HeaderNames.Authorization][0].Split(" ")[1];
             var handler = new JwtSecurityTokenHandler();

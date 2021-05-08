@@ -21,7 +21,7 @@ namespace API.Controllers
         [Authorize(Roles = "Registrar")]
         public async Task<IActionResult> AddAppointment([FromBody] AppointmentDto appointmentDto)
         {
-            return await appointmentService.CreateAppointment(appointmentDto, Request);
+            return await appointmentService.CreateAppointmentAsync(appointmentDto, Request);
         }
     }
 }

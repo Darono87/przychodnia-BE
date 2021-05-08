@@ -26,7 +26,7 @@ namespace API.Services
             this.userService = userService;
         }
 
-        public async Task<IActionResult> CreateAppointment(AppointmentDto appointmentDto, HttpRequest request)
+        public async Task<IActionResult> CreateAppointmentAsync(AppointmentDto appointmentDto, HttpRequest request)
         {
             var doctor = await doctorRepository.GetByPermitNumberAsync(appointmentDto.PermitNumber);
             
@@ -60,7 +60,7 @@ namespace API.Services
                 return new JsonResult(new {message = "Given registration date is invalid"}) {StatusCode = 422};
             }
 
-            if (await userService.GetCurrentUser(request) is not Registrar registrar)
+            if (await userService.GetCurrentUserAsync(request) is not Registrar registrar)
             {
                 return new JsonResult(new {message = "Could not load registrar"}) {StatusCode = 422};
             }

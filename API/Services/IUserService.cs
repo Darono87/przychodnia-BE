@@ -13,15 +13,15 @@ namespace API.Services
 {
     public interface IUserService
     {
-        Task<IActionResult> Create(string role, string login, string firstName, string lastName, string password,
+        Task<IActionResult> CreateAsync(string role, string login, string firstName, string lastName, string password,
             string? permitNumber);
 
-        Task<IActionResult> Authenticate(string login, string password);
+        Task<IActionResult> AuthenticateAsync(string login, string password);
 
-        Task<IActionResult> Refresh(string accessToken, string refreshToken);
+        Task<IActionResult> RefreshAsync(string accessToken, string refreshToken);
 
-        Task<string> GetRole(string login);
+        Task<string> GetRoleAsync(string login);
 
-        Task<object> GetCurrentUser(HttpRequest request);
+        Task<object> GetCurrentUserAsync(HttpRequest request);
     }
 }
