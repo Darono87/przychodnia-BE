@@ -99,7 +99,7 @@ namespace API.Services
 
             context.Database?.CommitTransactionAsync();
 
-            return new JsonResult(createdUser);
+            return new JsonResult(createdUser) {StatusCode = 201};
         }
 
         public async Task<IActionResult> AuthenticateAsync(string login, string password)

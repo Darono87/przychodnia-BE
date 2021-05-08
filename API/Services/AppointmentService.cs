@@ -74,7 +74,7 @@ namespace API.Services
                 Registrar = registrar
             };
 
-            return new JsonResult(await appointmentRepository.AddAsync(appointment));
+            return new JsonResult(await appointmentRepository.AddAsync(appointment)) {StatusCode = 201};
         }
     }
 }

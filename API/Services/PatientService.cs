@@ -44,7 +44,7 @@ namespace API.Services
                 }
             };
 
-            return new JsonResult(await patientRepository.AddAsync(patient));
+            return new JsonResult(await patientRepository.AddAsync(patient)) {StatusCode = 201};
         }
     }
 }
