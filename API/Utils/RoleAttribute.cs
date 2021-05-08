@@ -19,7 +19,7 @@ namespace API.Utils
         {
             var role = (string)value;
 
-            return roles.Any(role.Contains) ? new ValidationResult(GetErrorMessage()) : ValidationResult.Success;
+            return roles.Any(role.Contains) ? ValidationResult.Success : new ValidationResult(GetErrorMessage());
         }
     }
 }

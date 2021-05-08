@@ -61,7 +61,7 @@ namespace API.Services
         public async Task<IActionResult> CreateAsync(string role, string login, string firstName, string lastName, string password,
             string? permitNumber)
         {
-            var existingUser = userRepository.GetAsync(login);
+            var existingUser = await userRepository.GetAsync(login);
 
             if (existingUser != null)
             {
