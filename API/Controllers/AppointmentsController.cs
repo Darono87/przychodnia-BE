@@ -21,7 +21,7 @@ namespace API.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Registrar")]
-        [ProducesResponseType(typeof(Appointment), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Appointment), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
         // below only when credentials are invalid
         [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status422UnprocessableEntity)]
