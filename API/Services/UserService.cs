@@ -15,6 +15,7 @@ using API.Exceptions;
 using API.Repositories;
 using API.Utils;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 
 namespace API.Services
@@ -57,29 +58,14 @@ namespace API.Services
             this.jwtManager = jwtManager;
         }
 
-        public async Task<User> Create(string role, string login, string firstName, string lastName, string password,
+        public async Task<IActionResult> Create(string role, string login, string firstName, string lastName, string password,
             string? permitNumber)
         {
-            if (login == "" || firstName == "" || lastName == "" || password == "")
-            {
-                throw new ArgumentException("User properties cannot be empty");
-            }
-
             var existingUser = userRepository.GetAsync(login);
 
             if (existingUser != null)
             {
-                throw new LoginTakenException();
-            }
-
-            if (!roles.Any(r => r.ToLower().Contains(role.ToLower())))
-            {
-                throw new RoleNotFoundException();
-            }
-
-            if (!Helper.ValidatePassword(password))
-            {
-                throw new InvalidPasswordException();
+                return new JsonResult(new ExceptionDto() {Message = "Login is already in use"}) { StatusCode = 422 };
             }
 
             context.Database?.BeginTransactionAsync();
@@ -113,33 +99,23 @@ namespace API.Services
 
             context.Database?.CommitTransactionAsync();
 
-            return createdUser;
+            return new JsonResult(createdUser);
         }
 
-        public async Task<AuthenticationDto> Authenticate(string login, string password)
+        public async Task<IActionResult> Authenticate(string login, string password)
         {
-            if (login.Trim() == "" || password.Trim() == "")
-            {
-                throw new ArgumentException("Login / password cannot be empty");
-            }
-
             var user = await userRepository.GetAsync(login);
 
             if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
             {
-                throw new ArgumentException("Invalid credentials");
+                return new JsonResult(new ExceptionDto() {Message = "Invalid credentials"}) { StatusCode = 422 };
             }
 
-            return jwtManager.GenerateTokens(login, await GetRole(login), DateTime.Now);
+            return new JsonResult(jwtManager.GenerateTokens(login, await GetRole(login), DateTime.Now));
         }
 
-        public async Task<AuthenticationDto> Refresh(string accessToken, string refreshToken)
+        public async Task<IActionResult> Refresh(string accessToken, string refreshToken)
         {
-            if (accessToken.Trim() == "" || refreshToken.Trim() == "")
-            {
-                throw new ArgumentException("Tokens cannot be empty");
-            }
-
             var handler = new JwtSecurityTokenHandler();
             var data = handler.ReadJwtToken(accessToken);
             var refreshData = handler.ReadJwtToken(refreshToken);
@@ -147,7 +123,7 @@ namespace API.Services
 
             if (DateTime.Now > date)
             {
-                throw new ArgumentException("Refresh token is expired");
+                return new JsonResult(new ExceptionDto() {Message = "Refresh Token is expired"}) { StatusCode = 422 };
             }
 
             var login = data.Claims.Where(c => c.Type == ClaimTypes.Name).ToArray()[0].Value;
@@ -155,10 +131,10 @@ namespace API.Services
 
             if (user == null || !jwtManager.ContainsRefreshToken(refreshToken))
             {
-                throw new ArgumentException("User does not exist or refresh token is invalid");
+                return new JsonResult(new ExceptionDto() {Message = "User does not exist or refresh token is invalid"}) { StatusCode = 422 };
             }
 
-            return jwtManager.GenerateTokens(user.Login, await GetRole(user.Login), DateTime.Now);
+            return new JsonResult(jwtManager.GenerateTokens(user.Login, await GetRole(user.Login), DateTime.Now));
         }
 
         public async Task<string> GetRole(string login)

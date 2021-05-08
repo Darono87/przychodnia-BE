@@ -7,17 +7,18 @@ using System.Threading.Tasks;
 using API.DTO;
 using API.Entities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Services
 {
     public interface IUserService
     {
-        Task<User> Create(string role, string login, string firstName, string lastName, string password,
+        Task<IActionResult> Create(string role, string login, string firstName, string lastName, string password,
             string? permitNumber);
 
-        Task<AuthenticationDto> Authenticate(string login, string password);
+        Task<IActionResult> Authenticate(string login, string password);
 
-        Task<AuthenticationDto> Refresh(string accessToken, string refreshToken);
+        Task<IActionResult> Refresh(string accessToken, string refreshToken);
 
         Task<string> GetRole(string login);
 

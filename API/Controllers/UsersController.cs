@@ -15,11 +15,11 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UserController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly IUserService userService;
 
-        public UserController(IUserService userService)
+        public UsersController(IUserService userService)
         {
             this.userService = userService;
         }
@@ -28,36 +28,36 @@ namespace API.Controllers
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(BadRequestObjectResult), StatusCodes.Status400BadRequest)]
+        // below only when login is taken
+        [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Create([FromBody] UserCreationDto userDto)
         {
-            return new JsonResult(await userService.Create(userDto.Role, userDto.Login, userDto.FirstName,
+            return await userService.Create(userDto.Role, userDto.Login, userDto.FirstName,
                 userDto.LastName,
                 userDto.Password,
-                userDto.PermitNumber));
+                userDto.PermitNumber);
         }
 
         [HttpPost("authenticate")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(AuthenticationDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(BadRequestObjectResult), StatusCodes.Status400BadRequest)]
+        // below only when credentials are invalid
+        [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Authenticate([FromBody] LoginDto loginDto)
         {
-            return new JsonResult(await userService.Authenticate(loginDto.Login, loginDto.Password));
+            return await userService.Authenticate(loginDto.Login, loginDto.Password);
         }
 
         [HttpPost("refresh")]
         [AllowAnonymous]
-        public IActionResult Refresh([FromBody] RefreshDto refreshDto)
+        [ProducesResponseType(typeof(AuthenticationDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BadRequestObjectResult), StatusCodes.Status400BadRequest)]
+        // below only when credentials are invalid
+        [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status422UnprocessableEntity)]
+        public async Task<IActionResult> Refresh([FromBody] RefreshDto refreshDto)
         {
-            try
-            {
-                var response = userService.Refresh(refreshDto.AccessToken, refreshDto.RefreshToken);
-                return new JsonResult(response);
-            }
-            catch (Exception e)
-            {
-                return new JsonResult(new {message = e.Message}) {StatusCode = 422};
-            }
+            return await userService.Refresh(refreshDto.AccessToken, refreshDto.RefreshToken);
         }
     }
 }

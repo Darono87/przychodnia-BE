@@ -8,16 +8,16 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AppointmentController : ControllerBase
+    public class AppointmentsController : ControllerBase
     {
         private readonly IAppointmentService appointmentService;
 
-        public AppointmentController(IAppointmentService appointmentService)
+        public AppointmentsController(IAppointmentService appointmentService)
         {
             this.appointmentService = appointmentService;
         }
 
-        [HttpPost("add")]
+        [HttpPost]
         [Authorize(Roles = "Registrar")]
         public async Task<IActionResult> AddAppointment([FromBody] AppointmentDto appointmentDto)
         {

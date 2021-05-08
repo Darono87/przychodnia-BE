@@ -8,17 +8,17 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class PatientController : ControllerBase
+    public class PatientsController : ControllerBase
     {
         private readonly IPatientRepository patientRepository;
 
-        public PatientController(IPatientRepository patientRepository)
+        public PatientsController(IPatientRepository patientRepository)
         {
             this.patientRepository = patientRepository;
         }
 
-        [HttpPost("register")]
-        [Authorize(Roles = "Admin,Registrar")]
+        [HttpPost]
+        [Authorize(Roles = "Registrar")]
         public IActionResult RegisterPatient([FromBody] PatientDto patientDto)
         {
             if (patientRepository.Get(patientDto.PeselNumber) != null)
