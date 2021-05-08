@@ -116,7 +116,7 @@ namespace API.Services
             return createdUser;
         }
 
-        public async Task<AuthenticationDTO> Authenticate(string login, string password)
+        public async Task<AuthenticationDto> Authenticate(string login, string password)
         {
             if (login.Trim() == "" || password.Trim() == "")
             {
@@ -133,7 +133,7 @@ namespace API.Services
             return jwtManager.GenerateTokens(login, await GetRole(login), DateTime.Now);
         }
 
-        public async Task<AuthenticationDTO> Refresh(string accessToken, string refreshToken)
+        public async Task<AuthenticationDto> Refresh(string accessToken, string refreshToken)
         {
             if (accessToken.Trim() == "" || refreshToken.Trim() == "")
             {

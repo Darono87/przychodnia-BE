@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace API.DTO
 {
-    public class AuthenticationDTO
+    public class AuthenticationDto
     {
         [Required]
         public string AccessToken { get; set; }
@@ -23,13 +23,13 @@ namespace API.DTO
             return obj switch
             {
                 null => false,
-                AuthenticationDTO other => AccessToken == other.AccessToken && RefreshToken == other.RefreshToken &&
+                AuthenticationDto other => AccessToken == other.AccessToken && RefreshToken == other.RefreshToken &&
                                            Role == other.Role,
                 _ => base.Equals(obj)
             };
         }
 
-        protected bool Equals(AuthenticationDTO other)
+        protected bool Equals(AuthenticationDto other)
         {
             return AccessToken == other.AccessToken && RefreshToken == other.RefreshToken && Role == other.Role;
         }

@@ -26,7 +26,7 @@ namespace API.Services
             this.userService = userService;
         }
 
-        public async Task<IActionResult> CreateAppointment(AppointmentDTO appointmentDto, HttpRequest request)
+        public async Task<IActionResult> CreateAppointment(AppointmentDto appointmentDto, HttpRequest request)
         {
             var doctor = await doctorRepository.GetByPermitNumberAsync(appointmentDto.PermitNumber);
             

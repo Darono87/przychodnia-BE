@@ -395,12 +395,12 @@ namespace API.Tests
             mockLabManagerRepository.Setup(o => o.UpdateAsync(It.IsAny<LabManager>()));
 
             mockJwtManager.Setup(o => o.GenerateTokens(It.IsIn("user1"), It.IsAny<string>(), It.IsAny<DateTime>()))
-                .Returns(new AuthenticationDTO
+                .Returns(new AuthenticationDto
                 {
                     AccessToken = "access_token1", RefreshToken = "refresh_token1", Role = "User"
                 });
             mockJwtManager.Setup(o => o.GenerateTokens(It.IsIn("user2"), It.IsAny<string>(), It.IsAny<DateTime>()))
-                .Returns(new AuthenticationDTO
+                .Returns(new AuthenticationDto
                 {
                     AccessToken = "access_token2", RefreshToken = "refresh_token2", Role = "User"
                 });

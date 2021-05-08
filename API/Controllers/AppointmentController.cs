@@ -19,7 +19,7 @@ namespace API.Controllers
 
         [HttpPost("add")]
         [Authorize(Roles = "Registrar")]
-        public async Task<IActionResult> AddAppointment([FromBody] AppointmentDTO appointmentDto)
+        public async Task<IActionResult> AddAppointment([FromBody] AppointmentDto appointmentDto)
         {
             return await appointmentService.CreateAppointment(appointmentDto, Request);
         }

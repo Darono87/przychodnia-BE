@@ -3,7 +3,9 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Threading.Tasks;
 using API.DTO;
+using API.Entities;
 using API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -22,49 +24,30 @@ namespace API.Controllers
             this.userService = userService;
         }
 
-        [HttpGet("test")]
-        public IActionResult GetInfo()
-        {
-            var res = userService.GetCurrentUser(Request);
-            return new JsonResult(new {message = res.GetType()});
-        }
-
-        [HttpPost("create")]
+        [HttpPost]
         [Authorize(Roles = "Admin")]
-        public IActionResult Create([FromBody] UserCreationDTO userDto)
+        [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BadRequestObjectResult), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Create([FromBody] UserCreationDto userDto)
         {
-            try
-            {
-                userService.Create(userDto.Role, userDto.Login, userDto.FirstName, userDto.LastName, userDto.Password,
-                    userDto.PermitNumber);
-            }
-            catch (Exception e)
-            {
-                return new JsonResult(new {message = e.Message}) {StatusCode = 422};
-            }
-
-            return new OkResult();
+            return new JsonResult(await userService.Create(userDto.Role, userDto.Login, userDto.FirstName,
+                userDto.LastName,
+                userDto.Password,
+                userDto.PermitNumber));
         }
 
         [HttpPost("authenticate")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(AuthenticationDTO), StatusCodes.Status200OK)]
-        public IActionResult Authenticate([FromBody] LoginDTO loginDto)
+        [ProducesResponseType(typeof(AuthenticationDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BadRequestObjectResult), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Authenticate([FromBody] LoginDto loginDto)
         {
-            try
-            {
-                var response = userService.Authenticate(loginDto.Login, loginDto.Password);
-                return new JsonResult(response);
-            }
-            catch (Exception e)
-            {
-                return new JsonResult(new {message = e.Message}) {StatusCode = 422};
-            }
+            return new JsonResult(await userService.Authenticate(loginDto.Login, loginDto.Password));
         }
 
         [HttpPost("refresh")]
         [AllowAnonymous]
-        public IActionResult Refresh([FromBody] RefreshDTO refreshDto)
+        public IActionResult Refresh([FromBody] RefreshDto refreshDto)
         {
             try
             {

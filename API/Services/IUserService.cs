@@ -15,9 +15,9 @@ namespace API.Services
         Task<User> Create(string role, string login, string firstName, string lastName, string password,
             string? permitNumber);
 
-        Task<AuthenticationDTO> Authenticate(string login, string password);
+        Task<AuthenticationDto> Authenticate(string login, string password);
 
-        Task<AuthenticationDTO> Refresh(string accessToken, string refreshToken);
+        Task<AuthenticationDto> Refresh(string accessToken, string refreshToken);
 
         Task<string> GetRole(string login);
 

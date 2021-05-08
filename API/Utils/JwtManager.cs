@@ -26,7 +26,7 @@ namespace API.Utils
             secret = Encoding.ASCII.GetBytes(this.jwtConfig.Secret);
         }
 
-        public AuthenticationDTO GenerateTokens(string username, string role, DateTime startDate)
+        public AuthenticationDto GenerateTokens(string username, string role, DateTime startDate)
         {
             var accessToken = new JwtSecurityToken(
                 jwtConfig.Issuer,
@@ -45,7 +45,7 @@ namespace API.Utils
                     SecurityAlgorithms.HmacSha256Signature)
             );
 
-            var result = new AuthenticationDTO
+            var result = new AuthenticationDto
             {
                 AccessToken = new JwtSecurityTokenHandler().WriteToken(accessToken),
                 RefreshToken = new JwtSecurityTokenHandler().WriteToken(refreshToken),

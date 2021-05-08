@@ -98,7 +98,7 @@ namespace API.Tests.Services
         [Fact]
         public void TestAuthenticateWithValidCredentials()
         {
-            var expectedResult = new AuthenticationDTO
+            var expectedResult = new AuthenticationDto
             {
                 AccessToken = "access_token1", RefreshToken = "refresh_token1", Role = "User"
             };
@@ -132,7 +132,7 @@ namespace API.Tests.Services
         [Fact]
         public void TestRefreshWithValidCredentials()
         {
-            var expectedResult = new AuthenticationDTO
+            var expectedResult = new AuthenticationDto
             {
                 AccessToken = "access_token1", RefreshToken = "refresh_token1", Role = "User"
             };

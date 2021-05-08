@@ -19,14 +19,14 @@ namespace API.Controllers
 
         [HttpPost("register")]
         [Authorize(Roles = "Admin,Registrar")]
-        public IActionResult RegisterPatient([FromBody] PatientDTO patientDto)
+        public IActionResult RegisterPatient([FromBody] PatientDto patientDto)
         {
             if (patientRepository.Get(patientDto.PeselNumber) != null)
             {
                 return new JsonResult(new {message = "Patient with given identity number already exists"})
                 {
                     StatusCode = 422
-                };
+                };  
             }
 
             var patient = new Patient

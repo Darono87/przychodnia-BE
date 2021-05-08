@@ -2,15 +2,16 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.ComponentModel.DataAnnotations;
+
 namespace API.DTO
 {
-    public class UserCreationDTO
+    public class LoginDto
     {
-        public string Role { get; set; }
+        [Required(ErrorMessage = "Login is required")]
         public string Login { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        
+        [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; }
-        public string PermitNumber { get; set; }
     }
 }
