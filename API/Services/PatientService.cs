@@ -21,7 +21,7 @@ namespace API.Services
 
         public async Task<IActionResult> RegisterAsync(PatientDto patientDto)
         {
-            if (patientRepository.GetAsync(patientDto.PeselNumber) != null)
+            if (await patientRepository.GetAsync(patientDto.PeselNumber) != null)
             {
                 return new JsonResult(new ExceptionDto {Message = "Patient with given identity number already exists"})
                 {

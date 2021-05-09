@@ -18,9 +18,7 @@ namespace API.Data
         public DbSet<Patient> Patients { get; set; }
         public DbSet<PhysicalExamination> PhysicalExaminations { get; set; }
         public DbSet<LabExamination> LabExaminations { get; set; }
-        public DbSet<ExaminationStatus> ExaminationStatuses { get; set; }
         public DbSet<ExaminationCode> ExaminationCodes { get; set; }
-        public DbSet<ExaminationType> ExaminationTypes { get; set; }
         public DbSet<Schedule> Schedules { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<Admin> Admins { get; set; }

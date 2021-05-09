@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API.Entities
 {
@@ -16,7 +17,9 @@ namespace API.Entities
 
         public string Diagnosis { get; set; }
 
-        [Required] public ExaminationStatus Status { get; set; }
+        [Required]
+        [Column(TypeName = "varchar(20)")]
+        public AppointmentStatus Status { get; set; }
 
         [Required] public DateTime ScheduledDate { get; set; }
 
@@ -32,5 +35,10 @@ namespace API.Entities
 
         public ICollection<PhysicalExamination> PhysicalExaminations { get; set; }
         public ICollection<LabExamination> LabExaminations { get; set; }
+    }
+
+    public enum AppointmentStatus
+    {
+        Scheduled, Finished, Cancelled
     }
 }

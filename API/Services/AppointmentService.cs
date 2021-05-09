@@ -69,7 +69,7 @@ namespace API.Services
                 Description = appointmentDto.Description,
                 Patient = patient,
                 Doctor = doctor,
-                Status = new ExaminationStatus {Name = "SCHEDULED"},
+                Status = AppointmentStatus.Scheduled,
                 ScheduledDate = appointmentDto.ScheduledDate,
                 Registrar = registrar
             };

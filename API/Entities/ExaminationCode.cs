@@ -4,6 +4,7 @@
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API.Entities
 {
@@ -11,7 +12,9 @@ namespace API.Entities
     {
         [Key] public int Id { get; set; }
 
-        [Required] public ExaminationType Type { get; set; }
+        [Required]
+        [Column(TypeName = "varchar(20)")]
+        public ExaminationType Type { get; set; }
 
         [Required] [MaxLength(300)] public string Name { get; set; }
 
@@ -19,5 +22,10 @@ namespace API.Entities
 
         public ICollection<PhysicalExamination> PhysicalExaminations { get; set; }
         public ICollection<LabExamination> LabExaminations { get; set; }
+    }
+
+    public enum ExaminationType
+    {
+        Physical, Laboratory
     }
 }

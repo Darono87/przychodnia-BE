@@ -4,6 +4,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API.Entities
 {
@@ -23,11 +24,18 @@ namespace API.Entities
 
         [Required] public DateTime ConfirmationDate { get; set; }
 
-        [Required] public ExaminationStatus Status { get; set; }
+        [Required]
+        [Column(TypeName = "varchar(20)")]
+        public ExaminationStatus Status { get; set; }
 
         [Required] public ExaminationCode ExaminationCode { get; set; }
 
         public LabTechnician Technician { get; set; }
         public LabManager Manager { get; set; }
+    }
+
+    public enum ExaminationStatus
+    {
+        Scheduled, Finished, Cancelled, CancelledByManager, Accepted
     }
 }
