@@ -47,6 +47,39 @@ namespace API.Services
             return new JsonResult(await patientRepository.AddAsync(patient)) {StatusCode = 201};
         }
 
+        public async Task<IActionResult> UpdateAsync(int id, PatientDto patientDto)
+        {
+            var patient = await patientRepository.GetAsync(id);
+
+            if (patient == null)
+            {
+                return new JsonResult(new ExceptionDto {Message = "Could not find patient"})
+                {
+                    StatusCode = 422
+                };
+            }
+
+            var patientWithPesel = await patientRepository.GetAsync(patientDto.PeselNumber);
+            
+            if (patientWithPesel != null && patientWithPesel != patient)
+            {
+                return new JsonResult(new ExceptionDto {Message = "Patient with given PESEL number already exists"})
+                {
+                    StatusCode = 422
+                };
+            }
+
+            patient.FirstName = patientDto.FirstName;
+            patient.LastName = patientDto.LastName;
+            patient.Address.City = patientDto.City;
+            patient.Address.Country = patientDto.Country;
+            patient.Address.Street = patientDto.Street;
+            patient.Address.BuildingNumber = patientDto.BuildingNumber;
+            patient.Address.PostalCode = patientDto.PostalCode;
+
+            return new JsonResult(await patientRepository.UpdateAsync(patient));
+        }
+
         public async Task<IActionResult> GetALlAsync(int page, int perPage)
         {
             return new JsonResult(await patientRepository.GetAllAsync(page, perPage));

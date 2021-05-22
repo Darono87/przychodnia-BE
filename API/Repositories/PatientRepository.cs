@@ -34,7 +34,7 @@ namespace API.Repositories
 
         public async Task<Patient> GetAsync(int id)
         {
-            return await context.Patients.FindAsync(id);
+            return await context.Patients.Include(patient => patient.Address).FirstAsync(patient => patient.Id == id);
         }
 
         public async Task<Patient> GetAsync(string PeselNumber)

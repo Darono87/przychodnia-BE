@@ -38,5 +38,14 @@ namespace API.Controllers
         {
             return await patientService.RegisterAsync(patientDto);
         }
+
+        [HttpPatch("{id:int}")]
+        [Authorize(Roles = "Registrar,Admin")]
+        [ProducesResponseType(typeof(Patient), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status422UnprocessableEntity)]
+        public async Task<IActionResult> UpdatePatientAsync(int id, [FromBody] PatientDto patientDto)
+        {
+            return await patientService.UpdateAsync(id, patientDto);
+        }
     }
 }
