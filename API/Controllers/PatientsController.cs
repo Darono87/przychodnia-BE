@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using API.DTO;
 using API.Entities;
 using API.Services;
@@ -17,6 +18,14 @@ namespace API.Controllers
         public PatientsController(IPatientService patientService)
         {
             this.patientService = patientService;
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Registrar")]
+        [ProducesResponseType(typeof(IEnumerable<Patient>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllAsync([FromQuery] int page, [FromQuery] int perPage)
+        {
+            return await patientService.GetALlAsync(page, perPage);
         }
 
         [HttpPost]

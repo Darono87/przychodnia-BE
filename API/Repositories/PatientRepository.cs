@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -40,6 +42,15 @@ namespace API.Repositories
             return await context.Patients
                 .FirstOrDefaultAsync(a =>
                     a.PeselNumber == PeselNumber);
+        }
+
+        public async Task<IEnumerable<Patient>> GetAllAsync(int page, int perPage)
+        {
+            var currentPage = page > 0 ? page : 1;
+            var itemCount = perPage > 0 ? perPage : 20;
+
+            return await Task.FromResult(context.Patients.Skip(itemCount * (currentPage - 1)).Take(itemCount)
+                .Include(patient => patient.Address));
         }
     }
 }

@@ -46,5 +46,10 @@ namespace API.Services
 
             return new JsonResult(await patientRepository.AddAsync(patient)) {StatusCode = 201};
         }
+
+        public async Task<IActionResult> GetALlAsync(int page, int perPage)
+        {
+            return new JsonResult(await patientRepository.GetAllAsync(page, perPage));
+        }
     }
 }
