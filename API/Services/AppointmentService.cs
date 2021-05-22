@@ -26,6 +26,18 @@ namespace API.Services
             this.userService = userService;
         }
 
+        public async Task<IActionResult> GetAllAppointmentsAsync(int page, int perPage, string peselNumber,
+            string permitNumber)
+        {
+            if (!string.IsNullOrEmpty(peselNumber) || !string.IsNullOrEmpty(permitNumber))
+            {
+                return new JsonResult(
+                    await appointmentRepository.GetAllFilteredAsync(page, perPage, peselNumber, permitNumber));
+            }
+
+            return new JsonResult(await appointmentRepository.GetAllAsync(page, perPage));
+        }
+
         public async Task<IActionResult> CreateAppointmentAsync(AppointmentDto appointmentDto, HttpRequest request)
         {
             var doctor = await doctorRepository.GetByPermitNumberAsync(appointmentDto.PermitNumber);
@@ -75,6 +87,21 @@ namespace API.Services
             };
 
             return new JsonResult(await appointmentRepository.AddAsync(appointment)) {StatusCode = 201};
+        }
+
+        public async Task<IActionResult> CancelAppointmentAsync(AppointmentCancellationDto appointmentCancellationDto)
+        {
+            var appointment = await appointmentRepository.GetAsync(appointmentCancellationDto.Id);
+
+            appointment.Status = AppointmentStatus.Cancelled;
+            appointment.FinishDate = DateTime.Now;
+
+            if (!string.IsNullOrEmpty(appointmentCancellationDto.Description))
+            {
+                appointment.Description = appointmentCancellationDto.Description;
+            }
+
+            return new JsonResult(await appointmentRepository.UpdateAsync(appointment)) {StatusCode = 200};
         }
     }
 }

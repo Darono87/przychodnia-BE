@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using API.DTO;
 using API.Entities;
 using API.Services;
@@ -19,6 +20,15 @@ namespace API.Controllers
             this.appointmentService = appointmentService;
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Registrar,Doctor")]
+        [ProducesResponseType(typeof(IEnumerable<Appointment>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllAppointmentsAsync([FromQuery] int page, [FromQuery] int perPage,
+            [FromQuery] string peselNumber, [FromQuery] string permitNumber)
+        {
+            return await appointmentService.GetAllAppointmentsAsync(page, perPage, peselNumber, permitNumber);
+        }
+
         [HttpPost]
         [Authorize(Roles = "Registrar")]
         [ProducesResponseType(typeof(Appointment), StatusCodes.Status201Created)]
@@ -28,6 +38,15 @@ namespace API.Controllers
         public async Task<IActionResult> AddAppointmentAsync([FromBody] AppointmentDto appointmentDto)
         {
             return await appointmentService.CreateAppointmentAsync(appointmentDto, Request);
+        }
+
+        [HttpPatch("cancel")]
+        [Authorize(Roles = "Registrar,Doctor")]
+        [ProducesResponseType(typeof(Appointment), StatusCodes.Status200OK)]
+        public async Task<IActionResult> CancelAppointmentAsync(
+            [FromBody] AppointmentCancellationDto appointmentCancellationDto)
+        {
+            return await appointmentService.CancelAppointmentAsync(appointmentCancellationDto);
         }
     }
 }
