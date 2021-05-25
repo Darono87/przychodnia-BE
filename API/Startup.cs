@@ -80,6 +80,7 @@ namespace API
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IPatientService, PatientService>();
             services.AddTransient<IJwtManager, JwtManager>();
+            services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
 
             services.AddControllers()
                 .AddNewtonsoftJson(options =>

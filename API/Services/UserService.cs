@@ -28,6 +28,7 @@ namespace API.Services
         private readonly IGenericUserRepository<LabManager> labManagerRepository;
         private readonly IGenericUserRepository<LabTechnician> labTechnicianRepository;
         private readonly IGenericUserRepository<Registrar> registrarRepository;
+        private readonly IRefreshTokenRepository refreshTokenRepository;
 
         private readonly string[] roles =
         {
@@ -45,7 +46,7 @@ namespace API.Services
             IGenericUserRepository<LabTechnician> labTechnicianRepository,
             IGenericUserRepository<LabManager> labManagerRepository,
             DataContext context,
-            IJwtManager jwtManager)
+            IJwtManager jwtManager,IRefreshTokenRepository refreshTokenRepository)
         {
             this.userRepository = userRepository;
             this.adminRepository = adminRepository;
@@ -55,6 +56,7 @@ namespace API.Services
             this.labManagerRepository = labManagerRepository;
             this.context = context;
             this.jwtManager = jwtManager;
+            this.refreshTokenRepository = refreshTokenRepository;
         }
 
         public async Task<IActionResult> CreateAsync(string role, string login, string firstName, string lastName,
@@ -113,7 +115,15 @@ namespace API.Services
                 return new JsonResult(new ExceptionDto {Message = "Invalid credentials"}) {StatusCode = 422};
             }
 
-            return new JsonResult(jwtManager.GenerateTokens(login, await GetRoleAsync(login), DateTime.Now));
+            var tokens = jwtManager.GenerateTokens(login, await GetRoleAsync(login), DateTime.Now);
+            
+            var handler = new JwtSecurityTokenHandler();
+            var refreshData = handler.ReadJwtToken(tokens.RefreshToken);
+            var date = refreshData.ValidTo;
+
+            await refreshTokenRepository.Add(new RefreshToken {Token = tokens.RefreshToken, ValidTill = date});
+
+            return new JsonResult(tokens);
         }
 
         public async Task<IActionResult> RefreshAsync(string accessToken, string refreshToken)
@@ -128,16 +138,27 @@ namespace API.Services
                 return new JsonResult(new ExceptionDto {Message = "Refresh Token is expired"}) {StatusCode = 422};
             }
 
+            var refreshTokenEntity = await refreshTokenRepository.Get(refreshToken);
+
             var login = data.Claims.Where(c => c.Type == ClaimTypes.Name).ToArray()[0].Value;
             var user = await userRepository.GetAsync(login);
 
-            if (user == null || !jwtManager.ContainsRefreshToken(refreshToken))
+            if (user == null || refreshTokenEntity == null)
             {
                 return new JsonResult(new ExceptionDto {Message = "User does not exist or refresh token is invalid"})
                 {
                     StatusCode = 422
                 };
             }
+
+            await refreshTokenRepository.Remove(refreshToken);
+
+            var tokens = jwtManager.GenerateTokens(user.Login, await GetRoleAsync(user.Login), DateTime.Now);
+            
+            refreshData = handler.ReadJwtToken(tokens.RefreshToken);
+            date = refreshData.ValidTo;
+
+            await refreshTokenRepository.Add(new RefreshToken {Token = tokens.RefreshToken, ValidTill = date});
 
             return new JsonResult(jwtManager.GenerateTokens(user.Login, await GetRoleAsync(user.Login), DateTime.Now));
         }
