@@ -53,14 +53,11 @@ namespace API.Services
 
             if (patient == null)
             {
-                return new JsonResult(new ExceptionDto {Message = "Could not find patient"})
-                {
-                    StatusCode = 422
-                };
+                return new JsonResult(new ExceptionDto {Message = "Could not find patient"}) {StatusCode = 422};
             }
 
             var patientWithPesel = await patientRepository.GetAsync(patientDto.PeselNumber);
-            
+
             if (patientWithPesel != null && patientWithPesel != patient)
             {
                 return new JsonResult(new ExceptionDto {Message = "Patient with given PESEL number already exists"})

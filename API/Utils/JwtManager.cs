@@ -31,7 +31,7 @@ namespace API.Utils
             var accessToken = new JwtSecurityToken(
                 jwtConfig.Issuer,
                 jwtConfig.Audience,
-                new Claim[] {new(ClaimTypes.Role, role), new(ClaimTypes.Name, username)},
+                new Claim[] {new (ClaimTypes.Role, role), new (ClaimTypes.Name, username)},
                 expires: startDate.AddMinutes(jwtConfig.AccessTokenExpiration),
                 signingCredentials: new SigningCredentials(new SymmetricSecurityKey(secret),
                     SecurityAlgorithms.HmacSha256Signature)
@@ -39,7 +39,7 @@ namespace API.Utils
             var refreshToken = new JwtSecurityToken(
                 jwtConfig.Issuer,
                 jwtConfig.Audience,
-                new Claim[] {new(ClaimTypes.Role, role), new(ClaimTypes.Name, username)},
+                new Claim[] {new (ClaimTypes.Role, role), new (ClaimTypes.Name, username)},
                 expires: startDate.AddMinutes(jwtConfig.RefreshTokenExpiration),
                 signingCredentials: new SigningCredentials(new SymmetricSecurityKey(secret),
                     SecurityAlgorithms.HmacSha256Signature)

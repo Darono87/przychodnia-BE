@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using API.Utils;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace API
@@ -7,7 +9,14 @@ namespace API
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+
+            using var scope = host.Services.CreateScope();
+            var serviceProvider = scope.ServiceProvider;
+            var dbSeeder = serviceProvider.GetRequiredService<DbSeeder>();
+            dbSeeder.SeedData();
+
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args)

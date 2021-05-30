@@ -17,7 +17,7 @@ namespace API.Repositories
         {
             this.context = context;
         }
-        
+
         public async Task<RefreshToken> Get(string token)
         {
             return await context.RefreshTokens.FirstOrDefaultAsync(refreshToken => refreshToken.Token == token);
@@ -38,7 +38,7 @@ namespace API.Repositories
 
             return result.Entity;
         }
-        
+
         public async Task Remove(string token)
         {
             var refreshToken = await context.RefreshTokens.FirstOrDefaultAsync(t => t.Token == token);

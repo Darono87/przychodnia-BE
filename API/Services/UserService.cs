@@ -27,8 +27,8 @@ namespace API.Services
         private readonly IJwtManager jwtManager;
         private readonly IGenericUserRepository<LabManager> labManagerRepository;
         private readonly IGenericUserRepository<LabTechnician> labTechnicianRepository;
-        private readonly IGenericUserRepository<Registrar> registrarRepository;
         private readonly IRefreshTokenRepository refreshTokenRepository;
+        private readonly IGenericUserRepository<Registrar> registrarRepository;
 
         private readonly string[] roles =
         {
@@ -46,7 +46,7 @@ namespace API.Services
             IGenericUserRepository<LabTechnician> labTechnicianRepository,
             IGenericUserRepository<LabManager> labManagerRepository,
             DataContext context,
-            IJwtManager jwtManager,IRefreshTokenRepository refreshTokenRepository)
+            IJwtManager jwtManager, IRefreshTokenRepository refreshTokenRepository)
         {
             this.userRepository = userRepository;
             this.adminRepository = adminRepository;
@@ -116,7 +116,7 @@ namespace API.Services
             }
 
             var tokens = jwtManager.GenerateTokens(login, await GetRoleAsync(login), DateTime.Now);
-            
+
             var handler = new JwtSecurityTokenHandler();
             var refreshData = handler.ReadJwtToken(tokens.RefreshToken);
             var date = refreshData.ValidTo;
@@ -154,7 +154,7 @@ namespace API.Services
             await refreshTokenRepository.Remove(refreshToken);
 
             var tokens = jwtManager.GenerateTokens(user.Login, await GetRoleAsync(user.Login), DateTime.Now);
-            
+
             refreshData = handler.ReadJwtToken(tokens.RefreshToken);
             date = refreshData.ValidTo;
 
