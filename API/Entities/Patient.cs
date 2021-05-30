@@ -9,6 +9,7 @@ namespace API.Entities
 {
     public class Patient
     {
+        public ICollection<Appointment> Appointments;
         [Key] public int Id { get; set; }
 
         [Required] [MaxLength(80)] public string FirstName { get; set; }
@@ -18,7 +19,5 @@ namespace API.Entities
         [Required] [MaxLength(11)] public string PeselNumber { get; set; }
 
         [Required] public Address Address { get; set; }
-
-        public ICollection<Appointment> Appointments;
     }
 }

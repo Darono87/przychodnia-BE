@@ -73,12 +73,21 @@ namespace API
             services.AddTransient<IGenericUserRepository<Doctor>, DoctorRepository>();
             services.AddTransient<IGenericUserRepository<LabTechnician>, LabTechnicianRepository>();
             services.AddTransient<IGenericUserRepository<LabManager>, LabManagerRepository>();
+
             services.AddTransient<IPatientRepository, PatientRepository>();
             services.AddTransient<IDoctorRepository, DoctorRepository>();
+
             services.AddTransient<IAppointmentRepository, AppointmentRepository>();
-            services.AddTransient<IAppointmentService, AppointmentService>();
+
+            services.AddTransient<IExaminationCodeRepository, ExaminationCodeRepository>();
+            services.AddTransient<IPhysicalExaminationRepository, PhysicalExaminationRepository>();
+
             services.AddTransient<IUserService, UserService>();
+
+            services.AddTransient<IAppointmentService, AppointmentService>();
             services.AddTransient<IPatientService, PatientService>();
+            services.AddTransient<IPhysicalExaminationService, PhysicalExaminationService>();
+
             services.AddTransient<IJwtManager, JwtManager>();
 
             services.AddControllers()
