@@ -12,6 +12,6 @@ namespace API.Services
     {
         Task<IActionResult> RegisterAsync(PatientDto patientDto);
         Task<IActionResult> UpdateAsync(int id, PatientDto patientDto);
-        Task<IActionResult> GetALlAsync(int page, int perPage);
+        Task<IActionResult> GetAllAsync(int page, int perPage);
     }
 }

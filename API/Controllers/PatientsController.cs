@@ -25,7 +25,7 @@ namespace API.Controllers
         [ProducesResponseType(typeof(IEnumerable<Patient>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllAsync([FromQuery] int page, [FromQuery] int perPage)
         {
-            return await patientService.GetALlAsync(page, perPage);
+            return await patientService.GetAllAsync(page, perPage);
         }
 
         [HttpPost]

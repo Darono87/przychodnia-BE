@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace API.Entities
@@ -17,5 +18,7 @@ namespace API.Entities
         [Required] [MaxLength(11)] public string PeselNumber { get; set; }
 
         [Required] public Address Address { get; set; }
+
+        public ICollection<Appointment> Appointments;
     }
 }
