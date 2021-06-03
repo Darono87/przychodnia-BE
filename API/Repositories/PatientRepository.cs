@@ -44,13 +44,17 @@ namespace API.Repositories
                     a.PeselNumber == PeselNumber);
         }
 
-        public async Task<IEnumerable<Patient>> GetAllAsync(int page, int perPage)
+        public async Task<Patient[]> GetAllAsync(int? page, int? perPage)
         {
-            var currentPage = page > 0 ? page : 1;
-            var itemCount = perPage > 0 ? perPage : 20;
+            if(page is int pageInt && perPage is int perPageInt) {
+                var currentPage = pageInt > 0 ? pageInt : 1;
+                var itemCount = perPageInt > 0 ? perPageInt : 20;
 
-            return await Task.FromResult(context.Patients.Skip(itemCount * (currentPage - 1)).Take(itemCount)
-                .Include(patient => patient.Address));
+                return await Task.FromResult(context.Patients.Skip(itemCount * (currentPage - 1)).Take(itemCount)
+                    .Include(patient => patient.Address).ToArray());
+            } else { 
+                return await context.Patients.ToArrayAsync();
+            }
         }
     }
 }

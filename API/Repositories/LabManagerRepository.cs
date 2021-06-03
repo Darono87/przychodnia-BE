@@ -41,6 +41,11 @@ namespace API.Repositories
             return await context.LabManagers.FindAsync(id);
         }
 
+        public async Task<LabManager[]> GetAllAsync()
+        {
+            return await context.LabManagers.Include(lm=>lm.User).ToArrayAsync();
+        }
+
         public async Task<LabManager> GetAsync(string login)
         {
             return await context.LabManagers

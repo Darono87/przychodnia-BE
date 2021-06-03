@@ -47,6 +47,11 @@ namespace API.Repositories
             return await context.Doctors.FindAsync(id);
         }
 
+        public async Task<Doctor[]> GetAllAsync()
+        {
+            return await context.Doctors.Include(d=>d.User).ToArrayAsync();
+        }
+
         public async Task<Doctor> GetAsync(string login)
         {
             return await context.Doctors

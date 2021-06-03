@@ -16,7 +16,6 @@ namespace API.Utils
             return "Role has to be one of: Admin, Registrar, Doctor, LabTechnician or LabManager";
         }
 
-
         protected override ValidationResult IsValid(object value,
             ValidationContext validationContext)
         {

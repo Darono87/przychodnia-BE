@@ -59,6 +59,49 @@ namespace API.Services
             this.refreshTokenRepository = refreshTokenRepository;
         }
 
+        public async Task<IActionResult> GetSuggestionsAsync(string role){
+            var roleAtr = new RoleAttribute();
+            if(!roleAtr.IsValid(role)){
+                return new JsonResult(new ExceptionDto {Message = roleAtr.ErrorMessage}) {StatusCode = 422};
+            }
+            SuggestionsDto suggestions; 
+            switch(role){
+                case "LabTechnician":
+                    var techs = await labTechnicianRepository.GetAllAsync();
+                    suggestions = new SuggestionsDto { Suggestions = techs.Select(tech => { 
+                        return new SuggestionsDto.Suggestion{value = tech.User.Id, label = tech.User.FirstName};
+                    })};
+                    break;
+                case "Registrar":
+                    var regs = await registrarRepository.GetAllAsync();
+                    suggestions = new SuggestionsDto { Suggestions = regs.Select(reg => { 
+                        return new SuggestionsDto.Suggestion{value = reg.User.Id, label = reg.User.FirstName};
+                    })};
+                    break;
+                case "Admin":
+                    var admins = await adminRepository.GetAllAsync();
+                    suggestions = new SuggestionsDto { Suggestions = admins.Select(adm => { 
+                        return new SuggestionsDto.Suggestion{value = adm.User.Id, label = adm.User.FirstName};
+                    })};
+                    break;
+                case "Doctor":
+                    var doctors = await doctorRepository.GetAllAsync();
+                    suggestions = new SuggestionsDto { Suggestions = doctors.Select(dc => { 
+                        return new SuggestionsDto.Suggestion{value = dc.User.Id, label = dc.User.FirstName};
+                    })};
+                    break;
+                case "LabManager":
+                default:
+                    var managers = await labManagerRepository.GetAllAsync();
+                    suggestions = new SuggestionsDto { Suggestions = managers.Select(mgr => { 
+                        return new SuggestionsDto.Suggestion{value = mgr.User.Id, label = mgr.User.FirstName};
+                    })};
+                    break;
+            }
+
+            return new JsonResult(suggestions);
+        }
+
         public async Task<IActionResult> CreateAsync(string role, string login, string firstName, string lastName,
             string password,
             string? permitNumber)

@@ -19,6 +19,11 @@ namespace API.Repositories
             this.context = context;
         }
 
+        public async Task<Registrar[]> GetAllAsync()
+        {
+            return await context.Registrars.Include(r=>r.User).ToArrayAsync();
+        }
+
         public async Task<Registrar> AddAsync(Registrar obj)
         {
             var result = context.Registrars.Add(obj);

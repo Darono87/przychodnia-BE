@@ -27,6 +27,11 @@ namespace API.Repositories
             return result.Entity;
         }
 
+        public async Task<Admin[]> GetAllAsync()
+        {
+            return await context.Admins.Include(admin=>admin.User).ToArrayAsync();
+        }
+
         public async Task<Admin> UpdateAsync(Admin obj)
         {
             var result = context.Admins.Update(obj);

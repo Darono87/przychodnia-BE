@@ -27,6 +27,11 @@ namespace API.Repositories
             return result.Entity;
         }
 
+        public async Task<LabTechnician[]> GetAllAsync()
+        {
+            return await context.LabTechnicians.Include(lt=>lt.User).ToArrayAsync();
+        }
+
         public async Task<LabTechnician> UpdateAsync(LabTechnician obj)
         {
             var result = context.LabTechnicians.Update(obj);

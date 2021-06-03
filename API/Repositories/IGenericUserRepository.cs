@@ -12,5 +12,7 @@ namespace API.Repositories
         Task<T> UpdateAsync(T obj);
         Task<T> GetAsync(int id);
         Task<T> GetAsync(string login);
+
+        Task<T[]> GetAllAsync();
     }
 }

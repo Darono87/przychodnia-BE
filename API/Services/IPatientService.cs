@@ -10,6 +10,7 @@ namespace API.Services
 {
     public interface IPatientService
     {
+        Task<IActionResult> GetSuggestionsAsync();
         Task<IActionResult> RegisterAsync(PatientDto patientDto);
         Task<IActionResult> UpdateAsync(int id, PatientDto patientDto);
         Task<IActionResult> GetAllAsync(int page, int perPage);

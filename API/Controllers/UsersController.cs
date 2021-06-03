@@ -23,6 +23,16 @@ namespace API.Controllers
             this.userService = userService;
         }
 
+        [HttpGet("suggestions")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof( SuggestionsDto), StatusCodes.Status200OK)]
+        // below only when wrong role
+        [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status422UnprocessableEntity)]
+        public async Task<IActionResult> GetSuggestionsAsync([FromQuery] string role)
+        {
+            return await userService.GetSuggestionsAsync(role);
+        }
+
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]

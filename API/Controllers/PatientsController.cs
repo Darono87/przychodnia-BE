@@ -47,5 +47,15 @@ namespace API.Controllers
         {
             return await patientService.UpdateAsync(id, patientDto);
         }
+
+        [HttpGet("suggestions")]
+        [Authorize]
+        [ProducesResponseType(typeof( SuggestionsDto), StatusCodes.Status200OK)]
+        // below only when wrong role
+        [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status422UnprocessableEntity)]
+        public async Task<IActionResult> GetSuggestionsAsync()
+        {
+            return await patientService.GetSuggestionsAsync();
+        }
     }
 }

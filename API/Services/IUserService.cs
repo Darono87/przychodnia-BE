@@ -11,6 +11,7 @@ namespace API.Services
 {
     public interface IUserService
     {
+        Task<IActionResult> GetSuggestionsAsync(string role);
         Task<IActionResult> CreateAsync(string role, string login, string firstName, string lastName, string password,
             string? permitNumber);
 

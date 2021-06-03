@@ -10,6 +10,6 @@ namespace API.Repositories
         Task<Patient> UpdateAsync(Patient patient);
         Task<Patient> GetAsync(int id);
         Task<Patient> GetAsync(string PeselNumber);
-        Task<IEnumerable<Patient>> GetAllAsync(int page, int perPage);
+        Task<Patient[]> GetAllAsync(int? page = null, int? perPage = null);
     }
 }

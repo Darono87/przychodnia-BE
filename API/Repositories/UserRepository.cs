@@ -26,6 +26,11 @@ namespace API.Repositories
             return result.Entity;
         }
 
+        public async Task<User[]> GetAllAsync()
+        {
+            return await context.Users.ToArrayAsync();
+        }
+
         public async Task<User> UpdateAsync(User user)
         {
             var result = context.Users.Update(user);

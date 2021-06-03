@@ -7,6 +7,7 @@ using API.DTO;
 using API.Entities;
 using API.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace API.Services
 {
@@ -17,6 +18,14 @@ namespace API.Services
         public PatientService(IPatientRepository patientRepository)
         {
             this.patientRepository = patientRepository;
+        }
+
+        public async Task<IActionResult> GetSuggestionsAsync(){
+            var patients = await patientRepository.GetAllAsync();
+            var suggestions = new SuggestionsDto { Suggestions = patients.Select(pt => { 
+                return new SuggestionsDto.Suggestion{value = pt.Id, label = $"{pt.FirstName} {pt.LastName}"};
+            })};
+            return new JsonResult(suggestions);
         }
 
         public async Task<IActionResult> RegisterAsync(PatientDto patientDto)
