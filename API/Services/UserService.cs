@@ -70,6 +70,14 @@ namespace API.Services
                 return new JsonResult(new ExceptionDto {Message = "Login is already in use"}) {StatusCode = 422};
             }
 
+            if (role == "Doctor" && string.IsNullOrEmpty(permitNumber))
+            {
+                return new JsonResult(new ExceptionDto {Message = "Doctor role requires a permit number"})
+                {
+                    StatusCode = 422
+                };
+            }
+
             context.Database?.BeginTransactionAsync();
 
             var createdUser = await userRepository.AddAsync(new User

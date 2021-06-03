@@ -10,6 +10,8 @@ namespace API.Entities
     {
         [Key] public int Id { get; set; }
 
+        [Required] public Appointment Appointment { get; set; }
+
         [Required] public string Result { get; set; }
 
         [Required] public ExaminationCode ExaminationCode { get; set; }

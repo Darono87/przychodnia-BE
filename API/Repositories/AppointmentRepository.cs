@@ -17,7 +17,7 @@ namespace API.Repositories
 
         public async Task<Appointment> AddAsync(Appointment appointment)
         {
-            var result = context.Appointments.Add(appointment);
+            var result = await context.Appointments.AddAsync(appointment);
             await context.SaveChangesAsync();
 
             return result.Entity;
