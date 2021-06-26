@@ -2,7 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using API.Data;
+using Microsoft.EntityFrameworkCore;
 using API.Entities;
+using API.DTO;
 
 namespace API.Repositories
 {
@@ -36,13 +38,23 @@ namespace API.Repositories
             return await context.Appointments.FindAsync(id);
         }
 
-        public async Task<IEnumerable<Appointment>> GetAllAsync(int page, int perPage)
+        public async Task<PaginationDTO<Appointment>> GetAllAsync(int page, int perPage)
         {
             var currentPage = page > 0 ? page : 1;
             var itemCount = perPage > 0 ? perPage : 20;
 
-            return await Task.FromResult(context.Appointments.Skip(itemCount * (currentPage - 1)).Take(itemCount)
+            var appointments = await Task.FromResult(context.Appointments.Skip(itemCount * (currentPage - 1)).Take(itemCount)
+                .Include(appointment => appointment.Doctor.User)
+                .Include(appointment => appointment.Patient)
                 .AsEnumerable());
+
+            var count = await Task.FromResult(context.Appointments.Count());
+            appointments = appointments.Select(appointment => {
+                appointment.Doctor.User.PasswordHash = null;
+                return appointment;
+            });
+
+            return new PaginationDTO<Appointment>{items=appointments, count=count};
         }
 
         public async Task<IEnumerable<Appointment>> GetAllFilteredAsync(int page, int perPage, string peselNumber,

@@ -25,7 +25,7 @@ namespace API.Entities
 
         [Required] public DateTime RegistrationDate { get; set; }
 
-        public DateTime FinishDate { get; set; }
+        public DateTime? FinishDate { get; set; }
 
         [Required] public Doctor Doctor { get; set; }
 
