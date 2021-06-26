@@ -24,7 +24,7 @@ namespace API.Controllers
         }
 
         [HttpGet("suggestions")]
-        [AllowAnonymous]
+        [Authorize]
         [ProducesResponseType(typeof( SuggestionsDto), StatusCodes.Status200OK)]
         // below only when wrong role
         [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status422UnprocessableEntity)]

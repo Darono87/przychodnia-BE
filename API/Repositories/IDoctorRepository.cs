@@ -5,6 +5,9 @@ namespace API.Repositories
 {
     public interface IDoctorRepository
     {
+
+        public Task<Doctor> GetAsync(int id);
+
         public Task<Doctor> GetByPermitNumberAsync(string permitNumber);
     }
 }

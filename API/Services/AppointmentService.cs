@@ -40,7 +40,7 @@ namespace API.Services
 
         public async Task<IActionResult> CreateAppointmentAsync(AppointmentDto appointmentDto, HttpRequest request)
         {
-            var doctor = await doctorRepository.GetByPermitNumberAsync(appointmentDto.PermitNumber);
+            var doctor = await doctorRepository.GetAsync(appointmentDto.DoctorId);
 
             if (doctor == null)
             {
@@ -50,7 +50,7 @@ namespace API.Services
                 };
             }
 
-            var patient = await patientRepository.GetAsync(appointmentDto.PeselNumber);
+            var patient = await patientRepository.GetAsync(appointmentDto.PatientId);
 
             if (patient == null)
             {

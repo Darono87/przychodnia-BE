@@ -11,10 +11,10 @@ namespace API.DTO
         [Required(ErrorMessage = "Scheduled date is required")]
         public DateTime ScheduledDate { get; set; }
 
-        [Required(ErrorMessage = "Pesel number is required")]
-        public string PeselNumber { get; set; }
+        [Required(ErrorMessage = "Doctor ID is required")]
+        public int DoctorId { get; set; }
 
-        [Required(ErrorMessage = "Permit number is required")]
-        public string PermitNumber { get; set; }
+        [Required(ErrorMessage = "Patient ID is required")]
+        public int PatientId { get; set; }
     }
 }
