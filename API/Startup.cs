@@ -83,6 +83,7 @@ namespace API
             services.AddTransient<IPhysicalExaminationRepository, PhysicalExaminationRepository>();
 
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IExaminationCodeService, ExaminationCodeService>();
 
             services.AddTransient<IAppointmentService, AppointmentService>();
             services.AddTransient<IPatientService, PatientService>();

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using API.DTO;
 using API.Entities;
@@ -102,6 +104,12 @@ namespace API.Services
             }
 
             return new JsonResult(await appointmentRepository.UpdateAsync(appointment)) {StatusCode = 200};
+        }
+
+        public async Task<IActionResult> GetSuggestionsAsync(HttpRequest request){
+            var currentUser = (Doctor) await userService.GetCurrentUserAsync(request);
+            var appointments = await appointmentRepository.GetSuggestionsAsync(currentUser.Id);
+            return new JsonResult(appointments);
         }
     }
 }

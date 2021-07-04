@@ -10,5 +10,7 @@ namespace API.Services
         Task<IActionResult> GetAllAppointmentsAsync(int page, int perPage, string peselNumber, string permitNumber);
         Task<IActionResult> CreateAppointmentAsync(AppointmentDto appointmentDto, HttpRequest request);
         Task<IActionResult> CancelAppointmentAsync(AppointmentCancellationDto appointmentCancellationDto);
+
+        Task<IActionResult> GetSuggestionsAsync(HttpRequest request);
     }
 }

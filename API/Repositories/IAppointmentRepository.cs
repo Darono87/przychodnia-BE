@@ -12,6 +12,8 @@ namespace API.Repositories
         Task<Appointment> GetAsync(int id);
         Task<PaginationDTO<Appointment>> GetAllAsync(int page, int perPage);
 
+        Task<SuggestionsDto> GetSuggestionsAsync(int doctorId);
+
         Task<IEnumerable<Appointment>> GetAllFilteredAsync(int page, int perPage, string peselNumber,
             string permitNumber);
     }

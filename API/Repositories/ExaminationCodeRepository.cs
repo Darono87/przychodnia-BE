@@ -1,7 +1,9 @@
 ﻿using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
+using API.DTO;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace API.Repositories
 {
@@ -38,6 +40,16 @@ namespace API.Repositories
         public async Task<ExaminationCode> GetAsync(string abbreviation)
         {
             return await context.ExaminationCodes.FirstOrDefaultAsync(ec => ec.Abbreviation == abbreviation);
+        }
+
+        public async Task<SuggestionsDto> GetAllAsync()
+        {
+            var codes = await context.ExaminationCodes.Select(code=>new SuggestionsDto.Suggestion(){
+                label = code.Abbreviation + ": " + code.Name,
+                value = code.Id
+            }).ToArrayAsync();
+
+            return new SuggestionsDto(){Suggestions=codes};
         }
     }
 }

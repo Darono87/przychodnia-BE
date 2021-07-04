@@ -5,6 +5,7 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 using API.Entities;
 using API.DTO;
+using static API.DTO.SuggestionsDto;
 
 namespace API.Repositories
 {
@@ -55,6 +56,16 @@ namespace API.Repositories
             });
 
             return new PaginationDTO<Appointment>{items=appointments, count=count};
+        }
+
+        public async Task<SuggestionsDto> GetSuggestionsAsync(int doctorId){
+            var suggestions = await context.Appointments
+                .Where(a=>a.Doctor.Id == doctorId)
+                .Select(a=>new Suggestion(){
+                    value=a.Id,
+                    label=a.ScheduledDate.ToUniversalTime()+", "+a.Patient.FirstName+" "+a.Patient.LastName
+                }).ToListAsync();
+            return new SuggestionsDto(){Suggestions = suggestions};
         }
 
         public async Task<IEnumerable<Appointment>> GetAllFilteredAsync(int page, int perPage, string peselNumber,

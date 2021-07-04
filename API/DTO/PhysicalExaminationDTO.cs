@@ -8,7 +8,7 @@ namespace API.DTO
         public int AppointmentId;
 
         [Required(ErrorMessage = "Examination code is required")]
-        public string ExaminationCodeAbbreviation;
+        public int ExaminationCodeId;
 
         [Required(ErrorMessage = "Physical examination result is required")]
         public string Result;

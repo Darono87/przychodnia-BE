@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using API.DTO;
 using API.Entities;
@@ -47,6 +48,16 @@ namespace API.Controllers
             [FromBody] AppointmentCancellationDto appointmentCancellationDto)
         {
             return await appointmentService.CancelAppointmentAsync(appointmentCancellationDto);
+        }
+
+        [HttpGet("suggestions")]
+        [Authorize]
+        [ProducesResponseType(typeof( SuggestionsDto), StatusCodes.Status200OK)]
+        // below only when wrong role
+        [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status422UnprocessableEntity)]
+        public async Task<IActionResult> GetSuggestionsAsync()
+        {
+            return await appointmentService.GetSuggestionsAsync(Request);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using API.Entities;
+using API.DTO;
 
 namespace API.Repositories
 {
@@ -9,5 +10,7 @@ namespace API.Repositories
         Task<ExaminationCode> UpdateAsync(ExaminationCode examinationCode);
         Task<ExaminationCode> GetAsync(int id);
         Task<ExaminationCode> GetAsync(string abbreviation);
+
+        Task<SuggestionsDto> GetAllAsync();
     }
 }

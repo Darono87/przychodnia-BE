@@ -34,13 +34,8 @@ namespace API.Services
                 };
             }
 
-            if (string.IsNullOrEmpty(physicalExaminationDto.ExaminationCodeAbbreviation))
-            {
-                return new JsonResult(new ExceptionDto {Message = "No examination code was passed"}) {StatusCode = 422};
-            }
-
             var examinationCode =
-                await examinationCodeRepository.GetAsync(physicalExaminationDto.ExaminationCodeAbbreviation);
+                await examinationCodeRepository.GetAsync(physicalExaminationDto.ExaminationCodeId);
 
             if (examinationCode == null)
             {
