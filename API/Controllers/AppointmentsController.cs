@@ -25,9 +25,9 @@ namespace API.Controllers
         [Authorize(Roles = "Registrar,Doctor")]
         [ProducesResponseType(typeof(IEnumerable<Appointment>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllAppointmentsAsync([FromQuery] int page, [FromQuery] int perPage,
-            [FromQuery] string peselNumber, [FromQuery] string permitNumber)
+            [FromQuery] string peselNumber, [FromQuery] string permitNumber, [FromQuery] bool isAscending, [FromQuery] string sortKey)
         {
-            return await appointmentService.GetAllAppointmentsAsync(page, perPage, peselNumber, permitNumber);
+            return await appointmentService.GetAllAppointmentsAsync(page, perPage, peselNumber, permitNumber, Request, isAscending, sortKey);
         }
 
         [HttpPost]

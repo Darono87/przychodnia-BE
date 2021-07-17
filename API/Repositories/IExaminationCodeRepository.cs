@@ -11,6 +11,6 @@ namespace API.Repositories
         Task<ExaminationCode> GetAsync(int id);
         Task<ExaminationCode> GetAsync(string abbreviation);
 
-        Task<SuggestionsDto> GetAllAsync();
+        Task<SuggestionsDto> GetAllAsync(ExaminationType examinationType);
     }
 }

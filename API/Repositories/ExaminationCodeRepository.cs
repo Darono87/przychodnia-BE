@@ -42,12 +42,14 @@ namespace API.Repositories
             return await context.ExaminationCodes.FirstOrDefaultAsync(ec => ec.Abbreviation == abbreviation);
         }
 
-        public async Task<SuggestionsDto> GetAllAsync()
+        public async Task<SuggestionsDto> GetAllAsync(ExaminationType examinationType)
         {
-            var codes = await context.ExaminationCodes.Select(code=>new SuggestionsDto.Suggestion(){
-                label = code.Abbreviation + ": " + code.Name,
-                value = code.Id
-            }).ToArrayAsync();
+            var codes = await context.ExaminationCodes
+                .Where(code=>code.Type == examinationType)
+                .Select(code=>new SuggestionsDto.Suggestion(){
+                    label = code.Abbreviation + ": " + code.Name,
+                    value = code.Id
+                }).ToArrayAsync();
 
             return new SuggestionsDto(){Suggestions=codes};
         }

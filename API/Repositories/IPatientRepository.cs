@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Entities;
+using API.DTO;
 
 namespace API.Repositories
 {
@@ -10,6 +11,7 @@ namespace API.Repositories
         Task<Patient> UpdateAsync(Patient patient);
         Task<Patient> GetAsync(int id);
         Task<Patient> GetAsync(string PeselNumber);
-        Task<Patient[]> GetAllAsync(int? page = null, int? perPage = null);
+        Task<PaginationDTO<Patient>> GetAllAsync(int page, int perPage, bool isAscending, string sortKey);
+        Task<Patient[]> GetAllAsync();
     }
 }

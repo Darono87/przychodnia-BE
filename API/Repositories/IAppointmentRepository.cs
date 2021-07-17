@@ -10,7 +10,7 @@ namespace API.Repositories
         Task<Appointment> AddAsync(Appointment appointment);
         Task<Appointment> UpdateAsync(Appointment appointment);
         Task<Appointment> GetAsync(int id);
-        Task<PaginationDTO<Appointment>> GetAllAsync(int page, int perPage);
+        Task<PaginationDTO<Appointment>> GetAllAsync(int page, int perPage, int? doctorId, bool isAscending, string sortKey);
 
         Task<SuggestionsDto> GetSuggestionsAsync(int doctorId);
 

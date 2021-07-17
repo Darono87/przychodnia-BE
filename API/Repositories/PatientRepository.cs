@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using API.Data;
+using API.DTO;
 using API.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -44,17 +44,35 @@ namespace API.Repositories
                     a.PeselNumber == PeselNumber);
         }
 
-        public async Task<Patient[]> GetAllAsync(int? page, int? perPage)
+        public async Task<PaginationDTO<Patient>> GetAllAsync(int page, int perPage, bool isAscending, string sortKey)
         {
-            if(page is int pageInt && perPage is int perPageInt) {
-                var currentPage = pageInt > 0 ? pageInt : 1;
-                var itemCount = perPageInt > 0 ? perPageInt : 20;
 
-                return await Task.FromResult(context.Patients.Skip(itemCount * (currentPage - 1)).Take(itemCount)
-                    .Include(patient => patient.Address).ToArray());
-            } else { 
-                return await context.Patients.ToArrayAsync();
-            }
+            var count = await context.Patients.CountAsync();
+            var currentPage = page > 0 ? page : 1;
+            var itemCount = perPage > 0 ? perPage : 20;
+
+            var patientContext = context.Patients.Include(patient => patient.Address);
+
+            var sortedPatients = sortKey switch{
+                "peselNumber" =>isAscending ? patientContext.OrderBy(p=>p.PeselNumber) : patientContext.OrderByDescending(p=>p.PeselNumber),
+                "country" => isAscending ? patientContext.OrderBy(p=>p.Address.Country) : patientContext.OrderByDescending(p=>p.Address.Country),
+                "address" => isAscending ? patientContext.OrderBy(p=>p.Address.City).ThenBy(p=>p.Address.Street).ThenBy(p=>p.Address.BuildingNumber) : patientContext.OrderByDescending(p=>p.Address.City).ThenByDescending(p=>p.Address.Street).ThenByDescending(p=>p.Address.BuildingNumber),
+                _ => isAscending ? patientContext.OrderBy(p=>p.FirstName).ThenBy(p=>p.LastName) : patientContext.OrderByDescending(p=>p.FirstName).ThenByDescending(p=>p.LastName)
+            };
+
+            var patients = await Task.FromResult(sortedPatients.Skip(itemCount * (currentPage - 1)).Take(itemCount).ToArray());
+
+            return new PaginationDTO<Patient>(){
+                count = count,
+                items = patients
+            };
+        }
+
+        public async Task<Patient[]> GetAllAsync()
+        {
+
+            var patients = await context.Patients.ToArrayAsync();
+            return patients;
         }
     }
 }

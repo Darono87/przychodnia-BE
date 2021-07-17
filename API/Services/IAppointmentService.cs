@@ -7,7 +7,7 @@ namespace API.Services
 {
     public interface IAppointmentService
     {
-        Task<IActionResult> GetAllAppointmentsAsync(int page, int perPage, string peselNumber, string permitNumber);
+        Task<IActionResult> GetAllAppointmentsAsync(int page, int perPage, string peselNumber, string permitNumber, HttpRequest request, bool isAscending, string sortKey);
         Task<IActionResult> CreateAppointmentAsync(AppointmentDto appointmentDto, HttpRequest request);
         Task<IActionResult> CancelAppointmentAsync(AppointmentCancellationDto appointmentCancellationDto);
 

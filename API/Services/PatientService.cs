@@ -28,6 +28,11 @@ namespace API.Services
             return new JsonResult(suggestions);
         }
 
+        public async Task<IActionResult> GetAsync(int id){
+            var patient = await patientRepository.GetAsync(id);
+            return new JsonResult(patient);
+        }
+
         public async Task<IActionResult> RegisterAsync(PatientDto patientDto)
         {
             if (await patientRepository.GetAsync(patientDto.PeselNumber) != null)
@@ -86,9 +91,9 @@ namespace API.Services
             return new JsonResult(await patientRepository.UpdateAsync(patient));
         }
 
-        public async Task<IActionResult> GetAllAsync(int page, int perPage)
+        public async Task<IActionResult> GetAllAsync(int page, int perPage, bool isAscending, string sortKey)
         {
-            return new JsonResult(await patientRepository.GetAllAsync(page, perPage));
+            return new JsonResult(await patientRepository.GetAllAsync(page, perPage,isAscending,sortKey));
         }
     }
 }

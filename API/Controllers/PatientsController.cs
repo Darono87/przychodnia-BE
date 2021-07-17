@@ -20,12 +20,21 @@ namespace API.Controllers
             this.patientService = patientService;
         }
 
-        [HttpGet]
-        [Authorize(Roles = "Registrar")]
-        [ProducesResponseType(typeof(IEnumerable<Patient>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAllAsync([FromQuery] int page, [FromQuery] int perPage)
+        [HttpGet("{id:int}")]
+        [Authorize(Roles = "Registrar,Doctor,Admin")]
+        [ProducesResponseType(typeof(Patient), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAsync(int id)
         {
-            return await patientService.GetAllAsync(page, perPage);
+            return await patientService.GetAsync(id);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Registrar,Doctor,Admin")]
+        [ProducesResponseType(typeof(IEnumerable<Patient>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllAsync([FromQuery] int page, [FromQuery] int perPage, 
+            [FromQuery] bool isAscending, [FromQuery] string sortKey)
+        {
+            return await patientService.GetAllAsync(page, perPage,isAscending,sortKey);
         }
 
         [HttpPost]
@@ -40,7 +49,7 @@ namespace API.Controllers
         }
 
         [HttpPatch("{id:int}")]
-        [Authorize(Roles = "Registrar,Admin")]
+        [Authorize(Roles = "Registrar")]
         [ProducesResponseType(typeof(Patient), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> UpdatePatientAsync(int id, [FromBody] PatientDto patientDto)

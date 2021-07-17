@@ -5,6 +5,7 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 using API.Entities;
 using API.DTO;
+using API.Utils;
 using static API.DTO.SuggestionsDto;
 
 namespace API.Repositories
@@ -39,17 +40,51 @@ namespace API.Repositories
             return await context.Appointments.FindAsync(id);
         }
 
-        public async Task<PaginationDTO<Appointment>> GetAllAsync(int page, int perPage)
+        public async Task<PaginationDTO<Appointment>> GetAllAsync(int page, int perPage, int? doctorId, bool isAscending, string sortKey)
         {
             var currentPage = page > 0 ? page : 1;
             var itemCount = perPage > 0 ? perPage : 20;
 
-            var appointments = await Task.FromResult(context.Appointments.Skip(itemCount * (currentPage - 1)).Take(itemCount)
+            var appointmentsContext = context.Appointments
+                .Where(appointment=>doctorId == null || appointment.Doctor.Id == doctorId)
                 .Include(appointment => appointment.Doctor.User)
-                .Include(appointment => appointment.Patient)
+                .Include(appointment => appointment.Patient);
+
+            System.Func<Appointment, object> orderFun = sortKey switch{
+                "status" =>  (Appointment a)=>a.Status,
+                "doctor" => (Appointment a) =>a.Doctor.User.FirstName ,
+                "patient" => (Appointment a) =>a.Patient.FirstName ,
+                "registrationDate" => (Appointment a) => a.RegistrationDate,
+                "scheduledDate" => (Appointment a) => a.ScheduledDate,
+                "finishDate" => (Appointment a) => a.FinishDate,
+                "diagnosis" => (Appointment a) => a.Diagnosis,
+                _ => (Appointment a) => a.Description
+            };
+            
+            var appointmentsSorted = appointmentsContext.OrderBy(orderFun);
+            if(!isAscending) {
+                appointmentsSorted = appointmentsContext.OrderByDescending(orderFun);
+                if(sortKey == "doctor")
+                    appointmentsSorted = appointmentsSorted.ThenByDescending(a=>a.Doctor.User.LastName);
+                if(sortKey == "patient")
+                    appointmentsSorted = appointmentsSorted.ThenByDescending(a=>a.Patient.LastName);
+            } else {
+                if(sortKey == "doctor")
+                    appointmentsSorted = appointmentsSorted.ThenBy(a=>a.Doctor.User.LastName);
+                if(sortKey == "patient")
+                    appointmentsSorted = appointmentsSorted.ThenBy(a=>a.Patient.LastName);
+            }
+
+            var appointments = await Task.FromResult(
+                appointmentsSorted
+                .Skip(itemCount * (currentPage - 1))
+                .Take(itemCount)
                 .AsEnumerable());
 
-            var count = await Task.FromResult(context.Appointments.Count());
+            var count = await Task.FromResult(context.Appointments
+                .Where(appointment=>doctorId == null || appointment.Doctor.Id == doctorId)
+                .Count());
+                
             appointments = appointments.Select(appointment => {
                 appointment.Doctor.User.PasswordHash = null;
                 return appointment;

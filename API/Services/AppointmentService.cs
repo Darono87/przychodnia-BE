@@ -29,15 +29,21 @@ namespace API.Services
         }
 
         public async Task<IActionResult> GetAllAppointmentsAsync(int page, int perPage, string peselNumber,
-            string permitNumber)
+            string permitNumber, HttpRequest request, bool isAscending, string sortKey)
         {
+
+            var current = await userService.GetCurrentUserAsync(request);
+            if(current.GetType() == typeof(Doctor)){
+                return new JsonResult(await appointmentRepository.GetAllAsync(page, perPage, ((Doctor)current).Id, isAscending, sortKey));
+            }
+
             if (!string.IsNullOrEmpty(peselNumber) || !string.IsNullOrEmpty(permitNumber))
             {
                 return new JsonResult(
                     await appointmentRepository.GetAllFilteredAsync(page, perPage, peselNumber, permitNumber));
             }
 
-            return new JsonResult(await appointmentRepository.GetAllAsync(page, perPage));
+            return new JsonResult(await appointmentRepository.GetAllAsync(page, perPage, null, isAscending, sortKey));
         }
 
         public async Task<IActionResult> CreateAppointmentAsync(AppointmentDto appointmentDto, HttpRequest request)

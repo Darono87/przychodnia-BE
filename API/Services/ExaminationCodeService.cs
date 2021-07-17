@@ -19,9 +19,31 @@ namespace API.Services
             this.examinationCodeRepository = examinationCodeRepository;
         }
 
-        public async Task<IActionResult> GetSuggestionsAsync(){
-            var suggestions = await examinationCodeRepository.GetAllAsync();
+        public async Task<IActionResult> GetSuggestionsAsync(ExaminationType examinationType){
+            var suggestions = await examinationCodeRepository.GetAllAsync(examinationType);
             return new JsonResult(suggestions);
+        }
+
+        public async Task<IActionResult> CreateExaminationCode (ExaminationCodeDto examinationCodeDto){
+            if (examinationCodeDto.Abbreviation == "")
+            {
+                throw new ArgumentException("Abbreviation cannot be empty");
+            }
+            if (examinationCodeDto.Name == "")
+            {
+                throw new ArgumentException("Name cannot be empty");
+            }
+
+            var examinationCode = new ExaminationCode(){
+                Abbreviation = examinationCodeDto.Abbreviation,
+                Name = examinationCodeDto.Name,
+                Type = examinationCodeDto.Type,
+                PhysicalExaminations = null,
+                LabExaminations = null
+            };
+
+            return new JsonResult(await examinationCodeRepository.AddAsync(examinationCode)) {StatusCode = 201};
+
         }
     }
 }
