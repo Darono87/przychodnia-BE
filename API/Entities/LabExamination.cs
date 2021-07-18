@@ -16,13 +16,13 @@ namespace API.Entities
 
         [Required] public DateTime IssueDate { get; set; }
 
-        [Required] public string Result { get; set; }
+        public string Result { get; set; }
 
-        [Required] public DateTime FinishDate { get; set; }
+        public DateTime FinishDate { get; set; }
 
         public string ManagerRemarks { get; set; }
 
-        [Required] public DateTime ConfirmationDate { get; set; }
+        public DateTime ConfirmationDate { get; set; }
 
         [Required]
         [Column(TypeName = "varchar(20)")]
@@ -32,6 +32,8 @@ namespace API.Entities
 
         public LabTechnician Technician { get; set; }
         public LabManager Manager { get; set; }
+
+        [Required] public Appointment Appointment { get; set; }
     }
 
     public enum ExaminationStatus

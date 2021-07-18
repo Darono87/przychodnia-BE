@@ -81,6 +81,7 @@ namespace API
 
             services.AddTransient<IExaminationCodeRepository, ExaminationCodeRepository>();
             services.AddTransient<IPhysicalExaminationRepository, PhysicalExaminationRepository>();
+            services.AddTransient<ILabExaminationRepository, LabExaminationRepository>();
 
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IExaminationCodeService, ExaminationCodeService>();
@@ -88,6 +89,7 @@ namespace API
             services.AddTransient<IAppointmentService, AppointmentService>();
             services.AddTransient<IPatientService, PatientService>();
             services.AddTransient<IPhysicalExaminationService, PhysicalExaminationService>();
+            services.AddTransient<ILabExaminationService, LabExaminationService>();
 
             services.AddTransient<IJwtManager, JwtManager>();
             services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
