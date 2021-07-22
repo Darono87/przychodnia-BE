@@ -10,6 +10,6 @@ namespace API.Services
         Task<IActionResult> CreatePhysicalExaminationAsync(PhysicalExaminationDTO physicalExaminationDto,
             HttpRequest request);
 
-        Task<IActionResult> GetAllAsync(int appointmentId);
+        Task<IActionResult> GetAllAsync(int[] appointments, int page, int perPage, bool isAscending, string sortKey);
     }
 }

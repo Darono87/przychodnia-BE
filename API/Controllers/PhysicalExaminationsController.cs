@@ -30,14 +30,15 @@ namespace API.Controllers
             return physicalExaminationService.CreatePhysicalExaminationAsync(physicalExaminationDto, Request);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet]
         [Authorize(Roles = "Doctor")]
-        [ProducesResponseType(typeof(IEnumerable<PhysicalExamination>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginationDTO<PhysicalExamination>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status422UnprocessableEntity)]
-        public Task<IActionResult> GetAllForAppointment(int id)
+        public Task<IActionResult> GetAll([FromQuery] int[] appointments, [FromQuery] int page,
+        [FromQuery] int perPage, [FromQuery] bool isAscending, [FromQuery] string sortKey)
         {
-            return physicalExaminationService.GetAllAsync(id);
+            return physicalExaminationService.GetAllAsync(appointments,page,perPage,isAscending,sortKey);
         }
     }
 }
