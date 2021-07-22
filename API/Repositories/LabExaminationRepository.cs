@@ -44,7 +44,7 @@ namespace API.Repositories
             var itemCount = perPage > 0 ? perPage : 20;
 
             var labContext = context.LabExaminations
-                .Where(ex=>statuses.Contains(ex.Status) && appointments.Contains(ex.Appointment.Id))
+                .Where(ex=>(statuses.Length == 0 || statuses.Contains(ex.Status)) && (appointments.Length == 0 || appointments.Contains(ex.Appointment.Id)))
                 .Include(ex => ex.Appointment)
                 .Include(ex => ex.Manager)
                 .Include(ex => ex.Technician);
@@ -73,7 +73,7 @@ namespace API.Repositories
                 .AsEnumerable());
 
             var count = await Task.FromResult(context.LabExaminations
-                .Where(ex=>statuses.Contains(ex.Status) && appointments.Contains(ex.Appointment.Id))
+                .Where(ex=>(statuses.Length == 0 || statuses.Contains(ex.Status)) && (appointments.Length == 0 || appointments.Contains(ex.Appointment.Id)))
                 .Count());
 
             return new PaginationDTO<LabExamination>{items=labs, count=count};

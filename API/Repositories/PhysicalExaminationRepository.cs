@@ -44,7 +44,7 @@ namespace API.Repositories
             var itemCount = perPage > 0 ? perPage : 20;
 
             var physicalContext = context.PhysicalExaminations
-                .Where(ex=>appointments.Contains(ex.Appointment.Id))
+                .Where(ex=>appointments.Length == 0 || appointments.Contains(ex.Appointment.Id))
                 .Include(ex => ex.Appointment);
 
             System.Func<PhysicalExamination, object> orderFun = sortKey switch{
@@ -71,7 +71,7 @@ namespace API.Repositories
                 .AsEnumerable());
 
             var count = await Task.FromResult(context.PhysicalExaminations
-                .Where(ex=>appointments.Contains(ex.Appointment.Id))
+                .Where(ex=>appointments.Length == 0 || appointments.Contains(ex.Appointment.Id))
                 .Count());
 
             return new PaginationDTO<PhysicalExamination>{items=ph, count=count};
