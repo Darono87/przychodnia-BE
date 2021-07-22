@@ -47,7 +47,8 @@ namespace API.Repositories
                 .Where(ex=>(statuses.Length == 0 || statuses.Contains(ex.Status)) && (appointments.Length == 0 || appointments.Contains(ex.Appointment.Id)))
                 .Include(ex => ex.Appointment)
                 .Include(ex => ex.Manager)
-                .Include(ex => ex.Technician);
+                .Include(ex => ex.Technician)
+                .Include(ex => ex.ExaminationCode);
 
             System.Func<LabExamination, object> orderFun = sortKey switch{
                 "status" =>  (LabExamination a)=>a.Status,
