@@ -56,6 +56,19 @@ namespace API.Services
             return new JsonResult(labExamination) {StatusCode = 200};
         }
 
+        public async Task<IActionResult> ConfirmLabExaminationAsync(ConfirmLabExaminationDto labExaminationDto)
+        {
+            var labExamination = await labExaminationRepository.GetAsync(labExaminationDto.Id);
+
+            labExamination.Status = ExaminationStatus.Accepted;
+            labExamination.ConfirmationDate = System.DateTime.Now;
+            labExamination.ManagerRemarks = labExaminationDto.ManagerRemarks;
+
+            await labExaminationRepository.UpdateAsync(labExamination);
+            
+            return new JsonResult(labExamination) {StatusCode = 200};
+        }
+
         public async Task<IActionResult> GetAllAsync(int appointmentId, int page, int perPage, bool isAscending, string sortKey)
         {
             var appointment = await appointmentRepository.GetAsync(appointmentId);
