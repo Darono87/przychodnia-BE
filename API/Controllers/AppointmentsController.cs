@@ -30,6 +30,14 @@ namespace API.Controllers
             return await appointmentService.GetAllAppointmentsAsync(page, perPage, peselNumber, permitNumber, Request, isAscending, sortKey);
         }
 
+        [HttpPatch("finish/{id:int}")]
+        [Authorize(Roles = "Doctor")]
+        [ProducesResponseType(typeof(Appointment), StatusCodes.Status200OK)]
+        public async Task<IActionResult> FinishAppointment(int id)
+        {
+            return await appointmentService.FinishAppointmentAsync(id);
+        }
+
         [HttpPost]
         [Authorize(Roles = "Registrar")]
         [ProducesResponseType(typeof(Appointment), StatusCodes.Status201Created)]
