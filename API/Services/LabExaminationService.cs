@@ -68,6 +68,18 @@ namespace API.Services
             
             return new JsonResult(labExamination) {StatusCode = 200};
         }
+        public async Task<IActionResult> ResultLabExaminationAsync(ResultLabExaminationDto labExaminationDto)
+        {
+            var labExamination = await labExaminationRepository.GetAsync(labExaminationDto.Id);
+
+            labExamination.Status = ExaminationStatus.Finished;
+            labExamination.FinishDate = System.DateTime.Now;
+            labExamination.Result = labExaminationDto.Result;
+
+            await labExaminationRepository.UpdateAsync(labExamination);
+            
+            return new JsonResult(labExamination) {StatusCode = 200};
+        }
 
         public async Task<IActionResult> GetAllAsync(int appointmentId, int page, int perPage, bool isAscending, string sortKey)
         {

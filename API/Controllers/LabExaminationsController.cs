@@ -40,6 +40,16 @@ namespace API.Controllers
             return labExaminationService.ConfirmLabExaminationAsync(labExaminationDto);
         }
         
+        [HttpPut]
+        [Authorize(Roles = "LabManager")]
+        [ProducesResponseType(typeof(LabExamination), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status422UnprocessableEntity)]
+        public Task<IActionResult> ConfirmLabExamination([FromBody] ResultLabExaminationDto labExaminationDto)
+        {
+            return labExaminationService.ResultLabExaminationAsync(labExaminationDto);
+        }
+        
         [HttpGet("{id}")]
         [Authorize(Roles = "Doctor")]
         [ProducesResponseType(typeof(IEnumerable<PhysicalExamination>), StatusCodes.Status200OK)]
