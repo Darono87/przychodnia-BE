@@ -94,6 +94,8 @@ namespace API
             services.AddTransient<IJwtManager, JwtManager>();
             services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
 
+            services.AddTransient<DbSeeder>();
+
             services.AddControllers()
                 .AddNewtonsoftJson(options =>
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
