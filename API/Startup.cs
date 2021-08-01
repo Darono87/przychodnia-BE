@@ -37,6 +37,7 @@ namespace API
             });
 
             var jwtConfig = Config.GetSection("JwtConfig").Get<JwtConfig>();
+            var emailConfig = Config.GetSection("EmailStrings").Get<EmailConfig>();
             services.AddSingleton(jwtConfig);
             services.AddAuthentication(options =>
             {
@@ -88,6 +89,9 @@ namespace API
 
             services.AddTransient<IAppointmentService, AppointmentService>();
             services.AddTransient<IPatientService, PatientService>();
+            services.AddSingleton<IMailService>(x => 
+                new MailService(emailConfig));
+
             services.AddTransient<IPhysicalExaminationService, PhysicalExaminationService>();
             services.AddTransient<ILabExaminationService, LabExaminationService>();
 
