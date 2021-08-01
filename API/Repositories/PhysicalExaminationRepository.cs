@@ -45,7 +45,7 @@ namespace API.Repositories
 
             var physicalContext = context.PhysicalExaminations
                 .Where(ex=>appointments.Length == 0 || appointments.Contains(ex.Appointment.Id))
-                .Include(ex => ex.Appointment)
+                .Include(ex => ex.Appointment).ThenInclude((a=>a.Patient))
                 .Include(ex => ex.ExaminationCode);
 
             System.Func<PhysicalExamination, object> orderFun = sortKey switch{
