@@ -36,7 +36,7 @@ namespace API.Controllers
         [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status422UnprocessableEntity)]
         public Task<IActionResult> GetAll([FromQuery] int page, [FromQuery] int perPage, 
-        [FromQuery] bool isAscending, [FromQuery] string sortKey, [FromQuery] int[] appointments, [FromQuery] ExaminationStatus[] statuses)
+        [FromQuery] bool isAscending, [FromQuery] string sortKey, [FromQuery(Name = "appointments[]")] int[] appointments, [FromQuery] ExaminationStatus[] statuses)
         {
             return labExaminationService.GetAllAsync(appointments, statuses, page, perPage, isAscending, sortKey);
         }

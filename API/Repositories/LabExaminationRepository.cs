@@ -57,7 +57,7 @@ namespace API.Repositories
                 "result" => (LabExamination a) => a.Result,
                 "finishDate" => (LabExamination a) => a.FinishDate,
                 "confirmationDate" => (LabExamination a) => a.ConfirmationDate,
-                "examinationCode" => (LabExamination a) => a.ExaminationCode,
+                "examinationCode" => (LabExamination a) => a.ExaminationCode.Name,
                 "appointmentId" => (LabExamination a) => a.Appointment.Id,
                 _ => (LabExamination a) => a.ManagerRemarks // "managerRemarks"
             };
