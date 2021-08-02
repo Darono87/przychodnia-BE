@@ -51,6 +51,7 @@ namespace API.Repositories
                 .Include(appointment => appointment.Doctor.User)
                 .Include(appointment => appointment.Patient);
 
+
             Func<Appointment, object> orderFun = sortKey switch
             {
                 "status" => a => a.Status,
@@ -119,6 +120,14 @@ namespace API.Repositories
                                                physicalExaminations.Any() && allPhysicalFinished ||
                                                labExaminations.Any() && allLabFinished
                                            );
+                
+                appointment.ScheduledDate =
+                    TimeZoneInfo.ConvertTimeFromUtc(appointment.ScheduledDate, TimeZoneInfo.Local);
+                appointment.RegistrationDate =
+                    TimeZoneInfo.ConvertTimeFromUtc(appointment.RegistrationDate, TimeZoneInfo.Local);
+                appointment.FinishDate = appointment.FinishDate.HasValue
+                    ? TimeZoneInfo.ConvertTimeFromUtc(appointment.FinishDate.Value, TimeZoneInfo.Local)
+                    : appointment.FinishDate;
 
                 return appointment;
             });
@@ -133,7 +142,7 @@ namespace API.Repositories
                 .Select(a => new Suggestion
                 {
                     value = a.Id,
-                    label = a.ScheduledDate.ToUniversalTime() + ", " + a.Patient.FirstName + " " +
+                    label = /*a.ScheduledDate.ToUniversalTime()*/ TimeZoneInfo.ConvertTimeFromUtc(a.ScheduledDate,TimeZoneInfo.Local) + ", " + a.Patient.FirstName + " " +
                             a.Patient.LastName
                 }).ToListAsync();
             return new SuggestionsDto {Suggestions = suggestions};
