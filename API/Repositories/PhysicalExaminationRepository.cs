@@ -49,9 +49,9 @@ namespace API.Repositories
                 .Include(ex => ex.ExaminationCode);
 
             System.Func<PhysicalExamination, object> orderFun = sortKey switch{
-                "examinationCode" =>  (PhysicalExamination a)=>a.ExaminationCode,
+                "examinationCode" =>  (PhysicalExamination a)=>a.ExaminationCode.Name,
                 "appointmentId" => (PhysicalExamination a) =>a.Appointment.Id,
-                "doctor" => (PhysicalExamination a) => a.Appointment.Doctor.User.FirstName,
+                "patient" => (PhysicalExamination a) => a.Appointment.Patient.LastName,
                 _ => (PhysicalExamination a) =>a.Result // "result"
             };
 
