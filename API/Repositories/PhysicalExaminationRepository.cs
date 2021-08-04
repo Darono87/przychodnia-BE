@@ -50,7 +50,7 @@ namespace API.Repositories
 
             System.Func<PhysicalExamination, object> orderFun = sortKey switch{
                 "examinationCode" =>  (PhysicalExamination a)=>a.ExaminationCode.Name,
-                "appointmentId" => (PhysicalExamination a) =>a.Appointment.Id,
+                "appointment" => (PhysicalExamination a) =>a.Appointment.Id,
                 "patient" => (PhysicalExamination a) => a.Appointment.Patient.LastName,
                 _ => (PhysicalExamination a) =>a.Result // "result"
             };
