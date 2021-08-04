@@ -142,8 +142,7 @@ namespace API.Repositories
                 .Select(a => new Suggestion
                 {
                     value = a.Id,
-                    label = /*a.ScheduledDate.ToUniversalTime()*/ TimeZoneInfo.ConvertTimeFromUtc(a.ScheduledDate,TimeZoneInfo.Local) + ", " + a.Patient.FirstName + " " +
-                            a.Patient.LastName
+                    label = $"{TimeZoneInfo.ConvertTimeFromUtc(a.ScheduledDate,TimeZoneInfo.Local)}, {a.Patient.FirstName} {a.Patient.LastName}"
                 }).ToListAsync();
             return new SuggestionsDto {Suggestions = suggestions};
         }
