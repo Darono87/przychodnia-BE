@@ -129,7 +129,8 @@ namespace API.Repositories
         public async Task<SuggestionsDto> GetSuggestionsAsync(int doctorId)
         {
             var suggestions = await context.Appointments
-                .Where(a => a.Doctor.Id == doctorId)
+                .Where(a => a.Doctor.Id == doctorId && a.Status == AppointmentStatus.Scheduled)
+                .OrderBy(a=>a.ScheduledDate)
                 .Select(a => new Suggestion
                 {
                     value = a.Id,
