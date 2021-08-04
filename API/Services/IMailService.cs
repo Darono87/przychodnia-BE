@@ -10,6 +10,6 @@ namespace API.Services
 {
     public interface IMailService
     {
-        Task<IActionResult> SendAsync(MailDto patientDto);
+        Task<IActionResult> SendAsync(MailDto mailDto);
     }
 }

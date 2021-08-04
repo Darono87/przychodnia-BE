@@ -28,7 +28,7 @@ namespace API.Services
             password = emailConfig.Password;
             login = emailConfig.Login;
         }
-        public async Task<IActionResult> SendAsync(MailDto patientDto)
+        public async Task<IActionResult> SendAsync(MailDto mailDto)
         {
 
             if (areParametersWrong())
@@ -41,18 +41,18 @@ namespace API.Services
             
             var message = new MimeMessage();
 
-            var from = new MailboxAddress(patientDto.Mail, 
-                patientDto.Mail);
+            var from = new MailboxAddress(mailDto.Mail, 
+                mailDto.Mail);
             message.From.Add(from);
 
             var to = new MailboxAddress("User", 
                 recipient);
             message.To.Add(to);
 
-            message.Subject = "New message from TAB clinic from: " + patientDto.Mail;
+            message.Subject = "New message from TAB clinic from: " + mailDto.Mail;
             
             var bodyBuilder = new BodyBuilder();
-            bodyBuilder.TextBody = patientDto.Message;
+            bodyBuilder.TextBody = mailDto.Message;
             message.Body = bodyBuilder.ToMessageBody();
 
             var client = new SmtpClient();
@@ -71,7 +71,7 @@ namespace API.Services
                     StatusCode = 422
                 };
             }
-            return new JsonResult(patientDto) {StatusCode = 201};
+            return new JsonResult(mailDto) {StatusCode = 201};
         }
 
         private Boolean areParametersWrong()
