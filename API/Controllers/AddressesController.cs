@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace API.Controllers
 {
@@ -22,9 +19,9 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Address>>> Get()
+        public async Task<ActionResult<IEnumerable<Address>>> GetAsync()
         {
-            return await this.context.Addresses.ToListAsync();
+            return await context.Addresses.ToListAsync();
         }
     }
 }

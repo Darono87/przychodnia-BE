@@ -1,24 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 using API.Data;
+using API.Entities;
+using API.Repositories;
+using API.Services;
+using API.Utils;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 
 namespace API
 {
     public class Startup
     {
         private readonly IConfiguration Config;
+        private readonly string CorsPolicyName = "FreeRealEstate";
 
         public Startup(IConfiguration Config)
         {
@@ -32,10 +35,78 @@ namespace API
             {
                 options.UseNpgsql(Config.GetConnectionString("DefaultConnection"));
             });
-            services.AddControllers();
+
+            var jwtConfig = Config.GetSection("JwtConfig").Get<JwtConfig>();
+            var emailConfig = Config.GetSection("EmailStrings").Get<EmailConfig>();
+            services.AddSingleton(jwtConfig);
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = true;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = jwtConfig.Issuer,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtConfig.Secret)),
+                    ValidAudience = jwtConfig.Audience,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.FromMinutes(1)
+                };
+            });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(CorsPolicyName, builder =>
+                {
+                    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                });
+            });
+
+            services.AddTransient<IGenericUserRepository<User>, UserRepository>();
+            services.AddTransient<IGenericUserRepository<Admin>, AdminRepository>();
+            services.AddTransient<IGenericUserRepository<Registrar>, RegistrarRepository>();
+            services.AddTransient<IGenericUserRepository<Doctor>, DoctorRepository>();
+            services.AddTransient<IGenericUserRepository<LabTechnician>, LabTechnicianRepository>();
+            services.AddTransient<IGenericUserRepository<LabManager>, LabManagerRepository>();
+
+            services.AddTransient<IPatientRepository, PatientRepository>();
+            services.AddTransient<IDoctorRepository, DoctorRepository>();
+
+            services.AddTransient<IAppointmentRepository, AppointmentRepository>();
+
+            services.AddTransient<IExaminationCodeRepository, ExaminationCodeRepository>();
+            services.AddTransient<IPhysicalExaminationRepository, PhysicalExaminationRepository>();
+            services.AddTransient<ILabExaminationRepository, LabExaminationRepository>();
+
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IExaminationCodeService, ExaminationCodeService>();
+
+            services.AddTransient<IAppointmentService, AppointmentService>();
+            services.AddTransient<IPatientService, PatientService>();
+            services.AddSingleton<IMailService>(x => 
+                new MailService(emailConfig));
+
+            services.AddTransient<IPhysicalExaminationService, PhysicalExaminationService>();
+            services.AddTransient<ILabExaminationService, LabExaminationService>();
+
+            services.AddTransient<IJwtManager, JwtManager>();
+            services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
+
+            services.AddTransient<DbSeeder>();
+
+            services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "API", Version = "v1"});
             });
         }
 
@@ -52,6 +123,10 @@ namespace API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(CorsPolicyName);
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
