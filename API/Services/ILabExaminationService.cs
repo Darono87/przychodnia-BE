@@ -9,6 +9,10 @@ namespace API.Services
     {
         Task<IActionResult> CreateLabExaminationAsync(CreateLabExaminationDto labExaminationDto);
 
+        Task<IActionResult> ConfirmLabExaminationAsync(ConfirmLabExaminationDto labExaminationDto);
+        
+        Task<IActionResult> ResultLabExaminationAsync(ResultLabExaminationDto labExaminationDto);
+
         Task<IActionResult> GetAllAsync(int[] appointments, ExaminationStatus[] statuses, int page, int perPage, bool isAscending, string sortKey);
     }
 }
