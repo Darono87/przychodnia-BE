@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using API.Data;
+using API.DTO;
 using API.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,10 +38,44 @@ namespace API.Repositories
             return await context.PhysicalExaminations.FindAsync(id);
         }
 
-        public async Task<IEnumerable<PhysicalExamination>> GetAllAsync(Appointment appointment)
+        public async Task<PaginationDTO<PhysicalExamination>> GetAllAsync(int[] appointments, int page, int perPage, bool isAscending, string sortKey)
         {
-            return await Task.FromResult(context.PhysicalExaminations.Include(c => c.Appointment)
-                .Where(a => a.Appointment.Id == appointment.Id));
+            var currentPage = page > 0 ? page : 1;
+            var itemCount = perPage > 0 ? perPage : 20;
+
+            var physicalContext = context.PhysicalExaminations
+                .Where(ex=>appointments.Length == 0 || appointments.Contains(ex.Appointment.Id))
+                .Include(ex => ex.Appointment).ThenInclude((a=>a.Patient))
+                .Include(ex => ex.ExaminationCode);
+
+            System.Func<PhysicalExamination, object> orderFun = sortKey switch{
+                "examinationCode" =>  (PhysicalExamination a)=>a.ExaminationCode.Name,
+                "appointment" => (PhysicalExamination a) =>a.Appointment.Id,
+                "patient" => (PhysicalExamination a) => a.Appointment.Patient.LastName,
+                _ => (PhysicalExamination a) =>a.Result // "result"
+            };
+
+            var physicalSorted = physicalContext.OrderBy(orderFun);
+            if(!isAscending) {
+                physicalSorted = physicalContext.OrderByDescending(orderFun);
+                if(sortKey == "doctor")
+                    physicalSorted = physicalSorted.ThenByDescending(a=>a.Appointment.Doctor.User.LastName);
+            } else{
+                if(sortKey == "doctor")
+                    physicalSorted = physicalSorted.ThenBy(a=>a.Appointment.Doctor.User.LastName);
+            }
+
+            var ph = await Task.FromResult(
+                physicalSorted
+                .Skip(itemCount * (currentPage - 1))
+                .Take(itemCount)
+                .AsEnumerable());
+
+            var count = await Task.FromResult(context.PhysicalExaminations
+                .Where(ex=>appointments.Length == 0 || appointments.Contains(ex.Appointment.Id))
+                .Count());
+
+            return new PaginationDTO<PhysicalExamination>{items=ph, count=count};
         }
     }
 }

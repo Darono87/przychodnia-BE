@@ -65,15 +65,9 @@ namespace API.Services
             return new JsonResult(physicalExamination) {StatusCode = 200};
         }
 
-        public async Task<IActionResult> GetAllAsync(int appointmentId)
+        public async Task<IActionResult> GetAllAsync(int[] appointments, int page, int perPage, bool isAscending, string sortKey)
         {
-            var appointment = await appointmentRepository.GetAsync(appointmentId);
-            if (appointment == null)
-            {
-                return new JsonResult(new ExceptionDto {Message = "Could not find the appointment"}) {StatusCode = 422};
-            }
-
-            return new JsonResult(await physicalExaminationRepository.GetAllAsync(appointment)) {StatusCode = 200};
+            return new JsonResult(await physicalExaminationRepository.GetAllAsync(appointments, page, perPage, isAscending, sortKey)) {StatusCode = 200};
         }
     }
 }

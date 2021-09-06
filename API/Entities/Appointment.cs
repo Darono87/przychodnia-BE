@@ -32,6 +32,8 @@ namespace API.Entities
         [Required] public Patient Patient { get; set; }
 
         [Required] public Registrar Registrar { get; set; }
+        
+        [NotMapped] public bool IsFinishable { get; set; }
 
         public ICollection<PhysicalExamination> PhysicalExaminations { get; set; }
         public ICollection<LabExamination> LabExaminations { get; set; }

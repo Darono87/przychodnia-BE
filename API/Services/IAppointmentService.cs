@@ -11,6 +11,8 @@ namespace API.Services
         Task<IActionResult> CreateAppointmentAsync(AppointmentDto appointmentDto, HttpRequest request);
         Task<IActionResult> CancelAppointmentAsync(AppointmentCancellationDto appointmentCancellationDto);
 
+        Task<IActionResult> FinishAppointmentAsync(int id);
+
         Task<IActionResult> GetSuggestionsAsync(HttpRequest request);
     }
 }

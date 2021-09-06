@@ -112,6 +112,23 @@ namespace API.Services
             return new JsonResult(await appointmentRepository.UpdateAsync(appointment)) {StatusCode = 200};
         }
 
+        public async Task<IActionResult> FinishAppointmentAsync(int id)
+        {
+            var appointment = await appointmentRepository.GetAsync(id);
+
+            if (appointment == null)
+            {
+                return new JsonResult(new ExceptionDto {Message = "Appointment does not exist"}) {StatusCode = 422};
+            }
+
+            appointment.Status = AppointmentStatus.Finished;
+            appointment.FinishDate = DateTime.Now;
+
+            await appointmentRepository.UpdateAsync(appointment);
+            
+            return new JsonResult(appointment);
+        }
+
         public async Task<IActionResult> GetSuggestionsAsync(HttpRequest request){
             var currentUser = (Doctor) await userService.GetCurrentUserAsync(request);
             var appointments = await appointmentRepository.GetSuggestionsAsync(currentUser.Id);

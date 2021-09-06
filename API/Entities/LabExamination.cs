@@ -18,11 +18,11 @@ namespace API.Entities
 
         public string Result { get; set; }
 
-        public DateTime FinishDate { get; set; }
+        public DateTime? FinishDate { get; set; }
 
         public string ManagerRemarks { get; set; }
 
-        public DateTime ConfirmationDate { get; set; }
+        public DateTime? ConfirmationDate { get; set; }
 
         [Required]
         [Column(TypeName = "varchar(20)")]

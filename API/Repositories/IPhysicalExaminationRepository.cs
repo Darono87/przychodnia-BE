@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Entities;
+using API.DTO;
 
 namespace API.Repositories
 {
@@ -9,6 +10,6 @@ namespace API.Repositories
         Task<PhysicalExamination> AddAsync(PhysicalExamination physicalExamination);
         Task<PhysicalExamination> UpdateAsync(PhysicalExamination physicalExamination);
         Task<PhysicalExamination> GetAsync(int id);
-        Task<IEnumerable<PhysicalExamination>> GetAllAsync(Appointment appointment);
+        Task<PaginationDTO<PhysicalExamination>> GetAllAsync(int[] appointments, int page, int perPage, bool isAscending, string sortKey);
     }
 }

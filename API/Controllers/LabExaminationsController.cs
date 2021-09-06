@@ -50,15 +50,15 @@ namespace API.Controllers
             return labExaminationService.ResultLabExaminationAsync(labExaminationDto);
         }
         
-        [HttpGet("{id}")]
-        [Authorize(Roles = "Doctor")]
-        [ProducesResponseType(typeof(IEnumerable<PhysicalExamination>), StatusCodes.Status200OK)]
+        [HttpGet]
+        [Authorize(Roles = "Doctor,LabTechnician,LabManager")]
+        [ProducesResponseType(typeof(IEnumerable<PaginationDTO<LabExamination>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status422UnprocessableEntity)]
-        public Task<IActionResult> GetAllForAppointment(int id, [FromQuery] int page, [FromQuery] int perPage, 
-        [FromQuery] bool isAscending, [FromQuery] string sortKey)
+        public Task<IActionResult> GetAll([FromQuery] int page, [FromQuery] int perPage, 
+        [FromQuery] bool isAscending, [FromQuery] string sortKey, [FromQuery(Name = "appointments[]")] int[] appointments, [FromQuery] ExaminationStatus[] statuses)
         {
-            return labExaminationService.GetAllAsync(id, page, perPage, isAscending, sortKey);
+            return labExaminationService.GetAllAsync(appointments, statuses, page, perPage, isAscending, sortKey);
         }
     }
 }
