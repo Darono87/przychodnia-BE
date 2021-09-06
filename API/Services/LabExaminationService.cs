@@ -46,7 +46,7 @@ namespace API.Services
 
             var labExamination = new LabExamination
             {
-                Appointment = appointment, ExaminationCode = examinationCode, Status=ExaminationStatus.Scheduled, IssueDate= System.DateTime.Now
+                Appointment = appointment, ExaminationCode = examinationCode, Status=ExaminationStatus.Scheduled, IssueDate= System.DateTime.Now, DoctorRemarks = labExaminationDto.DoctorRemarks
             };
 
             await labExaminationRepository.AddAsync(labExamination);

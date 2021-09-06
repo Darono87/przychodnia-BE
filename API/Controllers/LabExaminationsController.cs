@@ -30,7 +30,7 @@ namespace API.Controllers
             return labExaminationService.CreateLabExaminationAsync(labExaminationDto);
         }
 
-        [HttpPut]
+        [HttpPut("finalize")]
         [Authorize(Roles = "LabManager")]
         [ProducesResponseType(typeof(LabExamination), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
@@ -40,8 +40,8 @@ namespace API.Controllers
             return labExaminationService.ConfirmLabExaminationAsync(labExaminationDto);
         }
         
-        [HttpPut]
-        [Authorize(Roles = "LabManager")]
+        [HttpPut("confirm")]
+        [Authorize(Roles = "LabManager,LabTechnician")]
         [ProducesResponseType(typeof(LabExamination), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status422UnprocessableEntity)]
