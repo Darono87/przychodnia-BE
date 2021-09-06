@@ -69,32 +69,32 @@ namespace API.Services
                 case "LabTechnician":
                     var techs = await labTechnicianRepository.GetAllAsync();
                     suggestions = new SuggestionsDto { Suggestions = techs.Select(tech => { 
-                        return new SuggestionsDto.Suggestion{value = tech.Id, label = tech.User.FirstName};
+                        return new SuggestionsDto.Suggestion{value = tech.Id, label = $"{tech.User.FirstName} {tech.User.LastName}"};
                     })};
                     break;
                 case "Registrar":
                     var regs = await registrarRepository.GetAllAsync();
                     suggestions = new SuggestionsDto { Suggestions = regs.Select(reg => { 
-                        return new SuggestionsDto.Suggestion{value = reg.Id, label = reg.User.FirstName};
+                        return new SuggestionsDto.Suggestion{value = reg.Id, label = $"{reg.User.FirstName} {reg.User.LastName}"};
                     })};
                     break;
                 case "Admin":
                     var admins = await adminRepository.GetAllAsync();
                     suggestions = new SuggestionsDto { Suggestions = admins.Select(adm => { 
-                        return new SuggestionsDto.Suggestion{value = adm.Id, label = adm.User.FirstName};
+                        return new SuggestionsDto.Suggestion{value = adm.Id, label = $"{adm.User.FirstName} {adm.User.LastName}"};
                     })};
                     break;
                 case "Doctor":
                     var doctors = await doctorRepository.GetAllAsync();
                     suggestions = new SuggestionsDto { Suggestions = doctors.Select(dc => { 
-                        return new SuggestionsDto.Suggestion{value = dc.Id, label = dc.User.FirstName};
+                        return new SuggestionsDto.Suggestion{value = dc.Id, label = $"{dc.User.FirstName} {dc.User.LastName}"};
                     })};
                     break;
                 case "LabManager":
                 default:
                     var managers = await labManagerRepository.GetAllAsync();
                     suggestions = new SuggestionsDto { Suggestions = managers.Select(mgr => { 
-                        return new SuggestionsDto.Suggestion{value = mgr.Id, label = mgr.User.FirstName};
+                        return new SuggestionsDto.Suggestion{value = mgr.Id, label = $"{mgr.User.FirstName} {mgr.User.LastName}"};
                     })};
                     break;
             }
