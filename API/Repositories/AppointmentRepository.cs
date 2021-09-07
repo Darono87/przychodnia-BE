@@ -123,11 +123,11 @@ namespace API.Repositories
                 
                 appointment.ScheduledDate =
                     TimeZoneInfo.ConvertTimeFromUtc(appointment.ScheduledDate, TimeZoneInfo.Local);
-                appointment.RegistrationDate =
-                    TimeZoneInfo.ConvertTimeFromUtc(appointment.RegistrationDate, TimeZoneInfo.Local);
-                appointment.FinishDate = appointment.FinishDate.HasValue
-                    ? TimeZoneInfo.ConvertTimeFromUtc(appointment.FinishDate.Value, TimeZoneInfo.Local)
-                    : appointment.FinishDate;
+                // appointment.RegistrationDate =
+                //     TimeZoneInfo.ConvertTimeFromUtc(appointment.RegistrationDate, TimeZoneInfo.Local);
+                // appointment.FinishDate = appointment.FinishDate.HasValue
+                //     ? TimeZoneInfo.ConvertTimeFromUtc(appointment.FinishDate.Value, TimeZoneInfo.Local)
+                //     : appointment.FinishDate;
 
                 return appointment;
             });
