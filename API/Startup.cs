@@ -21,7 +21,6 @@ namespace API
     public class Startup
     {
         private readonly IConfiguration Config;
-        private readonly string CorsPolicyName = "FreeRealEstate";
 
         public Startup(IConfiguration Config)
         {
@@ -31,14 +30,25 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            String dbSocketDir = Environment.GetEnvironmentVariable("DB_SOCKET_PATH") ?? "/cloudsql";
+            String instanceConnectionName = Environment.GetEnvironmentVariable("INSTANCE_CONNECTION_NAME");
             services.AddDbContext<DataContext>(options =>
             {
-                options.UseNpgsql(Config.GetConnectionString("DefaultConnection"));
+                if(Environment.GetEnvironmentVariable("DB_USER") != null && Environment.GetEnvironmentVariable("DB_PASS") != null 
+                && Environment.GetEnvironmentVariable("DB_NAME") != null && instanceConnectionName != null){
+                    options.UseNpgsql($"Host={String.Format("{0}/{1}", dbSocketDir, instanceConnectionName)};Database={Environment.GetEnvironmentVariable("DB_NAME")};Username={Environment.GetEnvironmentVariable("DB_USER")};Password={Environment.GetEnvironmentVariable("DB_PASS")}");
+                }else{
+                    options.UseNpgsql(Config.GetConnectionString("DefaultConnection"));
+                }
             });
 
             var jwtConfig = Config.GetSection("JwtConfig").Get<JwtConfig>();
             var emailConfig = Config.GetSection("EmailStrings").Get<EmailConfig>();
             services.AddSingleton(jwtConfig);
+
+            
+
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -60,13 +70,7 @@ namespace API
                 };
             });
 
-            services.AddCors(options =>
-            {
-                options.AddPolicy(CorsPolicyName, builder =>
-                {
-                    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-                });
-            });
+            
 
             services.AddTransient<IGenericUserRepository<User>, UserRepository>();
             services.AddTransient<IGenericUserRepository<Admin>, AdminRepository>();
@@ -104,6 +108,8 @@ namespace API
                 .AddNewtonsoftJson(options =>
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
+            services.AddCors();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "API", Version = "v1"});
@@ -120,11 +126,11 @@ namespace API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
             }
 
+            app.UseCors(builder => builder.WithOrigins("https://przychodnia---frontend-5yssyu7a2a-lz.a.run.app","https://localhost:3000","http://localhost:3000").AllowAnyMethod().AllowAnyHeader());
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            app.UseCors(CorsPolicyName);
 
             app.UseAuthentication();
 
